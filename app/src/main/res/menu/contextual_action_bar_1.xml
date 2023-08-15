@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/delete_1"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="@string/delete"
+        android:contentDescription="@string/content_description_delete"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/more_1"
+        android:title="@string/more"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:contentDescription="@string/content_description_more"
+        app:showAsAction="never">
+        <menu>
+            <item android:id="@+id/khoi_phuc_anh"
+                android:title="Hoàn tác"
+                android:icon="@drawable/ic_baseline_update_24"/>
+        </menu>
+    </item>
+
+</menu>

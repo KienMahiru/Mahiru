@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:title="@string/share"
+        android:contentDescription="@string/content_description_share"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="@string/delete"
+        android:contentDescription="@string/content_description_delete"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/more"
+        android:title="@string/more"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:contentDescription="@string/content_description_more"
+        app:showAsAction="never">
+        <menu>
+            <item android:id="@+id/save_image"
+                android:title="Tải về máy"
+                android:icon="@drawable/ic_baseline_save_alt_24"/>
+        </menu>
+    </item>
+
+</menu>
