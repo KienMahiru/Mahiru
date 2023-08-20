@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lương
- và hoàn toàn miễn phí. Bạn muốn liên hệ với nhà phát hành hãy liên hệ qua email: kisutrinh2001@gmail.com"
+ và hoàn toàn miễn phí. Bạn muốn liên hệ với nhà phát hành hãy liên hệ qua email: meomeo123@gmail.com"
         android:textColor="@color/black"
         android:textSize="20dp"
         android:textStyle="bold"
