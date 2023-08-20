@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/cau_hoi_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_baseline_question_mark_24"
+                            android:layout_marginLeft="10dp"/>
+                        <TextView
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:text="Tải ảnh/video/nhạc lên như thế nào?"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/tra_loi_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_baseline_question_answer_24"
+                            android:layout_marginLeft="10dp"/>
+                        <TextView
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:text="Tải ảnh/video/nhạc lên bằng cách nhấn nút upload hoặc nhấn giữ nút upload để chọn tệp cần tải"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/cau_hoi_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_baseline_question_mark_24"
+                            android:layout_marginLeft="10dp"/>
+                        <TextView
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:text="Tải ảnh/video/nhạc về điện thoại như thế nào?"/>
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/tra_loi_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_baseline_question_answer_24"
+                            android:layout_marginLeft="10dp"/>
+                        <TextView
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:text="Tải ảnh/video/nhạc về điện thoại bằng cách nhấn giữ ảnh/video/nhạc cần tải về sau đó bấm nút More(3 chấm dọc) và bấm nút Download ảnh"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </ScrollView>
+    </LinearLayout>
+
+
+</LinearLayout>

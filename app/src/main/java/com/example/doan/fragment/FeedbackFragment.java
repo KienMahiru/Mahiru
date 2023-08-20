@@ -45,7 +45,7 @@ public class FeedbackFragment extends Fragment {
         sendphone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phoneNumber = "0852110789"; // Thay số điện thoại tại đây
+                String phoneNumber = "012345678"; // Thay số điện thoại tại đây
                 dialPhoneNumber(phoneNumber);
             }
         });
@@ -56,7 +56,7 @@ public class FeedbackFragment extends Fragment {
     private  void  sendEmail(){
 
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                "mailto", "kisutrinh2001@gmail.com", null));
+                "mailto", "meomeo123@gmail.com", null));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback");
 
         startActivity(Intent.createChooser(emailIntent, "Send email..."));

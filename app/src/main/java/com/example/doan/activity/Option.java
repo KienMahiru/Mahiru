@@ -36,6 +36,7 @@ import com.example.doan.fragment.DeleteFragment;
 import com.example.doan.fragment.FeedbackFragment;
 import com.example.doan.fragment.InforFragment;
 import com.example.doan.fragment.SettingsFragment;
+import com.example.doan.fragment.SupportFragment;
 import com.google.android.gms.tasks.Task;
 import com.bumptech.glide.Glide;
 import com.example.doan.fragment.ChangePasswordFragment;
@@ -56,6 +57,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
     private static final int FRAGMENT_INFOR=6;
     private static final int FRAGMENT_FEED=7;
     private static final int FRAGMENT_CHANGE_PASSWORD= 2;
+    private static final int FRAGMENT_SUPPORT= 20;
     private int mCurrentFragment = FRAGMENT_HOME;
     final private MyProfileFragment myProfileFragment = new MyProfileFragment();
     final private ActivityResultLauncher<Intent>mActivityResultLauncher=registerForActivityResult(
@@ -151,6 +153,12 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
             if(mCurrentFragment!= FRAGMENT_INFOR){
                 replaceFragment(new InforFragment());
                 mCurrentFragment = FRAGMENT_INFOR;
+            }
+        }
+        else if(id==R.id.tro_giup){
+            if(mCurrentFragment!= FRAGMENT_SUPPORT){
+                replaceFragment(new SupportFragment());
+                mCurrentFragment = FRAGMENT_SUPPORT;
             }
         }
         else if(id==R.id.phan_hoi){
