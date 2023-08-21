@@ -73,10 +73,7 @@ public class Khoiphuc extends AppCompatActivity {
                                 Toast.makeText(Khoiphuc.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
                             }
                         });
-                if (TextUtils.isEmpty(emailAddress)) {
-                    // Nếu địa chỉ email rỗng, hiển thị thông báo lỗi và yêu cầu người dùng nhập lại.
-                    email.setError("Vui lòng nhập địa chỉ email để khôi phục mật khẩu");
-                    return;
+
                 }
 
             }
