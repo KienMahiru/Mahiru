@@ -32,6 +32,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Dangky extends AppCompatActivity {
     private boolean mPasswordVisible = false;
@@ -89,6 +91,14 @@ public class Dangky extends AppCompatActivity {
                     mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một chữ cái thường");
                     return;
                 }
+                else if (!isGmailAddress(email)) {
+                    mEmail.setError("Email phải là địa chỉ Gmail");
+                    return;
+                }
+                else if (!containsNumber(password)) {
+                    mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một số");
+                    return;
+                }
                 FirebaseAuth auth = FirebaseAuth.getInstance();
                 progressDialog.setMessage("Đang chờ xác minh...");
                 progressDialog.setCancelable(false);
@@ -102,6 +112,7 @@ public class Dangky extends AppCompatActivity {
                                 if (providers != null && providers.size() > 0) {
                                     // Tài khoản tồn tại
                                     Toast.makeText(Dangky.this, "Tài khoản này đã tồn tại!", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
                                 } else {
                                     auth.createUserWithEmailAndPassword(email, password)
                                             .addOnCompleteListener(Dangky.this, new OnCompleteListener<AuthResult>() {
@@ -174,6 +185,7 @@ public class Dangky extends AppCompatActivity {
                                                     } else {
                                                         // Tạo tài khoản thất bại
                                                         Toast.makeText(Dangky.this, "Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.", Toast.LENGTH_SHORT).show();
+                                                        progressDialog.dismiss();
                                                     }
                                                 }
                                             });
@@ -182,6 +194,7 @@ public class Dangky extends AppCompatActivity {
                             } else {
                                 // Lỗi xảy ra khi kiểm tra tài khoản
                                 Toast.makeText(Dangky.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
                             }
                         });
 
@@ -189,6 +202,34 @@ public class Dangky extends AppCompatActivity {
             }
         });
     }
+    // Kiểm tra xem mật khẩu có chứa ít nhất một số hay không
+    public boolean containsNumber(String password) {
+        // Biểu thức chính quy để kiểm tra mật khẩu chứa ít nhất một số
+        String numberPattern = ".*\\d.*";
+
+        // Tạo một đối tượng Pattern từ biểu thức chính quy
+        Pattern pattern = Pattern.compile(numberPattern);
+
+        // So khớp mật khẩu với biểu thức chính quy
+        Matcher matcher = pattern.matcher(password);
+
+        // Trả về true nếu mật khẩu khớp với biểu thức chính quy, ngược lại trả về false
+        return matcher.matches();
+    }
+    public boolean isGmailAddress(String text) {
+        // Biểu thức chính quy để kiểm tra địa chỉ email Gmail
+        String gmailPattern = "[a-zA-Z0-9._%+-]+@gmail\\.com";
+
+        // Tạo một đối tượng Pattern từ biểu thức chính quy
+        Pattern pattern = Pattern.compile(gmailPattern);
+
+        // So khớp đoạn văn bản với biểu thức chính quy
+        Matcher matcher = pattern.matcher(text);
+
+        // Trả về true nếu đoạn văn bản khớp với biểu thức chính quy, ngược lại trả về false
+        return matcher.matches();
+    }
+
     @Override
     protected void onStart() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

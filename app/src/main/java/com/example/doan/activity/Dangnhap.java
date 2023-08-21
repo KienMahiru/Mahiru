@@ -39,6 +39,9 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 
 import androidx.annotation.NonNull;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 public class Dangnhap extends AppCompatActivity {
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     private EditText mEmail;
@@ -283,6 +286,14 @@ public class Dangnhap extends AppCompatActivity {
             mRememberCheckBox.setChecked(false);
             return false;
         }
+        else if (!isGmailAddress(email)) {
+            mEmail.setError("Email phải là địa chỉ Gmail");
+            return false;
+        }
+        else if (!containsNumber(password)) {
+            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một số");
+            return false;
+        }
         else if (!containsUpperCaseLetter(password)) {
             mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một ký tự viết hoa");
             mRememberCheckBox.setChecked(false);
@@ -295,7 +306,33 @@ public class Dangnhap extends AppCompatActivity {
 
         return true;
     }
+    // Kiểm tra xem mật khẩu có chứa ít nhất một số hay không
+    public boolean containsNumber(String password) {
+        // Biểu thức chính quy để kiểm tra mật khẩu chứa ít nhất một số
+        String numberPattern = ".*\\d.*";
 
+        // Tạo một đối tượng Pattern từ biểu thức chính quy
+        Pattern pattern = Pattern.compile(numberPattern);
+
+        // So khớp mật khẩu với biểu thức chính quy
+        Matcher matcher = pattern.matcher(password);
+
+        // Trả về true nếu mật khẩu khớp với biểu thức chính quy, ngược lại trả về false
+        return matcher.matches();
+    }
+    public boolean isGmailAddress(String text) {
+        // Biểu thức chính quy để kiểm tra địa chỉ email Gmail
+        String gmailPattern = "[a-zA-Z0-9._%+-]+@gmail\\.com";
+
+        // Tạo một đối tượng Pattern từ biểu thức chính quy
+        Pattern pattern = Pattern.compile(gmailPattern);
+
+        // So khớp đoạn văn bản với biểu thức chính quy
+        Matcher matcher = pattern.matcher(text);
+
+        // Trả về true nếu đoạn văn bản khớp với biểu thức chính quy, ngược lại trả về false
+        return matcher.matches();
+    }
     private boolean containsUpperCaseLetter(String password) {
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) {

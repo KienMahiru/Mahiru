@@ -39,7 +39,10 @@ public class Khoiphuc extends AppCompatActivity {
                 FirebaseAuth auth = FirebaseAuth.getInstance();
 
                 String emailAddress = email.getText().toString().trim();
-
+                if (TextUtils.isEmpty(emailAddress)) {
+                    email.setError("Email không được để trống");
+                    return;
+                }
 
                 auth.fetchSignInMethodsForEmail(emailAddress)
                         .addOnCompleteListener(task -> {
