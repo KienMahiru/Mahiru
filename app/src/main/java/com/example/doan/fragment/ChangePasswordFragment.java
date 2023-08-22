@@ -29,6 +29,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ChangePasswordFragment extends Fragment {
     private View view;
     private EditText oldpass,newpass,confirmpass;
@@ -142,6 +146,10 @@ public class ChangePasswordFragment extends Fragment {
             newpass.setError("Mật khẩu phải chứa ít nhất một chữ cái thường");
             return false;
         }
+        else if (!containsNumber(newpassword)) {
+            newpass.setError("Mật khẩu phải chứa ít nhất một số");
+            return false;
+        }
         return true;
     }
 
@@ -153,7 +161,19 @@ public class ChangePasswordFragment extends Fragment {
         }
         return false;
     }
+        public boolean containsNumber(String password) {
+            // Biểu thức chính quy để kiểm tra mật khẩu chứa ít nhất một số
+            String numberPattern = ".*\\d.*";
 
+            // Tạo một đối tượng Pattern từ biểu thức chính quy
+            Pattern pattern = Pattern.compile(numberPattern);
+
+            // So khớp mật khẩu với biểu thức chính quy
+            Matcher matcher = pattern.matcher(password);
+
+            // Trả về true nếu mật khẩu khớp với biểu thức chính quy, ngược lại trả về false
+            return matcher.matches();
+        }
     private boolean containsLowerCaseLetter(String password) {
         for (char c : password.toCharArray()) {
             if (Character.isLowerCase(c)) {
