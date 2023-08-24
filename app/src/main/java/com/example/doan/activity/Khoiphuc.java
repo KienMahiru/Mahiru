@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Khoiphuc extends AppCompatActivity {
     private EditText email;
@@ -41,6 +43,10 @@ public class Khoiphuc extends AppCompatActivity {
                 String emailAddress = email.getText().toString().trim();
                 if (TextUtils.isEmpty(emailAddress)) {
                     email.setError("Email không được để trống");
+                    return;
+                }
+                else if (!isGmailAddress(emailAddress)) {
+                    email.setError("Email phải là địa chỉ Gmail");
                     return;
                 }
 
@@ -79,6 +85,19 @@ public class Khoiphuc extends AppCompatActivity {
         });
 
 
+    }
+    public boolean isGmailAddress(String text) {
+        // Biểu thức chính quy để kiểm tra địa chỉ email Gmail
+        String gmailPattern = "[a-zA-Z0-9._%+-]+@gmail\\.com";
+
+        // Tạo một đối tượng Pattern từ biểu thức chính quy
+        Pattern pattern = Pattern.compile(gmailPattern);
+
+        // So khớp đoạn văn bản với biểu thức chính quy
+        Matcher matcher = pattern.matcher(text);
+
+        // Trả về true nếu đoạn văn bản khớp với biểu thức chính quy, ngược lại trả về false
+        return matcher.matches();
     }
     @Override
     protected void onResume() {
