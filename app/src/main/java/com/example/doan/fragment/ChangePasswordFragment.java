@@ -132,7 +132,7 @@ public class ChangePasswordFragment extends Fragment {
             return false;
         }
         if (!newpassword.equals(confirmpassword)) {
-            confirmpass.setError("Hãy nhập lại mật khẩu mới hoặc xác nhận mật khẩu mới");
+            confirmpass.setError("Hãy nhập lại xác nhận mật khẩu mới");
             return false;
         }
         if(newpassword.length()<6){
