@@ -42,6 +42,7 @@ public class Dangky extends AppCompatActivity {
     private Button mRegisterButton;
     private ProgressDialog progressDialog;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,137 +72,154 @@ public class Dangky extends AppCompatActivity {
             public void onClick(View v) {
                 String email = mEmail.getText().toString().trim();
                 String password = mPasswordEditText.getText().toString().trim();
-                if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email không được để trống");
-                    return;
+                if (isValidInput(email, password)) {
+                    registerAndVerifyUser(email, password);
                 }
-
-                if (TextUtils.isEmpty(password)) {
-                    mPasswordEditText.setError("Mật khẩu không được để trống");
-                    return;
-                }
-                else if (password.length() < 6) {
-                    mPasswordEditText.setError("Mật khẩu phải có ít nhất 6 ký tự");
-                    return;
-                }
-                else if (!containsUpperCaseLetter(password)) {
-                    mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một ký tự viết hoa");
-                    return;
-                } else if (!containsLowerCaseLetter(password)) {
-                    mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một chữ cái thường");
-                    return;
-                }
-                else if (!isGmailAddress(email)) {
-                    mEmail.setError("Email phải là địa chỉ Gmail");
-                    return;
-                }
-                else if (!containsNumber(password)) {
-                    mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một số");
-                    return;
-                }
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                progressDialog.setMessage("Đang chờ xác minh...");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-
-                auth.fetchSignInMethodsForEmail(email)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                SignInMethodQueryResult result = task.getResult();
-                                List<String> providers = result.getSignInMethods();
-                                if (providers != null && providers.size() > 0) {
-                                    // Tài khoản tồn tại
-                                    Toast.makeText(Dangky.this, "Tài khoản này đã tồn tại!", Toast.LENGTH_SHORT).show();
-                                    progressDialog.dismiss();
-                                } else {
-                                    auth.createUserWithEmailAndPassword(email, password)
-                                            .addOnCompleteListener(Dangky.this, new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (task.isSuccessful()) {
-                                                        // Tạo tài khoản thành công
-                                                        FirebaseUser user = auth.getCurrentUser();
-                                                        // Gửi email xác minh
-                                                        user.sendEmailVerification()
-                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                    @Override
-                                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                                        if (task.isSuccessful()) {
-                                                                            // Gửi email xác minh thành công
-                                                                            Toast.makeText(Dangky.this, "Đã gửi email xác minh. Vui lòng kiểm tra email của bạn!", Toast.LENGTH_SHORT).show();
-                                                                            new CountDownTimer(30000, 1000) {
-                                                                                public void onTick(long millisUntilFinished) {
-                                                                                    // Đang chờ xác minh
-                                                                                    long secondsLeft = millisUntilFinished / 1000;
-                                                                                    String timeLeftFormatted = String.format("%02d:%02d", secondsLeft / 60, secondsLeft % 60);
-                                                                                    progressDialog.setMessage("Đang chờ xác minh... " + timeLeftFormatted);
-                                                                                }
-                                                                                public void onFinish() {
-                                                                                    // Kiểm tra xem tài khoản đã được xác minh chưa
-                                                                                    user.reload()
-                                                                                            .addOnCompleteListener(task2 -> {
-                                                                                                if (user.isEmailVerified()) {
-                                                                                                    // Tài khoản đã được xác minh
-                                                                                                    Toast.makeText(Dangky.this, "Tài khoản đã được xác minh!Tạo tài khoản thành công!", Toast.LENGTH_SHORT).show();
-                                                                                                    progressDialog.dismiss();
-                                                                                                    Intent intent = new Intent(Dangky.this, Dangnhap.class);
-                                                                                                    startActivity(intent);
-                                                                                                } else {
-                                                                                                    // Tài khoản chưa được xác minh
-                                                                                                    Toast.makeText(Dangky.this, "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn và thử lại sau.", Toast.LENGTH_SHORT).show();
-                                                                                                    progressDialog.dismiss();
-                                                                                                    // Xóa tài khoản đã tạo
-                                                                                                    user.delete()
-                                                                                                            .addOnCompleteListener(task3 -> {
-                                                                                                                if (task3.isSuccessful()) {
-                                                                                                                    new Handler().postDelayed(new Runnable() {
-                                                                                                                        @Override
-                                                                                                                        public void run() {
-                                                                                                                            Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn", Toast.LENGTH_SHORT).show();
-                                                                                                                        }
-                                                                                                                    }, 2000);
-                                                                                                                }
-                                                                                                            });
-                                                                                                }
-                                                                                            });
-                                                                                }
-                                                                            }.start();
-                                                                        } else {
-                                                                            // Gửi email xác minh thất bại
-                                                                            Toast.makeText(Dangky.this, "Không thể gửi email xác minh. Vui lòng thử lại sau.", Toast.LENGTH_SHORT).show();
-                                                                            // Xóa tài khoản đã tạo
-                                                                            user.delete()
-                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                                        @Override
-                                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                                            if (task.isSuccessful()) {
-                                                                                                Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn.", Toast.LENGTH_SHORT).show();
-                                                                                            }
-                                                                                        }
-                                                                                    });
-                                                                        }
-                                                                    }
-                                                                });
-                                                    } else {
-                                                        // Tạo tài khoản thất bại
-                                                        Toast.makeText(Dangky.this, "Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.", Toast.LENGTH_SHORT).show();
-                                                        progressDialog.dismiss();
-                                                    }
-                                                }
-                                            });
-
-                                }
-                            } else {
-                                // Lỗi xảy ra khi kiểm tra tài khoản
-                                Toast.makeText(Dangky.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
-                                progressDialog.dismiss();
-                            }
-                        });
-
-
             }
         });
     }
+
+    private boolean isValidInput(String email, String password) {
+        if (TextUtils.isEmpty(email)) {
+            mEmail.setError("Email không được để trống");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            mPasswordEditText.setError("Mật khẩu không được để trống");
+            return false;
+        } else if (password.length() < 6) {
+            mPasswordEditText.setError("Mật khẩu phải có ít nhất 6 ký tự");
+            return false;
+        } else if (!containsUpperCaseLetter(password)) {
+            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một ký tự viết hoa");
+            return false;
+        } else if (!containsLowerCaseLetter(password)) {
+            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một chữ cái thường");
+            return false;
+        } else if (!isGmailAddress(email)) {
+            mEmail.setError("Email phải là địa chỉ Gmail");
+            return false;
+        } else if (!containsNumber(password)) {
+            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất một số");
+            return false;
+        }
+        return true;
+    }
+
+    private void registerAndVerifyUser(String email, String password) {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        progressDialog.setMessage("Đang chờ xác minh..."); // Hiển thị thông báo chờ xác minh
+        progressDialog.setCancelable(false);
+        progressDialog.show(); // Hiển thị hộp thoại tiến trình
+
+        // Kiểm tra xem tài khoản đã tồn tại hay chưa
+        auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                SignInMethodQueryResult result = task.getResult();
+                List<String> providers = result.getSignInMethods();
+                if (providers != null && providers.size() > 0) {
+                    // Tài khoản đã tồn tại, hiển thị thông báo
+                    Toast.makeText(Dangky.this, "Tài khoản này đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+                } else {
+                    // Tài khoản chưa tồn tại, tiến hành tạo mới
+                    auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Dangky.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Tạo tài khoản thành công
+                                FirebaseUser user = auth.getCurrentUser();
+                                // Gửi email xác minh
+                                user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            // Gửi email xác minh thành công
+                                            Toast.makeText(Dangky.this, "Đã gửi email xác minh. Vui lòng kiểm tra email của bạn!", Toast.LENGTH_SHORT).show();
+                                            // Bắt đầu đếm ngược thời gian chờ xác minh
+                                            startEmailVerificationCountdown(user);// Đếm ngược chờ xác minh
+                                        } else {
+                                            // Xử lý thất bại trong việc gửi email xác minh
+                                            handleRegistrationFailure(user); // lỗi nên xóa tài khoản lỗi
+                                        }
+                                    }
+                                });
+                            } else {
+                                // Xử lý thất bại trong việc tạo tài khoản
+                                handleRegistrationFailure(null);
+                            }
+                        }
+                    });
+                }
+            } else {
+                // Lỗi xảy ra khi kiểm tra tài khoản
+                Toast.makeText(Dangky.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+            }
+        });
+    }
+
+    // Hàm bắt đầu đếm ngược thời gian chờ xác minh email
+    private void startEmailVerificationCountdown(FirebaseUser user) {
+        new CountDownTimer(30000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                long secondsLeft = millisUntilFinished / 1000;
+                String timeLeftFormatted = String.format("%02d:%02d", secondsLeft / 60, secondsLeft % 60);
+                progressDialog.setMessage("Đang chờ xác minh... " + timeLeftFormatted); // Cập nhật thông báo tiến trình
+            }
+
+            public void onFinish() {
+                // Khi đếm ngược hoàn thành, kiểm tra lại xem tài khoản đã được xác minh hay chưa
+                user.reload().addOnCompleteListener(task2 -> {
+                    if (user.isEmailVerified()) {
+                        // Tài khoản đã được xác minh
+                        Toast.makeText(Dangky.this, "Tài khoản đã được xác minh! Tạo tài khoản thành công!", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+                        Intent intent = new Intent(Dangky.this, Dangnhap.class);
+                        startActivity(intent); // Chuyển đến màn hình đăng nhập
+                    } else {
+                        // Xử lý khi email xác minh thất bại
+                        handleEmailVerificationFailure(user);//Xóa tài khoản đăng kí lỗi
+                    }
+                });
+            }
+        }.start(); // Bắt đầu đếm ngược
+    }
+//
+    // Xử lý khi email xác minh thất bại
+    private void handleEmailVerificationFailure(FirebaseUser user) {
+        Toast.makeText(Dangky.this, "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn và thử lại sau.", Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+        if (user != null) {
+            // Nếu có tài khoản, xóa tài khoản đã tạo
+            user.delete().addOnCompleteListener(task3 -> {
+                if (task3.isSuccessful()) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn", Toast.LENGTH_SHORT).show();
+                        }
+                    }, 2000);
+                }
+            });
+        }
+    }
+
+    // Xử lý khi tạo tài khoản thất bại
+    private void handleRegistrationFailure(FirebaseUser user) {
+        Toast.makeText(Dangky.this, "Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.", Toast.LENGTH_SHORT).show();
+        progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
+        if (user != null) {
+            // Nếu có tài khoản, xóa tài khoản đã tạo
+            user.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
     // Kiểm tra xem mật khẩu có chứa ít nhất một số hay không
     public boolean containsNumber(String password) {
         // Biểu thức chính quy để kiểm tra mật khẩu chứa ít nhất một số
