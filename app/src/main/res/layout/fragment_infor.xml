@@ -1,69 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/wave"
     android:orientation="vertical"
-    android:background="@color/white">
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="@drawable/mahiru1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-    </RelativeLayout>
+    android:gravity="center">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Giới thiệu về Mahiru"
-        android:textColor="@color/black"
+        android:textColor="#040404"
         android:textSize="32dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/circleImageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.13"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.41" />
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lương
- và hoàn toàn miễn phí. Bạn muốn liên hệ với nhà phát hành hãy liên hệ qua email: meomeo123@gmail.com"
-        android:textColor="@color/black"
+        android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng
+ và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com"
+        android:textColor="#121212"
         android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView"
-        app:layout_constraintVertical_bias="0.154">
+        android:textStyle="bold"/>
 
-    </TextView>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/circleImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.472" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_width="200dp"
+        android:layout_height="155dp"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/ic_launcher" />
+</LinearLayout>
+

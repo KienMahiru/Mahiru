@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="Đăng ký tài khoản"
         android:textColor="#FFF"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:textStyle="bold"/>
 
         <EditText
