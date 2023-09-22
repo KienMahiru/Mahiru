@@ -87,8 +87,6 @@ public class Dangnhap extends AppCompatActivity {
                                 if (providers != null && providers.size() > 0) {
                                     // Tài khoản tồn tại
                                     if (isValidUser(email, password)) {
-
-
                                         auth.signInWithEmailAndPassword(email, password)
                                                 .addOnCompleteListener(loginTask -> {
                                                     if (loginTask.isSuccessful()) {

@@ -266,8 +266,6 @@ public class Dangky extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-
-
     private boolean containsUpperCaseLetter(String password) {
         for (char c : password.toCharArray()) {
             if (Character.isUpperCase(c)) {
