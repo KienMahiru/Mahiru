@@ -28,7 +28,7 @@
     <EditText
         android:layout_margin="20dp"
         android:background="@drawable/custom_edt"
-        android:id="@+id/username_edittext"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/email_icon"

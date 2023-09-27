@@ -2,41 +2,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@drawable/wave"
     android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chọn các phương thức sau để \n phản hồi lại với nhà phát triển:"
-        android:textColor="#2C2C2C"
-        android:textSize="20dp"
-        android:textStyle="bold">
-
-    </TextView>
-
     <LinearLayout
+        android:padding="40dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginTop="50dp">
-        <Button
-            android:layout_margin="20dp"
-            android:id="@+id/send_button"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_email_24"
-            android:backgroundTint="#ccc" />
+        android:background="@drawable/edit_background">
+        <TextView
 
-        <Button
-            android:layout_margin="20dp"
-            android:id="@+id/sendphone"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_phone_24"
-            android:backgroundTint="#ccc"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn các phương thức sau để\nphản hồi lại với nhà phát triển"
+            android:textColor="#595959"
+            android:textSize="20dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="20dp">
+            <Button
+                android:layout_margin="20dp"
+                android:id="@+id/send_button"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_baseline_email_24"
+                android:backgroundTint="#989696" />
+
+            <Button
+                android:layout_margin="20dp"
+                android:id="@+id/sendphone"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:background="@drawable/ic_baseline_phone_24"
+                android:backgroundTint="#989696"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
