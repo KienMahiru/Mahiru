@@ -2,39 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/wave"
     android:orientation="vertical"
     android:gravity="center">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Giới thiệu về Mahiru"
-        android:textColor="#040404"
-        android:textSize="32dp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:background="@drawable/edit_background"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giới thiệu về Mahiru"
+            android:textColor="#595959"
+            android:textSize="30dp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:padding="10dp"
-        android:layout_marginTop="10dp"
-        android:textAlignment="center"
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+            <TextView
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng
  và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com"
-        android:textColor="#121212"
-        android:textSize="20dp"
-        android:textStyle="bold"/>
+                android:textColor="#595959"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circleImageView"
-        android:layout_width="200dp"
-        android:layout_height="155dp"
-        android:layout_marginTop="10dp"
-        android:src="@mipmap/ic_launcher" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_weight="1"
+                android:id="@+id/circleImageView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                android:src="@mipmap/ic_launcher" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
 
