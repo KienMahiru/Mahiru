@@ -165,7 +165,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     for (String url : selectedUrls) {
                         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
                         try {
-                            final File localFile = File.createTempFile("image", "jpg");
+                            final File localFile = File.createTempFile("image", ".jpg");
                             storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -178,7 +178,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Tải ảnh về thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "Chia sẻ ảnh thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {

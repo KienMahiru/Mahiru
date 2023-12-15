@@ -277,7 +277,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     for (String url : selectedUrls) {
                         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
                         try {
-                            final File localFile = File.createTempFile("music", "mp3");
+                            final File localFile = File.createTempFile("music", ".mp3");
                             storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -290,7 +290,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Tải music về thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "Chia sẻ music về thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {

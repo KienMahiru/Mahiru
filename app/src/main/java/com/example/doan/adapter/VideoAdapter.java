@@ -307,7 +307,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                     for (String url : selectedUrls) {
                         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
                         try {
-                            final File localFile = File.createTempFile("video", "mp4");
+                            final File localFile = File.createTempFile("video", ".mp4");
                             storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -320,7 +320,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Tải video về cache thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, "Chia sẻ video thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {
