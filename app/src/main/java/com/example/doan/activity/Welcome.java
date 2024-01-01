@@ -1,7 +1,5 @@
 package com.example.doan.activity;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -10,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.content.pm.ActivityInfo;
-
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
 
@@ -44,12 +41,11 @@ public class Welcome extends AppCompatActivity {
     private boolean isNetworkConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
+        return networkInfo != null && networkInfo.isConnectedOrConnecting();
     }
 
     private void navigateToDangnhap() {
-        Intent intent = new Intent(Welcome.this, Dangnhap.class);
-        startActivity(intent);
+        startActivity(new Intent(Welcome.this, Dangnhap.class));
         finish();
     }
 
@@ -64,7 +60,6 @@ public class Welcome extends AppCompatActivity {
         registerReceiver(networkChangeListener, filter);
         super.onStart();
     }
-
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
