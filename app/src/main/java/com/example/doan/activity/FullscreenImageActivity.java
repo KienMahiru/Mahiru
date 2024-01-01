@@ -19,7 +19,10 @@ public class FullscreenImageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_image);
+        initializeView();
+    }
 
+    private void initializeView() {
         mImageView = findViewById(R.id.image_view);
 
         // Lấy đường dẫn đến ảnh từ Intent
@@ -36,13 +39,9 @@ public class FullscreenImageActivity extends AppCompatActivity {
         mImageView.setMinimumScale(1);
         mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mImageView.setZoomable(true);
-        mImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mImageView.setOnClickListener(view -> finish());
     }
+
     @Override
     protected void onStart() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

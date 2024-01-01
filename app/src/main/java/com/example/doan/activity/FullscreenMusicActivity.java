@@ -1,15 +1,15 @@
 package com.example.doan.activity;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -27,26 +27,23 @@ public class FullscreenMusicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_music);
-        // Get the music URL from Intent
-        playerView = findViewById(R.id.musicView);
-
         // Get the video URL from Intent
         String musicUrl = getIntent().getStringExtra("musicUrl");
         String musicName = getIntent().getStringExtra("musicName");
+
+        // Initialize views
+        playerView = findViewById(R.id.musicView);
         TextView musicNameTextView = findViewById(R.id.musicNameTextView);
         musicNameTextView.setText(musicName);
-        // Create a SimpleExoPlayer instance
+
+        // Create and set up ExoPlayer
         player = new SimpleExoPlayer.Builder(this)
                 .setTrackSelector(new DefaultTrackSelector(this))
                 .build();
-
-        // Set the ExoPlayer to the PlayerView
         playerView.setPlayer(player);
 
-        // Create a media source from the video URL
-        MediaSource mediaSource = buildMediaSource(Uri.parse(musicUrl));
-
-        // Prepare the player with the media source
+        // Create and set up media source
+        MediaSource mediaSource = buildMediaSource(FullscreenMusicActivity.this,Uri.parse(musicUrl));
         player.setMediaSource(mediaSource);
         player.prepare();
         player.setPlayWhenReady(true);
@@ -57,10 +54,12 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         player.release();
     }
 
-    private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "ExoPlayerDemo"));
-        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+    public static MediaSource buildMediaSource(Context context, Uri uri) {
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "ExoPlayerDemo"));
+        MediaItem mediaItem = MediaItem.fromUri(uri);
+        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem);
     }
+
     @Override
     protected void onStart() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);

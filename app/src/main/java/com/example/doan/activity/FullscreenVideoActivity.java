@@ -2,6 +2,7 @@ package com.example.doan.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
 import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
@@ -38,32 +40,22 @@ public class FullscreenVideoActivity extends AppCompatActivity {
         // Get the video URL from Intent
         String videoUrl = getIntent().getStringExtra("videoUrl");
 
-        // Create a SimpleExoPlayer instance
+        // Create and set up ExoPlayer
         player = new SimpleExoPlayer.Builder(this)
                 .setTrackSelector(new DefaultTrackSelector(this))
                 .build();
-
-        // Set the ExoPlayer to the PlayerView
         playerView.setPlayer(player);
 
-        // Create a media source from the video URL
-        MediaSource mediaSource = buildMediaSource(Uri.parse(videoUrl));
-
-        // Prepare the player with the media source
+        // Create and set up media source
+        MediaSource mediaSource = FullscreenMusicActivity.buildMediaSource(FullscreenVideoActivity.this,Uri.parse(videoUrl));
         player.setMediaSource(mediaSource);
         player.prepare();
         player.setPlayWhenReady(true);
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         player.release();
-    }
-
-    private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(this, Util.getUserAgent(this, "ExoPlayerDemo"));
-        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
     }
     @Override
     protected void onStart() {
@@ -71,7 +63,6 @@ public class FullscreenVideoActivity extends AppCompatActivity {
         registerReceiver(networkChangeListener, filter);
         super.onStart();
     }
-
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
