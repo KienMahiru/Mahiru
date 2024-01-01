@@ -4,7 +4,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,7 +35,7 @@ public class Khoiphuc extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         String emailAddress = email.getText().toString().trim();
-        if (TextUtils.isEmpty(emailAddress) || !Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
+        if (TextUtils.isEmpty(emailAddress) || Dangky.isGmailAddress(emailAddress)) {
             email.setError("Email không hợp lệ");
             return;
         }

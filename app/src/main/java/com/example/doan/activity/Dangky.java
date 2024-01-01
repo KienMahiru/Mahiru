@@ -192,7 +192,7 @@ public class Dangky extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
-    private boolean isGmailAddress(String text) {
+    public static boolean isGmailAddress(String text) {
         // Biểu thức chính quy để kiểm tra địa chỉ gmail
         String gmailPattern = "[a-zA-Z0-9._%+-]+@gmail\\.com";
 
