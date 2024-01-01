@@ -12,7 +12,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.net.ConnectivityManager;
 import android.content.IntentFilter;
-
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
 import com.example.doan.fragment.DeleteFragment;
@@ -66,7 +64,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode()==RESULT_OK) {
                 Intent intent = result.getData();
-                if(intent==null){return;}
+                if(intent==null) return;
                 Uri uri = intent.getData();
                 myProfileFragment.setUri(uri);
                 try {
@@ -79,7 +77,6 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         }
     });
     private DrawerLayout mDrawerLayout;
-
     private ImageView imageView;
     private TextView tvname,tvemail;
     private NavigationView mNavigationView;
@@ -89,12 +86,15 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_option);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setupDrawer();
+        replaceFragment(new HomeFragment());
+        mNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+    }
+    private void setupDrawer(){
         mNavigationView= findViewById(R.id.navigation_view);
         imageView = mNavigationView.getHeaderView(0).findViewById(R.id.avatar);
         tvname = mNavigationView.getHeaderView(0).findViewById(R.id.tv_name);
         tvemail = mNavigationView.getHeaderView(0).findViewById(R.id.tv_email);
-
-
         mDrawerLayout = findViewById(R.id.drawer_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,31 +103,29 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         toggle.syncState();
         showInf();
         mNavigationView.setNavigationItemSelectedListener(this);
-        replaceFragment(new HomeFragment());
-        mNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
     }
     @Override
     public void onBackPressed() {
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START)){
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Xác nhận thoát ứng dụng")
-                    .setMessage("Bạn có chắc chắn muốn thoát ứng dụng?")
-                    .setNegativeButton("Không", null)
-                    .setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Thoát ứng dụng
-                            finishAffinity();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            showExitConfirmationDialog();
         }
     }
-
-
-
+    private void showExitConfirmationDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận thoát ứng dụng")
+                .setMessage("Bạn có chắc chắn muốn thoát ứng dụng?")
+                .setNegativeButton("Không", null)
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Thoát ứng dụng
+                        finishAffinity();
+                    }
+                })
+                .setIcon(R.drawable.warning_icon)
+                .show();
+    }
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
@@ -174,29 +172,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
             }
         }
         else if (id==R.id.sign_out){
-            new AlertDialog.Builder(this)
-                    .setTitle("Xác nhận đăng xuất")
-                    .setMessage("Bạn có chắc chắn muốn đăng xuất?")
-                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Đăng xuất người dùng
-                            FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(Option.this, Dangnhap.class);
-                            startActivity(intent);
-                            SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
-                            editor.clear();
-                            editor.apply();
-                            Toast.makeText(Option.this, "Bạn đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Ở lại trang hiện tại
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            showSignOutConfirmationDialog();
         }
         else if(id==R.id.my_profile){
             if(mCurrentFragment!= FRAGMENT_MY_PROFILE){
@@ -207,7 +183,29 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
+    private void showSignOutConfirmationDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle("Xác nhận đăng xuất")
+                .setMessage("Bạn có chắc chắn muốn đăng xuất?")
+                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        signOutUser();
+                    }
+                })
+                .setNegativeButton("Hủy", null)
+                .setIcon(R.drawable.warning_icon)
+                .show();
+    }
+    private void signOutUser(){
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(Option.this, Dangnhap.class);
+        startActivity(intent);
+        SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
+        editor.clear();
+        editor.apply();
+        Toast.makeText(Option.this, "Bạn đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
+        finish();
+    }
     public void showInf() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -218,27 +216,34 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
                     // Kiểm tra xem việc tải lại thông tin người dùng thành công hay không
                     if (task.isSuccessful()) {
                         // Thông tin người dùng đã được cập nhật, có thể hiển thị lên giao diện
-                        String name = user.getDisplayName();
-                        String email = user.getEmail();
-                        Uri photoUrl = user.getPhotoUrl();
-                        if (name == null) {
-                            tvname.setVisibility(View.GONE);
-                        } else {
-                            tvname.setVisibility(View.VISIBLE);
-                        }
-                        tvemail.setText(email);
-                        tvname.setText(name);
-                        Glide.with(Option.this).load(photoUrl).error(R.mipmap.ic_launcher).into(imageView);
-                        // ...
+                            handleUserInfo(user);
                     } else {
-                        // Có lỗi xảy ra khi tải lại thông tin người dùng
-                        // Hiển thị thông báo lỗi hoặc xử lý lỗi theo cách khác
+                        // Xử lý lỗi khi tải lại thông tin người dùng
+                        Exception exception = task.getException();
+                        if (exception != null) {
+                            // Hiển thị thông báo lỗi
+                            Toast.makeText(Option.this, "Lỗi tải lại thông tin người dùng", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
         }
+    }
+    private void handleUserInfo(FirebaseUser user){
+        String name = user.getDisplayName();
+        String email = user.getEmail();
+        Uri photoUrl = user.getPhotoUrl();
+        if (name == null) {
+            tvname.setVisibility(View.GONE);
+        } else {
+            tvname.setVisibility(View.VISIBLE);
+            tvname.setText(name);
+        }
+        tvemail.setText(email);
 
-
+        if(photoUrl != null){
+            Glide.with(Option.this).load(photoUrl).error(R.mipmap.ic_launcher).into(imageView);
+        }
     }
     private void replaceFragment(Fragment fragment){
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -276,7 +281,6 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         registerReceiver(networkChangeListener, filter);
         super.onStart();
     }
-
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
