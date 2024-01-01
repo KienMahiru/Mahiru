@@ -62,7 +62,7 @@ public class Dangky extends AppCompatActivity {
         });
     }
 
-    private boolean isInputValid(String email, String password){
+    public boolean isInputValid(String email, String password){
         if (TextUtils.isEmpty(email) || !isGmailAddress(email)) {
             mEmail.setError("Email không được để trống và phải là địa chỉ gmail!!!");
             return false;
@@ -169,7 +169,7 @@ public class Dangky extends AppCompatActivity {
     }
 
     // Kiểm tra xem mật khẩu có chứa ít nhất một số hay không
-    public boolean containsNumber(String password) {
+    public static boolean containsNumber(String password) {
         // Kiểm tra mật khẩu chứa ít nhất một số
         return password.matches(".*\\d.*");
     }
@@ -206,11 +206,11 @@ public class Dangky extends AppCompatActivity {
         return matcher.matches();
     }
 
-    private boolean containsUpperCaseLetter(String password) {
+    public static boolean containsUpperCaseLetter(String password) {
         return password.matches(".*[A-Z].*");
     }
 
-    private boolean containsLowerCaseLetter(String password) {
+    public static boolean containsLowerCaseLetter(String password) {
         return password.matches(".*[a-z].*");
     }
 }
