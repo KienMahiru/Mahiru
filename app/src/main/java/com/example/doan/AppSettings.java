@@ -1,24 +1,21 @@
 package com.example.doan;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class AppSettings {
     private static final String SWITCH_STATE = "switch_state";
+    private static final String PREFERENCES_NAME = "MyPrefs";
 
     private static AppSettings sInstance;
 
     private SharedPreferences mSharedPreferences;
 
     private AppSettings(Context context) {
-        mSharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        mSharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 
     public static AppSettings getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new AppSettings(context.getApplicationContext());
-        }
-        return sInstance;
+        return sInstance == null ? new AppSettings(context.getApplicationContext()) : sInstance;
     }
 
     public boolean isDarkMode() {
