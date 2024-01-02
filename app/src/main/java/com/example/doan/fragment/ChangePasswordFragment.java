@@ -18,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.doan.R;
@@ -38,12 +37,9 @@ public class ChangePasswordFragment extends Fragment {
         oldpass= view.findViewById(R.id.oldpassword);
         newpass = view.findViewById(R.id.newpassword);
         confirmpass= view.findViewById(R.id.xacnhan_newpassword);
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        // Thiết lập tiêu đề mới cho ActionBar
-        if (actionBar != null) {
-            actionBar.setTitle("Đổi mật khẩu");
-        }
+        FeedbackFragment feedbackFragment = new FeedbackFragment();
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Đổi mật khẩu");
 
         ImageButton showPasswordButton = view.findViewById(R.id.show_password_button);
 
