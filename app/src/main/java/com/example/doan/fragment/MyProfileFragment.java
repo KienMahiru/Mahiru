@@ -1,7 +1,5 @@
 package com.example.doan.fragment;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
@@ -23,7 +21,6 @@ import static com.example.doan.activity.Option.MY_REQUEST_CODE;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.bumptech.glide.Glide;
 import com.example.doan.activity.Option;
 import com.example.doan.R;
@@ -54,30 +51,21 @@ public class MyProfileFragment extends Fragment {
         mOption= (Option)getActivity();
         email = view.findViewById(R.id.email);
         update = view.findViewById(R.id.update);
-        setUser();
-        imageAva.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickRequestPermission();
-            }
-        });
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
-        // Thiết lập tiêu đề mới cho ActionBar
-        if (actionBar != null) {
-            actionBar.setTitle("Thông tin cá nhân");
-        }
-        update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickUpdateProfile();
-            }
-        });
+        setUser();
+        imageAva.setOnClickListener(v -> onClickRequestPermission());
+
+        FeedbackFragment feedbackFragment = new FeedbackFragment();
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Thông tin cá nhân");
+
+        update.setOnClickListener(v -> onClickUpdateProfile());
+
         return view;
     }
+
     private void setUser(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user ==null){
+        if(user == null){
             return;
         }
 
@@ -85,29 +73,34 @@ public class MyProfileFragment extends Fragment {
         email.setText(user.getEmail());
         Glide.with(getActivity()).load(user.getPhotoUrl()).error(R.drawable.logo).into(imageAva);
     }
+
     private void onClickRequestPermission(){
 
-        if(mOption==null){
+        if(mOption == null){
             return;
         }
-        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M){
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             mOption.openGallery();
             return;
         }
+
         if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE )== PackageManager.PERMISSION_GRANTED){
             mOption.openGallery();
         }else{
             String[] permisstions = {Manifest.permission.READ_EXTERNAL_STORAGE};
             getActivity().requestPermissions(permisstions,MY_REQUEST_CODE);
-
         }
     }
+
     public void setBitmapImageView(Bitmap bitmapImageView){
         imageAva.setImageBitmap(bitmapImageView);
     }
+
     public void setUri(Uri uri){
         this.uri=uri;
     }
+
     private void onClickUpdateProfile() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -201,5 +194,4 @@ public class MyProfileFragment extends Fragment {
                     });
         }
     }
-
 }
