@@ -2,7 +2,6 @@ package com.example.doan.fragment;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -14,19 +13,13 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
-
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-
 import com.example.doan.AppSettings;
 import com.example.doan.R;
-
 import java.io.File;
-import java.util.List;
 
 public class SettingsFragment extends Fragment {
-    private static final String FRAGMENT_TITLE = "Cài đặt";
     private ProgressBar progressBar;
     private View mView;
     private Switch aSwitch;
@@ -36,13 +29,22 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_settings, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(FRAGMENT_TITLE);
-        }
+
+        FeedbackFragment feedbackFragment = new FeedbackFragment();
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Cài đặt");
 
         aSwitch = mView.findViewById(R.id.darkmode);
+        xoa_cache = mView.findViewById(R.id.xoa_cache);
+        progressBar = mView.findViewById(R.id.progressBar);
 
+        initSwitch();
+
+        xoa_cache.setOnClickListener(view -> clearCache());
+
+        return mView;
+    }
+
+    private void initSwitch() {
         boolean isDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
         aSwitch.setChecked(isDarkMode);
 
@@ -51,17 +53,8 @@ public class SettingsFragment extends Fragment {
             changeBackgroundColor(isChecked ? requireContext().getColor(R.color.black) : requireContext().getColor(R.color.white));
             updateFragmentBackgroundColors();
         });
-        xoa_cache = mView.findViewById(R.id.xoa_cache);
-        xoa_cache.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                clearCache();
-            }
-        });
-        progressBar = mView.findViewById(R.id.progressBar);
-        return mView;
     }
+
     private void clearCache() {
         progressBar.setVisibility(View.VISIBLE);
         Context context = requireContext();
@@ -83,19 +76,15 @@ public class SettingsFragment extends Fragment {
                 }
             }
             return dir.delete();
-        } else if (dir != null && dir.isFile()) {
-            return dir.delete();
         } else {
-            return false;
+            return dir != null && dir.isFile() && dir.delete();
         }
     }
     @Override
     public void onStart() {
         super.onStart();
-
         boolean isDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
         aSwitch.setChecked(isDarkMode);
-
         if (isDarkMode) {
             changeBackgroundColor(requireContext().getColor(R.color.black));
         }
@@ -104,7 +93,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
         boolean darkMode = aSwitch.isChecked();
         AppSettings.getInstance(requireContext()).setDarkMode(darkMode);
         updateFragmentBackgroundColors();
@@ -112,20 +100,13 @@ public class SettingsFragment extends Fragment {
 
     private void updateFragmentBackgroundColors() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment instanceof SettingsFragment) {
-                    continue;
-                }
-                View view = fragment.getView();
-                if (view != null) {
-                    if (AppSettings.getInstance(requireContext()).isDarkMode()) {
-                        view.setBackgroundColor(requireContext().getColor(R.color.black));
-                    } else {
-                        view.setBackgroundColor(requireContext().getColor(R.color.white));
-                    }
-                }
+        for (Fragment fragment : fragmentManager.getFragments()) {
+            if (fragment instanceof SettingsFragment) {
+                continue;
+            }
+            View view = fragment.getView();
+            if (view != null) {
+                view.setBackgroundColor(requireContext().getColor(AppSettings.getInstance(requireContext()).isDarkMode() ? R.color.black : R.color.white));
             }
         }
     }
