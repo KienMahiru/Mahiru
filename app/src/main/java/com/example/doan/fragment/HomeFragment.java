@@ -1,7 +1,6 @@
 package com.example.doan.fragment;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentResolver;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,25 +10,22 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.doan.AppSettings;
 import com.example.doan.adapter.MusicAdapter;
 import com.example.doan.R;
 import com.example.doan.adapter.MyAdapter;
-
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,13 +39,10 @@ import com.google.firebase.storage.UploadTask;
 import android.net.Uri;
 import android.view.MenuItem;
 import android.content.Intent;
-
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import android.app.ProgressDialog;
-import com.google.firebase.storage.OnProgressListener;
-
 
 public class HomeFragment extends Fragment {
     private static final int REQUEST_CODE_SELECT_IMAGES=3;
@@ -61,7 +54,6 @@ public class HomeFragment extends Fragment {
     private VideoAdapter adapter;
     private MusicAdapter musicAdapter;
     private StorageReference mStorageRef;
-    private FirebaseStorage mStorage;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private int successfulUploads = 0;
     private boolean mIsDarkMode;
@@ -83,11 +75,9 @@ public class HomeFragment extends Fragment {
 
         mView = inflater.inflate(R.layout.fragment_home, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        if (mIsDarkMode) {
-            mView.setBackgroundColor(requireContext().getColor(R.color.black));
-        } else {
-            mView.setBackgroundColor(requireContext().getColor(R.color.white));
-        }
+
+        // Thêm kiểm tra màu nền tối/ sáng
+        mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
 
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
         mRecyclerView = mView.findViewById(R.id.recycler_view);
@@ -124,7 +114,6 @@ public class HomeFragment extends Fragment {
                 });
 
         mRecyclerView.setAdapter(mAdapter);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -234,95 +223,55 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-
-
-        // Lấy đối tượng ActionBar
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-        // Thiết lập tiêu đề mới cho ActionBar
-        if (actionBar != null) {
-            actionBar.setTitle("Home");
-        }
+        FeedbackFragment feedbackFragment = new FeedbackFragment();
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Home");
 
         Button myButton = mView.findViewById(R.id.my_button);
+        button_image = mView.findViewById(R.id.my_button2);
+        button_video = mView.findViewById(R.id.my_button3);
+        button_music = mView.findViewById(R.id.my_button4);
+
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Thêm hành động tại đây
-                if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
-                    selectVideos();
-                } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh){
-                    // Chọn tải ảnh lên
-                    selectImages();
-                }
-                else{
-                    selectMusics();
-                }
+                handleButtonClick();
             }
         });
-        button_image= mView.findViewById(R.id.my_button2);
+
         button_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectImages();
-                clicked = true;
-                button_image.setVisibility(View.GONE);
-                button_video.setVisibility(View.GONE);
-                button_music.setVisibility(View.GONE);
-
-
+                handleButtonClickActions();
             }
         });
-        button_video = mView.findViewById(R.id.my_button3);
+
         button_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectVideos();
-                clicked = true;
-                button_video.setVisibility(View.GONE);
-                button_image.setVisibility(View.GONE);
-                button_music.setVisibility(View.GONE);
-
+                handleButtonClickActions();
             }
         });
-        button_music = mView.findViewById(R.id.my_button4);
+
         button_music.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 selectMusics();
-                clicked = true;
-                button_video.setVisibility(View.GONE);
-                button_image.setVisibility(View.GONE);
-                button_music.setVisibility(View.GONE);
-
+                handleButtonClickActions();
             }
         });
 
         myButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                button_image.setVisibility(View.VISIBLE);
-                button_image.animate()
-
-                        .rotation(360);
-                button_video.setVisibility(View.VISIBLE);
-                button_video.animate()
-
-                        .rotation(360);
-                button_music.setVisibility(View.VISIBLE);
-                button_music.animate()
-
-                        .rotation(360);
+                animateButtons();
                 // Thiết lập timeout sau 5 giây
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
+                new Handler().postDelayed(new Runnable() {
                     public void run() {
                         if (!clicked) {
                             // Ẩn các button đã animation
-                            button_video.setVisibility(View.GONE);
-                            button_image.setVisibility(View.GONE);
-                            button_music.setVisibility(View.GONE);
+                            hideButtons();
                         }
                         clicked = false;
                     }
@@ -332,6 +281,35 @@ public class HomeFragment extends Fragment {
         });
 
         return mView;
+    }
+
+    private void handleButtonClick() {
+        if (bottomNavigationView.getSelectedItemId() == R.id.nav_video) {
+            selectVideos();
+        } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+            // Chọn tải ảnh lên
+            selectImages();
+        } else {
+            selectMusics();
+        }
+    }
+
+    private void handleButtonClickActions() {
+        clicked = true;
+        hideButtons();
+    }
+    private void animateButtons() {
+        button_image.setVisibility(View.VISIBLE);
+        button_image.animate().rotation(360);
+        button_video.setVisibility(View.VISIBLE);
+        button_video.animate().rotation(360);
+        button_music.setVisibility(View.VISIBLE);
+        button_music.animate().rotation(360);
+    }
+    private void hideButtons() {
+        button_video.setVisibility(View.GONE);
+        button_image.setVisibility(View.GONE);
+        button_music.setVisibility(View.GONE);
     }
 
     @Override
@@ -360,7 +338,6 @@ public class HomeFragment extends Fragment {
                 actionMode = mView.startActionMode(mAdapter.getCallback());
             }
             else{
-
                 // Chọn tất cả ảnh
                 for (int i = 0; i < musicAdapter.getItemCount(); i++) {
                     musicAdapter.mSelectedItems.put(i, true);
@@ -372,270 +349,145 @@ public class HomeFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SELECT_IMAGES && resultCode == getActivity().RESULT_OK && data != null) {
-            List<Uri> imageUris = new ArrayList<>();
 
-            ClipData clipData = data.getClipData();
-            if (clipData != null) {
-                // Trường hợp chọn nhiều ảnh
-                int count = clipData.getItemCount();
-                for (int i = 0; i < count; i++) {
-                    Uri imageUri = clipData.getItemAt(i).getUri();
-                    imageUris.add(imageUri);
-                }
-            } else {
-                // Trường hợp chọn một ảnh
-                Uri imageUri = data.getData();
-                imageUris.add(imageUri);
-            }
-            uploadImages(imageUris);
+        if (resultCode != getActivity().RESULT_OK || data == null) {
+            return;
         }
-        else if (requestCode == REQUEST_CODE_SELECT_VIDEO && resultCode == getActivity().RESULT_OK && data != null) {
-            List<Uri> videoUris = new ArrayList<>();
 
-            ClipData clipData = data.getClipData();
-            if (clipData != null) {
-                // Trường hợp chọn nhiều ảnh
-                int count = clipData.getItemCount();
-                for (int i = 0; i < count; i++) {
-                    Uri videoUri = clipData.getItemAt(i).getUri();
-                    videoUris.add(videoUri);
-                }
-            } else {
-                // Trường hợp chọn một ảnh
-                Uri videoUri = data.getData();
-                videoUris.add(videoUri);
-            }
-            uploadVideos(videoUris);
-        }
-        else if (requestCode == REQUEST_CODE_SELECT_MUSIC && resultCode == getActivity().RESULT_OK && data != null) {
-            List<Uri> musicUris = new ArrayList<>();
+        List<Uri> selectedUris = getSelectedUris(data);
 
-            ClipData clipData = data.getClipData();
-            if (clipData != null) {
-                // Trường hợp chọn nhiều ảnh
-                int count = clipData.getItemCount();
-                for (int i = 0; i < count; i++) {
-                    Uri musicUri = clipData.getItemAt(i).getUri();
-                    musicUris.add(musicUri);
-                }
-            } else {
-                // Trường hợp chọn một ảnh
-                Uri musicUri = data.getData();
-                musicUris.add(musicUri);
-            }
-            uploadMusics(musicUris);
+        switch (requestCode) {
+            case REQUEST_CODE_SELECT_IMAGES:
+                uploadImages(selectedUris);
+                break;
+
+            case REQUEST_CODE_SELECT_VIDEO:
+                uploadVideos(selectedUris);
+                break;
+
+            case REQUEST_CODE_SELECT_MUSIC:
+                uploadMusics(selectedUris);
+                break;
         }
     }
-    private void uploadImages(List<Uri> imageUris) {
+
+    private List<Uri> getSelectedUris(Intent data) {
+        List<Uri> selectedUris = new ArrayList<>();
+        ClipData clipData = data.getClipData();
+
+        if (clipData != null) {
+            // Trường hợp chọn nhiều ảnh
+            int count = clipData.getItemCount();
+            for (int i = 0; i < count; i++) {
+                Uri uri = clipData.getItemAt(i).getUri();
+                selectedUris.add(uri);
+            }
+        } else {
+            // Trường hợp chọn một ảnh
+            Uri uri = data.getData();
+            selectedUris.add(uri);
+        }
+
+        return selectedUris;
+    }
+
+    private void uploadFiles(List<Uri> fileUris, String folderName, String successMessage) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference storageRef = storage.getReference().child("image").child(user.getUid());
+        StorageReference storageRef = storage.getReference().child(folderName).child(user.getUid());
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         String timestamp = dateFormat.format(calendar.getTime());
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("Đang tải ảnh lên");
+        progressDialog.setTitle("Đang tải lên");
         progressDialog.setMessage("Vui lòng đợi...");
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMax(imageUris.size());
+        progressDialog.setMax(fileUris.size());
         progressDialog.setProgress(0);
         progressDialog.show();
 
-        for (int i = 0; i < imageUris.size(); i++) {
-            Uri imageUri = imageUris.get(i);
-            String imageName = "image_" + i +"_"+timestamp+ ".jpg";
-            StorageReference imageRef = storageRef.child(imageName);
+        int totalFiles = fileUris.size();
+        int[] successfulUploads = {0};  // Sử dụng một mảng để thay thế biến final
 
-            // Tải ảnh lên Firebase Storage
-            UploadTask uploadTask = imageRef.putFile(imageUri);
+        for (int i = 0; i < totalFiles; i++) {
+            Uri fileUri = fileUris.get(i);
+            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
+            StorageReference fileRef = storageRef.child(fileName);
 
-            // Đăng ký listener để xử lý thành công hoặc thất bại
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Xử lý khi ảnh được tải lên thành công
-                    // Tăng giá trị của biến đếm
-                    successfulUploads++;
+            UploadTask uploadTask = fileRef.putFile(fileUri);
 
-                    // Kiểm tra nếu số lượng ảnh đã được tải lên thành công bằng với số lượng ảnh đã chọn, thì hiển thị Toast
-                    if (successfulUploads == imageUris.size()) {
-                        Toast.makeText(getActivity(), "Tải ảnh lên thành công", Toast.LENGTH_SHORT).show();
-                    }
-                    progressDialog.setProgress(progressDialog.getProgress() + 1);
-                    if (progressDialog.getProgress() == progressDialog.getMax()) {
-                        progressDialog.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Xử lý khi có lỗi xảy ra trong quá trình tải ảnh lên
-                    progressDialog.setProgress(progressDialog.getProgress() + 1);
-                    if (progressDialog.getProgress() == progressDialog.getMax()) {
-                        progressDialog.dismiss();
-                    }
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    // Cập nhật giá trị tiến độ vào ProgressDialog
-                    double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog.setProgress((int)progress);
+            setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
+                successfulUploads[0]++;
+                if (successfulUploads[0] == totalFiles) {
+                    showToast(successMessage);
                 }
             });
         }
-
     }
+
+    private void setUploadTaskListeners(UploadTask uploadTask, ProgressDialog progressDialog, int totalFiles, Runnable onSuccessAction) {
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            progressDialog.setProgress(progressDialog.getProgress() + 1);
+            if (progressDialog.getProgress() == totalFiles) {
+                progressDialog.dismiss();
+            }
+            onSuccessAction.run();
+        }).addOnFailureListener(e -> {
+            progressDialog.setProgress(progressDialog.getProgress() + 1);
+            if (progressDialog.getProgress() == totalFiles) {
+                progressDialog.dismiss();
+            }
+        }).addOnProgressListener(snapshot -> {
+            double progress = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
+            progressDialog.setProgress((int) progress);
+        });
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver contentResolver = getActivity().getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void showToast(String message) {
+        getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
+    }
+
+    // Sử dụng các phương thức uploadFiles cho từng loại tệp tin
+    private void uploadImages(List<Uri> imageUris) {
+        uploadFiles(imageUris, "image", "Tải ảnh lên thành công");
+    }
+
     private void uploadMusics(List<Uri> musicUris) {
-        FirebaseStorage storage2 = FirebaseStorage.getInstance();
-        FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference storageRef1 = storage2.getReference().child("music").child(user2.getUid());
-
-        Calendar calendar2 = Calendar.getInstance();
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
-        String timestamp2 = dateFormat2.format(calendar2.getTime());
-
-        ProgressDialog progressDialog2 = new ProgressDialog(getActivity());
-        progressDialog2.setTitle("Đang tải nhạc lên");
-        progressDialog2.setMessage("Vui lòng đợi...");
-        progressDialog2.setCancelable(false);
-        progressDialog2.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog2.setMax(musicUris.size());
-        progressDialog2.setProgress(0);
-        progressDialog2.show();
-
-        for (int i = 0; i < musicUris.size(); i++) {
-            Uri musicUri = musicUris.get(i);
-            String musicName = "music_" + i +"_"+timestamp2+ ".mp3";
-            StorageReference imageRef3 = storageRef1.child(musicName);
-
-            // Tải ảnh lên Firebase Storage
-            UploadTask uploadTask2 = imageRef3.putFile(musicUri);
-
-            // Đăng ký listener để xử lý thành công hoặc thất bại
-            uploadTask2.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Xử lý khi ảnh được tải lên thành công
-                    // Tăng giá trị của biến đếm
-                    successfulUploads++;
-
-                    // Kiểm tra nếu số lượng ảnh đã được tải lên thành công bằng với số lượng ảnh đã chọn, thì hiển thị Toast
-                    if (successfulUploads == musicUris.size()) {
-                        Toast.makeText(getActivity(), "Tải nhạc lên thành công", Toast.LENGTH_SHORT).show();
-                    }
-                    progressDialog2.setProgress(progressDialog2.getProgress() + 1);
-                    if (progressDialog2.getProgress() == progressDialog2.getMax()) {
-                        progressDialog2.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Xử lý khi có lỗi xảy ra trong quá trình tải ảnh lên
-                    progressDialog2.setProgress(progressDialog2.getProgress() + 1);
-                    if (progressDialog2.getProgress() == progressDialog2.getMax()) {
-                        progressDialog2.dismiss();
-                    }
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    // Cập nhật giá trị tiến độ vào ProgressDialog
-                    double progress2 = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog2.setProgress((int)progress2);
-                }
-            });
-        }
-
+        uploadFiles(musicUris, "music", "Tải nhạc lên thành công");
     }
+
     private void uploadVideos(List<Uri> videoUris) {
-        FirebaseStorage storage1 = FirebaseStorage.getInstance();
-        FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference storageRef1 = storage1.getReference().child("video").child(user1.getUid());
-
-        Calendar calendar1 = Calendar.getInstance();
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
-        String timestamp1 = dateFormat1.format(calendar1.getTime());
-
-        ProgressDialog progressDialog1 = new ProgressDialog(getActivity());
-        progressDialog1.setTitle("Đang tải video lên");
-        progressDialog1.setMessage("Vui lòng đợi...");
-        progressDialog1.setCancelable(false);
-        progressDialog1.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog1.setMax(videoUris.size());
-        progressDialog1.setProgress(0);
-        progressDialog1.show();
-
-        for (int i = 0; i < videoUris.size(); i++) {
-            Uri videoUri = videoUris.get(i);
-            String videoName = "video_" + i +"_"+timestamp1+ ".mp4";
-            StorageReference imageRef1 = storageRef1.child(videoName);
-
-            // Tải ảnh lên Firebase Storage
-            UploadTask uploadTask1 = imageRef1.putFile(videoUri);
-
-            // Đăng ký listener để xử lý thành công hoặc thất bại
-            uploadTask1.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // Xử lý khi ảnh được tải lên thành công
-                    // Tăng giá trị của biến đếm
-                    successfulUploads++;
-
-                    // Kiểm tra nếu số lượng ảnh đã được tải lên thành công bằng với số lượng ảnh đã chọn, thì hiển thị Toast
-                    if (successfulUploads == videoUris.size()) {
-                        Toast.makeText(getActivity(), "Tải video lên thành công", Toast.LENGTH_SHORT).show();
-                    }
-                    progressDialog1.setProgress(progressDialog1.getProgress() + 1);
-                    if (progressDialog1.getProgress() == progressDialog1.getMax()) {
-                        progressDialog1.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // Xử lý khi có lỗi xảy ra trong quá trình tải ảnh lên
-                    progressDialog1.setProgress(progressDialog1.getProgress() + 1);
-                    if (progressDialog1.getProgress() == progressDialog1.getMax()) {
-                        progressDialog1.dismiss();
-                    }
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                    // Cập nhật giá trị tiến độ vào ProgressDialog
-                    double progress1 = (100.0 * snapshot.getBytesTransferred() / snapshot.getTotalByteCount());
-                    progressDialog1.setProgress((int)progress1);
-                }
-            });
-        }
-
+        uploadFiles(videoUris, "video", "Tải video lên thành công");
     }
+
     private void selectImages() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGES);
+        selectMedia("image/*", REQUEST_CODE_SELECT_IMAGES);
     }
+
     private void selectVideos() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("video/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, REQUEST_CODE_SELECT_VIDEO);
+        selectMedia("video/*", REQUEST_CODE_SELECT_VIDEO);
     }
+
     private void selectMusics() {
+        selectMedia("audio/*", REQUEST_CODE_SELECT_MUSIC);
+    }
+
+    private void selectMedia(String mimeType, int requestCode) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("audio/*");
+        intent.setType(mimeType);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        startActivityForResult(intent, REQUEST_CODE_SELECT_MUSIC);
+        startActivityForResult(intent, requestCode);
     }
 }
