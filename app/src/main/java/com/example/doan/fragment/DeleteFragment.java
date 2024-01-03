@@ -1,7 +1,5 @@
 package com.example.doan.fragment;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -15,16 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.doan.AppSettings;
 import com.example.doan.adapter.BinAdapter;
 import com.example.doan.adapter.BinMusicAdapter;
 import com.example.doan.adapter.BinVideoAdapter;
 import com.example.doan.R;
-
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,10 +30,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
-
 import android.net.Uri;
 import android.view.MenuItem;
-
 
 public class DeleteFragment extends Fragment {
 
@@ -47,7 +40,6 @@ public class DeleteFragment extends Fragment {
     private BinAdapter mAdapter;
     private BottomNavigationView bottomNavigationView;
     private StorageReference mStorageRef;
-    private FirebaseStorage mStorage;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private boolean mIsDarkMode;
     private ActionMode actionMode;
@@ -65,11 +57,7 @@ public class DeleteFragment extends Fragment {
 
         mView = inflater.inflate(R.layout.fragment_delete, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        if (mIsDarkMode) {
-            mView.setBackgroundColor(requireContext().getColor(R.color.black));
-        } else {
-            mView.setBackgroundColor(requireContext().getColor(R.color.white));
-        }
+        mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
 
         mRecyclerView = mView.findViewById(R.id.recycler_view1);
@@ -214,14 +202,8 @@ public class DeleteFragment extends Fragment {
             }
         });
 
-
-        // Lấy đối tượng ActionBar
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-
-        // Thiết lập tiêu đề mới cho ActionBar
-        if (actionBar != null) {
-            actionBar.setTitle("Thùng rác");
-        }
+        FeedbackFragment feedbackFragment = new FeedbackFragment();
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Thùng rác");
         return mView;
     }
     @Override
