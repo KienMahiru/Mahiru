@@ -17,13 +17,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.doan.activity.FullscreenVideoActivity;
 import com.example.doan.R;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -35,7 +32,6 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -46,7 +42,6 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
     private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     private ActionMode actionMode;
-    private RecyclerView mRecyclerView;
     private String videoTitle;
 
     public BinVideoAdapter(Context context, List<String> videoUrls) {
@@ -206,11 +201,11 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
             switch (item.getItemId()) {
 
                 case R.id.delete_1:
-// Tạo một hộp thoại AlertDialog.Builder mới
+                    // Tạo một hộp thoại AlertDialog.Builder mới
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setMessage("Bạn có chắc muốn xóa video đã chọn không?");
 
-// Thêm nút Yes vào hộp thoại
+                    // Thêm nút Yes vào hộp thoại
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -249,7 +244,7 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                         }
                     });
 
-// Thêm nút No vào hộp thoại
+                    // Thêm nút No vào hộp thoại
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -257,7 +252,7 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                         }
                     });
 
-// Hiển thị hộp thoại
+                    // Hiển thị hộp thoại
                     AlertDialog dialog = builder.create();
                     dialog.show();
 
@@ -344,23 +339,24 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
         }
     };
 
-
     private Task<String> getVideoTitleFromFirebaseStorage(String videoUrl) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(videoUrl);
 
-        return storageRef.getMetadata().continueWith(new Continuation<StorageMetadata, String>() {
-            @Override
-            public String then(@NonNull Task<StorageMetadata> task) throws Exception {
-                if (task.isSuccessful()) {
-                    StorageMetadata storageMetadata = task.getResult();
+        return storageRef.getMetadata().continueWith(task -> {
+            if (task.isSuccessful()) {
+                StorageMetadata storageMetadata = task.getResult();
+                if (storageMetadata != null) {
                     return storageMetadata.getName();
                 } else {
-                    // Xử lý khi không thể lấy thông tin metadata
-                    Exception exception = task.getException();
-                    // ...
+                    // Xử lý khi không có thông tin metadata
                     return null;
                 }
+            } else {
+                // Xử lý khi không thể lấy thông tin metadata
+                Exception exception = task.getException();
+                // ...
+                return null;
             }
         });
     }

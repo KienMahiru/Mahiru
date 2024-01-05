@@ -37,7 +37,6 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
     private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     private ActionMode actionMode;
-    private String musicTitle;
     public BinMusicAdapter(Context context, List<String> musicUrls) {
         mMusicUrls = musicUrls;
         mContext = context;
