@@ -1,6 +1,7 @@
 package com.example.doan.fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +56,8 @@ public class HomeFragment extends Fragment {
     private MusicAdapter musicAdapter;
     private StorageReference mStorageRef;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private RecyclerView.LayoutManager layoutManager;
+    private GridLayoutManager gridLayoutManager;
     private int successfulUploads = 0;
     private boolean mIsDarkMode;
     private boolean clicked = false;
@@ -79,10 +82,10 @@ public class HomeFragment extends Fragment {
         // Thêm kiểm tra màu nền tối/ sáng
         mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
 
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
+        layoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
         mRecyclerView = mView.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
         List<String> imageStrings = new ArrayList<>();
         mAdapter = new MyAdapter(getActivity(), imageStrings);
@@ -338,7 +341,7 @@ public class HomeFragment extends Fragment {
                 actionMode = mView.startActionMode(mAdapter.getCallback());
             }
             else{
-                // Chọn tất cả ảnh
+                // Chọn tất cả nhạc
                 for (int i = 0; i < musicAdapter.getItemCount(); i++) {
                     musicAdapter.mSelectedItems.put(i, true);
                 }
@@ -346,6 +349,14 @@ public class HomeFragment extends Fragment {
                 actionMode = mView.startActionMode(musicAdapter.getCallback());
             }
             return true;
+        }
+        if (id == R.id.grid_mode){
+            if (layoutManager instanceof StaggeredGridLayoutManager) {
+                 layoutManager = new GridLayoutManager(getActivity(),2);
+            } else {
+                 layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+            }
+            mRecyclerView.setLayoutManager(layoutManager);
         }
         return super.onOptionsItemSelected(item);
     }
