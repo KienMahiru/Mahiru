@@ -1,8 +1,14 @@
 package com.example.doan.fragment;
+import static com.example.doan.activity.Option.MY_REQUEST_CODE;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ActionMode;
@@ -16,9 +22,11 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.doan.AppSettings;
+import com.example.doan.activity.Option;
 import com.example.doan.adapter.MusicAdapter;
 import com.example.doan.R;
 import com.example.doan.adapter.MyAdapter;
@@ -49,6 +57,7 @@ public class HomeFragment extends Fragment {
     private static final int REQUEST_CODE_SELECT_IMAGES=3;
     private static final int REQUEST_CODE_SELECT_VIDEO=8;
     private static final int REQUEST_CODE_SELECT_MUSIC=20;
+    private static final int REQUEST_STORAGE_PERMISSION = 30;
     private View mView;
     private RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
@@ -234,16 +243,18 @@ public class HomeFragment extends Fragment {
         button_video = mView.findViewById(R.id.my_button3);
         button_music = mView.findViewById(R.id.my_button4);
 
+
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleButtonClick();
+                requestPermission();
             }
         });
 
         button_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 selectImages();
                 handleButtonClickActions();
             }
@@ -260,6 +271,7 @@ public class HomeFragment extends Fragment {
         button_music.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 selectMusics();
                 handleButtonClickActions();
             }
@@ -384,6 +396,18 @@ public class HomeFragment extends Fragment {
                 break;
         }
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Quyền đã được cấp
+                handleButtonClick();
+            } else {
+                // Quyền bị từ chối
+                Toast.makeText(getActivity(), "Vui lòng cấp quyền truy cập!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     private List<Uri> getSelectedUris(Intent data) {
         List<Uri> selectedUris = new ArrayList<>();
@@ -501,4 +525,19 @@ public class HomeFragment extends Fragment {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, requestCode);
     }
+    private void requestPermission() {
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE_PERMISSION);
+
+        } else {
+            // Quyền đã được chấp thuận, tiến hành xử lý
+            handleButtonClick();
+        }
+
+    }
+
+
+
 }
