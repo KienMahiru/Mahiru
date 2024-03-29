@@ -81,7 +81,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             public void onClick(View view) {
                 // Chuyển sang một Activity khác và truyền đường dẫn của ảnh được click qua Intent
                 Intent intent = new Intent(mContext, FullscreenImageActivity.class);
-                intent.putExtra("imageUrl", imageUrl);
+                intent.putStringArrayListExtra("imageUrls",new ArrayList<>(mImageUrls));
+                intent.putExtra("position",position);
                 mContext.startActivity(intent);
             }
         });
