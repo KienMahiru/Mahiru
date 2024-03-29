@@ -41,6 +41,7 @@ public class DeleteFragment extends Fragment {
     private BottomNavigationView bottomNavigationView;
     private StorageReference mStorageRef;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private RecyclerView.LayoutManager layoutManager;
     private boolean mIsDarkMode;
     private ActionMode actionMode;
     private BinVideoAdapter adapter;
@@ -58,11 +59,11 @@ public class DeleteFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_delete, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
+        layoutManager = new StaggeredGridLayoutManager(2,GridLayoutManager.VERTICAL);
 
         mRecyclerView = mView.findViewById(R.id.recycler_view1);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
         List<String> imageStrings = new ArrayList<>();
         mAdapter = new BinAdapter(getActivity(), imageStrings);
@@ -240,6 +241,15 @@ public class DeleteFragment extends Fragment {
                 actionMode = mView.startActionMode(binMusicAdapter.getCallback());
             }
             return true;
+        }
+        //Sắp xếp ảnh
+        if (id == R.id.grid_mode){
+            if (layoutManager instanceof StaggeredGridLayoutManager) {
+                layoutManager = new GridLayoutManager(getActivity(),2);
+            } else {
+                layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+            }
+            mRecyclerView.setLayoutManager(layoutManager);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -17,11 +17,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.doan.activity.FullscreenImageActivity;
 import com.example.doan.R;
+import com.example.doan.activity.FullscreenImage_bin;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
 public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
     private List<String> mImageUrls;
@@ -57,8 +60,9 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
 
         // Bắt sự kiện click vào ImageView
         holder.myImageView.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, FullscreenImageActivity.class);
-            intent.putExtra("imageUrl", imageUrl);
+            Intent intent = new Intent(mContext, FullscreenImage_bin.class);
+            intent.putStringArrayListExtra("imageUrls",new ArrayList<>(mImageUrls));
+            intent.putExtra("position",position);
             mContext.startActivity(intent);
         });
 
