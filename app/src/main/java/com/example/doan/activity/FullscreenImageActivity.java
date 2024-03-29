@@ -1,16 +1,22 @@
 package com.example.doan.activity;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Button;
 import android.widget.ImageView;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 import com.github.chrisbanes.photoview.PhotoView;
 
@@ -22,6 +28,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
     private int position;
     private ArrayList<String> imageUrls;
     private String imageUrl;
+    private BottomNavigationView bottom_nav_image;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +44,23 @@ public class FullscreenImageActivity extends AppCompatActivity {
             }
         });
         initializeView();
+        // Thanh điều hướng lựa chọn
+        bottom_nav_image = (BottomNavigationView) findViewById(R.id.bottom_nav_image);
+        bottom_nav_image.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.share_image:
+                        return true;
+                    case R.id.edit_image:
+                        return true;
+                    case R.id.delete_image:
+                        return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     private void initializeView() {

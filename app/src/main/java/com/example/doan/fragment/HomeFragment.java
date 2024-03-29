@@ -362,6 +362,7 @@ public class HomeFragment extends Fragment {
             }
             return true;
         }
+        //Sắp xếp ảnh
         if (id == R.id.grid_mode){
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                  layoutManager = new GridLayoutManager(getActivity(),2);
