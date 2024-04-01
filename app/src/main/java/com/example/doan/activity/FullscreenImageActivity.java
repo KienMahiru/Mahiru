@@ -1,6 +1,9 @@
 package com.example.doan.activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -13,13 +16,21 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 import com.github.chrisbanes.photoview.PhotoView;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class FullscreenImageActivity extends AppCompatActivity {
@@ -51,6 +62,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.share_image:
+                        shareImage(imageUrl);
                         return true;
                     case R.id.edit_image:
                         return true;
@@ -103,6 +115,30 @@ public class FullscreenImageActivity extends AppCompatActivity {
         });
     }
 
+    private void shareImage(String imageUrl) {
+        // Thêm dữ liệu ảnh vào intent
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
+        try {
+            final File localFile = File.createTempFile("image", ".jpg");
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Uri imageUri = FileProvider.getUriForFile(FullscreenImageActivity.this, getPackageName() + ".provider", localFile);
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("image/*");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                    startActivity(Intent.createChooser(shareIntent, "Chia sẻ hình ảnh"));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(FullscreenImageActivity.this, "Chia sẻ ảnh thất bại", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onStart() {
