@@ -36,12 +36,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
-    private List<String> mImageUrls;
+    public List<String> mImageUrls;
     private Context mContext;
     private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     public ActionMode actionMode;
-    private RecyclerView mRecyclerView;
     public MyAdapter(Context context, List<String> imageUrls) {
         mImageUrls = imageUrls;
         mContext = context;

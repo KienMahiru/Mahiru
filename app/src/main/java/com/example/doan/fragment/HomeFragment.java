@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
     private static final int REQUEST_CODE_SELECT_MUSIC=20;
     private static final int REQUEST_STORAGE_PERMISSION = 30;
     private View mView;
-    private RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
     private VideoAdapter adapter;
     private MusicAdapter musicAdapter;
@@ -537,6 +537,10 @@ public class HomeFragment extends Fragment {
             handleButtonClick();
         }
 
+    }
+    public void updateRecyclerView() {
+        // Gọi phương thức cập nhật dữ liệu cho RecyclerView ở đây
+        mAdapter.notifyDataSetChanged();
     }
 
 
