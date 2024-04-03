@@ -538,11 +538,4 @@ public class HomeFragment extends Fragment {
         }
 
     }
-    public void updateRecyclerView() {
-        // Gọi phương thức cập nhật dữ liệu cho RecyclerView ở đây
-        mAdapter.notifyDataSetChanged();
-    }
-
-
-
 }

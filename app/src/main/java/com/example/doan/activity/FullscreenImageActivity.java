@@ -50,8 +50,8 @@ public class FullscreenImageActivity extends AppCompatActivity {
     private int position;
     private Context context;
     private MyAdapter mAdapter;
-    private ArrayList<String> imageUrls;
     private String imageUrl;
+    private ArrayList<String> imageUrls;
     public SparseBooleanArray mSelectedItems;
     private BottomNavigationView bottom_nav_image;
     private HomeFragment homeFragment;
@@ -60,16 +60,18 @@ public class FullscreenImageActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_image);
+        imageUrls = getIntent().getStringArrayListExtra("imageUrls");
         back = (Button) findViewById(R.id.back);
         back_left = (Button) findViewById(R.id.back_left);
         back_right = (Button) findViewById(R.id.back_right);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                Intent intent = new Intent(FullscreenImageActivity.this, Option.class);
+                startActivity(intent);
             }
         });
-        initializeView();
+        initializeView(imageUrls);
         // Thanh điều hướng lựa chọn
         bottom_nav_image = (BottomNavigationView) findViewById(R.id.bottom_nav_image);
         bottom_nav_image.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -82,7 +84,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
                     case R.id.edit_image:
                         return true;
                     case R.id.delete_image:
-                        deleteImage(imageUrl);
+                        deleteImage(imageUrl, imageUrls);
                         return true;
                 }
                 return false;
@@ -91,10 +93,9 @@ public class FullscreenImageActivity extends AppCompatActivity {
 
     }
 
-    private void initializeView() {
+    private void initializeView(ArrayList<String> imageUrls) {
         mImageView = findViewById(R.id.image_view);
         // Lấy đường dẫn đến ảnh từ Intent
-        ArrayList<String> imageUrls = getIntent().getStringArrayListExtra("imageUrls");
         position = getIntent().getIntExtra("position",0);
         // Load ảnh vào ImageView sử dụng Picasso
         imageUrl =  imageUrls.get(position);
@@ -155,10 +156,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-    private void deleteImage(String imageUrl1) {
-        // Tạo một danh sách tạm thời để sao lưu các giá trị của imageUrls
-        ArrayList<String> tempImageUrls = new ArrayList<>();
-
+    private void deleteImage(String imageUrl, ArrayList<String> imageUrls) {
         // Tạo progressDialog
         ProgressDialog progressDialog = new ProgressDialog(FullscreenImageActivity.this);
         progressDialog.setMessage("Đang xóa ảnh...");
@@ -184,26 +182,18 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         // Xóa URL của ảnh khỏi danh sách imageUrls
-                                        tempImageUrls.remove(imageUrl);
-
-                                        //Cập nhật Recycleview
-                                        if (homeFragment != null) {
-                                            homeFragment.updateRecyclerView();
-                                        }
-                                        // Cập nhật imageUrls và position
-                                        imageUrls = tempImageUrls;
-                                        if (position >= imageUrls.size()) {
-                                            position = imageUrls.size() - 1;
-                                        }
+                                        imageUrls.remove(imageUrl);
 
                                         // Hiển thị ảnh mới
                                         if (position >= 0) {
-                                            imageUrl = imageUrls.get(position);
-                                            Picasso.get().load(imageUrl).into(mImageView);
+                                            position--;
+                                            Picasso.get().load(imageUrls.get(position)).into(mImageView);
                                         } else {
                                             // Không còn ảnh trong danh sách, kết thúc FullscreenImageActivity
                                             finish();
                                         }
+
+
 
                                         // Ẩn progressDialog
                                         progressDialog.dismiss();
