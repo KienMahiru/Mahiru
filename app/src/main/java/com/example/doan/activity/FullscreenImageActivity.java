@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.doan.NetworkChangeListener;
@@ -229,5 +230,10 @@ public class FullscreenImageActivity extends AppCompatActivity {
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
         super.onStop();
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(FullscreenImageActivity.this, Option.class);
+        startActivity(intent);
     }
 }
