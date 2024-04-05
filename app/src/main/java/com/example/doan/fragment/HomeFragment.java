@@ -454,7 +454,7 @@ public class HomeFragment extends Fragment {
 
         for (int i = 0; i < totalFiles; i++) {
             Uri fileUri = fileUris.get(i);
-            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
+            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri)+".jpg";
             StorageReference fileRef = storageRef.child(fileName);
 
             UploadTask uploadTask = fileRef.putFile(fileUri);
