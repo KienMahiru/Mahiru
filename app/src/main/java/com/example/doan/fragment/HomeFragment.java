@@ -99,8 +99,8 @@ public class HomeFragment extends Fragment {
         List<String> imageStrings = new ArrayList<>();
         mAdapter = new MyAdapter(getActivity(), imageStrings);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
-
         mStorageRef.listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
@@ -369,6 +369,7 @@ public class HomeFragment extends Fragment {
             } else {
                  layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
             }
+
             mRecyclerView.setLayoutManager(layoutManager);
         }
         return super.onOptionsItemSelected(item);

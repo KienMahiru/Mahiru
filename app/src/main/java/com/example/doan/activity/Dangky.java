@@ -32,27 +32,27 @@ public class Dangky extends AppCompatActivity {
     private EditText mPasswordEditText;
     private Button mRegisterButton;
     private ProgressDialog progressDialog;
+    // Class Xử lý khi mất kết nối Internet
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dangky);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         progressDialog = new ProgressDialog(this);
-        mEmail = findViewById(R.id.username_edittext);
-        mPasswordEditText = findViewById(R.id.password_edittext);
-        mRegisterButton = findViewById(R.id.register_button);
-
+        mEmail = findViewById(R.id.username_edittext);//Trường Email
+        mPasswordEditText = findViewById(R.id.password_edittext);// Trường Password
+        mRegisterButton = findViewById(R.id.register_button);// Nút đăng ký
+        //Nút ẩn/hiển password
         ImageButton showPasswordButton = findViewById(R.id.show_password_button);
-
+        //Lắng nghe sự kiện nút ẩn/hiện password
         showPasswordButton.setOnClickListener(view -> {
             mPasswordVisible = !mPasswordVisible;
             int visibility = mPasswordVisible ? View.VISIBLE : View.GONE;
             mPasswordEditText.setTransformationMethod(visibility == View.VISIBLE ? null : new PasswordTransformationMethod());
             showPasswordButton.setImageResource(visibility == View.VISIBLE ? R.drawable.ic_visibility : R.drawable.ic_visibility_off);
         });
-
+        //Lắng nghe sự kiện nút đăng ký
         mRegisterButton.setOnClickListener(v -> {
             String email = mEmail.getText().toString().trim();
             String password = mPasswordEditText.getText().toString().trim();
@@ -61,7 +61,7 @@ public class Dangky extends AppCompatActivity {
             }
         });
     }
-
+    // Kiểm tra đầu vào các trường dữ liệu
     public boolean isInputValid(String email, String password){
         if (TextUtils.isEmpty(email) || !isGmailAddress(email)) {
             mEmail.setError("Email không được để trống và phải là địa chỉ gmail!!!");
@@ -75,13 +75,13 @@ public class Dangky extends AppCompatActivity {
         }
         return true;
     }
-
+    //Quá trình xác minh tài khoản
     private void registerAndVerifyUser(String email, String password) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         progressDialog.setMessage("Đang chờ xác minh");
         progressDialog.setCancelable(false);
         progressDialog.show();
-
+        //API Firebase Auth
         auth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 SignInMethodQueryResult result = task.getResult();
@@ -113,8 +113,10 @@ public class Dangky extends AppCompatActivity {
         });
     }
 
-    // Hàm bắt đầu đếm ngược thời gian chờ xác minh email
+    // Bắt đầu đếm ngược thời gian lắng nghe xác minh email
     private void startEmailVerificationCountdown(FirebaseUser user) {
+        // COUNTDOWN_DURATION = 30000- Thời gian đếm ngược 30s.
+        // COUNTDOWN_INTERVAL = 1000- Khoảng cách đếm ngược 1s.
         new CountDownTimer(COUNTDOWN_DURATION, COUNTDOWN_INTERVAL) {
             public void onTick(long millisUntilFinished) {
                 long secondsLeft = millisUntilFinished / 1000;
@@ -173,14 +175,14 @@ public class Dangky extends AppCompatActivity {
         // Kiểm tra mật khẩu chứa ít nhất một số
         return password.matches(".*\\d.*");
     }
-
+    //Tiếp tực nếu có internet
     @Override
     protected void onStart() {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeListener, filter);
         super.onStart();
     }
-
+    // Hiển thị Thông báo khi mất mạng
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);

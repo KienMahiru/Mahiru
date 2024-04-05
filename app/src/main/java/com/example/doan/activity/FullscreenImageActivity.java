@@ -83,6 +83,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
                         shareImage(imageUrl);
                         return true;
                     case R.id.edit_image:
+                        edit_image(imageUrl);
                         return true;
                     case R.id.delete_image:
                         deleteImage(imageUrl, imageUrls);
@@ -157,6 +158,11 @@ public class FullscreenImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    private void edit_image(String imageUrl) {
+        Intent intent = new Intent(FullscreenImageActivity.this, EditImageActivity.class);
+        intent.putExtra("image_url", imageUrl);
+        startActivity(intent);
+    }
     private void deleteImage(String imageUrl, ArrayList<String> imageUrls) {
         // Tạo progressDialog
         ProgressDialog progressDialog = new ProgressDialog(FullscreenImageActivity.this);
@@ -193,9 +199,6 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                             // Không còn ảnh trong danh sách, kết thúc FullscreenImageActivity
                                             finish();
                                         }
-
-
-
                                         // Ẩn progressDialog
                                         progressDialog.dismiss();
 
