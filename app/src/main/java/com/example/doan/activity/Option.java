@@ -50,7 +50,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
     public static final int MY_REQUEST_CODE= 10;
     private static final int FRAGMENT_MY_PROFILE= 1;
     private static final int FRAGMENT_HOME=0;
-    private static final int FRAGMENT_DELETE=4;
+    public static final int FRAGMENT_DELETE=4;
     private static final int FRAGMENT_SETTINGS=5;
     private static final int FRAGMENT_INFOR=6;
     private static final int FRAGMENT_FEED=7;
@@ -80,6 +80,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
     private ImageView imageView;
     private TextView tvname,tvemail;
     private NavigationView mNavigationView;
+    private int Image_bin_screen;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,8 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         setupDrawer();
         replaceFragment(new HomeFragment());
         mNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        // Kiểm tra các activity khác intent tới các fragament
+        UI_Fragament();
     }
     private void setupDrawer(){
         mNavigationView= findViewById(R.id.navigation_view);
@@ -183,6 +186,14 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+    private void UI_Fragament(){
+        Image_bin_screen = getIntent().getIntExtra("Image_DeleteFragment",0);
+        if (Image_bin_screen ==FRAGMENT_DELETE){
+            mCurrentFragment = FRAGMENT_DELETE;
+            Image_bin_screen=0;
+            replaceFragment(new DeleteFragment());
+        }
+    }
     private void showSignOutConfirmationDialog(){
         new AlertDialog.Builder(this)
                 .setTitle("Xác nhận đăng xuất")
@@ -270,6 +281,8 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         mActivityResultLauncher.launch(Intent.createChooser(intent,"Chọn Ảnh"));
 
     }
+
+
     @Override
     protected void onResume() {
         super.onResume();

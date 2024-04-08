@@ -46,6 +46,7 @@ public class DeleteFragment extends Fragment {
     private ActionMode actionMode;
     private BinVideoAdapter adapter;
     private BinMusicAdapter binMusicAdapter;
+    private List<String> imageStrings;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +66,7 @@ public class DeleteFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
-        List<String> imageStrings = new ArrayList<>();
+        imageStrings = new ArrayList<>();
         mAdapter = new BinAdapter(getActivity(), imageStrings);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference().child("delete").child(user.getUid());
