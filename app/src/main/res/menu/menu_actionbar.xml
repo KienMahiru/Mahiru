@@ -17,6 +17,9 @@
             <item android:id="@+id/chontatca"
                 android:title="Chọn tất cả"
                 android:icon="@drawable/ic_baseline_checklist_24"/>
+            <item android:id="@+id/sapxep"
+                android:title="Sắp xếp"
+                android:icon="@drawable/baseline_sort_24"/>
         </menu>
     </item>
 </menu>

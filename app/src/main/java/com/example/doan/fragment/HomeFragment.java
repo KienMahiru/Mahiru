@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +35,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -75,6 +78,7 @@ public class HomeFragment extends Fragment {
     private Button button_image;
     private Button button_music;
     private BottomNavigationView bottomNavigationView;
+    private List<String> imageStrings = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -332,10 +336,94 @@ public class HomeFragment extends Fragment {
         inflater.inflate(R.menu.menu_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-
+    private List<String> originalImageStrings = new ArrayList<>();
+    private void saveOriginalImageData() {
+        originalImageStrings.clear();
+        originalImageStrings.addAll(imageStrings);
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        if(id == R.id.sapxep) {
+            if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+                saveOriginalImageData();
+                mAdapter = new MyAdapter(getActivity(), imageStrings);
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
+
+                // Lưu trữ danh sách ảnh ban đầu
+
+                mStorageRef.listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                List<Pair<String, Long>> tempImageList = new ArrayList<>(); // Danh sách tạm thời để lưu trữ cặp giá trị (URL ảnh, thời gian)
+
+                                // Duyệt qua danh sách các tệp ảnh
+                                for (StorageReference itemRef : listResult.getItems()) {
+                                    String imageName = itemRef.getName();
+                                    // Tách chuỗi tên tệp ảnh để lấy ra phần thời gian
+                                    String[] parts = imageName.split("_");
+                                    if (parts.length >= 3) { // Kiểm tra xem có đủ phần tử sau khi tách không
+                                        // Lấy phần thời gian từ chuỗi tên tệp ảnh
+                                        String dateString = parts[2].substring(0, 8); // Lấy phần ngày (8 ký tự từ vị trí 0)
+                                        String timeString = parts[3].substring(0, 6); // Lấy phần giờ (6 ký tự từ vị trí 8)
+                                        String fullTimeString = dateString + timeString; // Kết hợp phần ngày và phần giờ
+                                        try {
+                                            long timestamp = Long.parseLong(fullTimeString);
+                                            // Lấy URL của ảnh và thêm vào danh sách chính
+                                            itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String uriString = uri.toString();
+                                                    imageStrings.add(uriString);
+                                                    // Thêm cặp giá trị (URL ảnh, thời gian) vào danh sách tạm thời
+                                                    tempImageList.add(new Pair<>(uriString, timestamp));
+
+                                                    // Nếu đã duyệt qua tất cả các ảnh
+                                                    if (tempImageList.size() == listResult.getItems().size()) {
+                                                        // Sắp xếp danh sách theo thời gian từ mới đến cũ
+                                                        Collections.sort(tempImageList, new Comparator<Pair<String, Long>>() {
+                                                            @Override
+                                                            public int compare(Pair<String, Long> o1, Pair<String, Long> o2) {
+                                                                return Long.compare(o2.second, o1.second);
+                                                            }
+                                                        });
+
+                                                        // Xóa danh sách cũ
+                                                        imageStrings.clear();
+                                                        // Thêm các URL ảnh đã được sắp xếp vào danh sách chính
+                                                        for (Pair<String, Long> pair : tempImageList) {
+                                                            imageStrings.add(pair.first);
+                                                        }
+                                                        // Cập nhật Adapter
+                                                        mAdapter.notifyDataSetChanged();
+                                                    }
+                                                }
+                                            });
+                                        } catch (NumberFormatException e) {
+                                            // Xử lý nếu không thể chuyển đổi thời gian thành số
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                mRecyclerView.setAdapter(mAdapter);
+            } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_video || bottomNavigationView.getSelectedItemId() == R.id.nav_music) {
+                imageStrings.clear();
+                imageStrings.addAll(originalImageStrings);
+                mAdapter.notifyDataSetChanged();// Gọi phương thức để khôi phục lại danh sách ảnh ban đầu
+                mRecyclerView.setAdapter(mAdapter);
+
+            }
+        }
         if(id == R.id.chontatca){
             if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
                 // Chọn tất cả video
