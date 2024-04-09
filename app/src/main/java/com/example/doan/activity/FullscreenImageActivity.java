@@ -186,8 +186,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                         imageUrls.remove(imageUrl);
 
                                         // Hiển thị ảnh mới
-                                        if (position >= 0) {
-                                            position--;
+                                        if (position >= 0 && position < imageUrls.size()) {
                                             Picasso.get().load(imageUrls.get(position)).into(mImageView);
                                         } else {
                                             // Không còn ảnh trong danh sách, kết thúc FullscreenImageActivity
