@@ -44,6 +44,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -543,7 +545,9 @@ public class HomeFragment extends Fragment {
             Uri fileUri = fileUris.get(i);
             String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
             StorageReference fileRef = storageRef.child(fileName);
-
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            userRef.child("date").setValue(timestamp);
+            userRef.child("url").setValue(fileName);
             UploadTask uploadTask = fileRef.putFile(fileUri);
 
             setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
@@ -586,10 +590,13 @@ public class HomeFragment extends Fragment {
     // Sử dụng các phương thức uploadFiles cho từng loại tệp tin
     private void uploadImages(List<Uri> imageUris) {
         uploadFiles(imageUris, "image", "Tải ảnh lên thành công");
+
+
     }
 
     private void uploadMusics(List<Uri> musicUris) {
         uploadFiles(musicUris, "music", "Tải nhạc lên thành công");
+
     }
 
     private void uploadVideos(List<Uri> videoUris) {
