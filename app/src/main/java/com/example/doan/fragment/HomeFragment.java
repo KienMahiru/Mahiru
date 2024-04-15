@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,6 +42,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -51,6 +57,8 @@ import android.content.Intent;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 
 public class HomeFragment extends Fragment {
@@ -439,6 +447,9 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         String timestamp = dateFormat.format(calendar.getTime());
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String date = sdf.format(currentDate);
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang tải lên");
@@ -451,18 +462,43 @@ public class HomeFragment extends Fragment {
 
         int totalFiles = fileUris.size();
         int[] successfulUploads = {0};  // Sử dụng một mảng để thay thế biến final
-
         for (int i = 0; i < totalFiles; i++) {
             Uri fileUri = fileUris.get(i);
-            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri)+".jpg";
+            String fileName = folderName + "_" + i + "_" + timestamp +"." + getFileExtension(fileUri);
             StorageReference fileRef = storageRef.child(fileName);
-
             UploadTask uploadTask = fileRef.putFile(fileUri);
-
             setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
                 successfulUploads[0]++;
                 if (successfulUploads[0] == totalFiles) {
                     showToast(successMessage);
+
+                    if (folderName =="image") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("imagename" + timestamp).setValue(fileName);
+                    }
+                    if (folderName =="video") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("videoname" + timestamp).setValue(fileName);
+                    }
+                    if (folderName =="music") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("musicname" + timestamp).setValue(fileName);
+                    }
                 }
             });
         }
