@@ -37,7 +37,10 @@ import android.content.ClipData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+
+import com.example.doan.adapter.TextAdapter;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,6 +69,7 @@ public class HomeFragment extends Fragment {
     private View mView;
     public RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
+    private TextAdapter tAdapter;
     private VideoAdapter adapter;
     private MusicAdapter musicAdapter;
     private StorageReference mStorageRef;
@@ -81,6 +85,7 @@ public class HomeFragment extends Fragment {
     private Button button_music;
     private BottomNavigationView bottomNavigationView;
     private List<String> imageStrings = new ArrayList<>();
+    private List<String> dateStrings = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -350,6 +355,7 @@ public class HomeFragment extends Fragment {
             if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
                 saveOriginalImageData();
                 mAdapter = new MyAdapter(getActivity(), imageStrings);
+                tAdapter = new TextAdapter(getActivity(), dateStrings);
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -528,6 +534,9 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         String timestamp = dateFormat.format(calendar.getTime());
+        Date currentDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String date = sdf.format(currentDate);
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang tải lên");
@@ -540,20 +549,43 @@ public class HomeFragment extends Fragment {
 
         int totalFiles = fileUris.size();
         int[] successfulUploads = {0};  // Sử dụng một mảng để thay thế biến final
-
         for (int i = 0; i < totalFiles; i++) {
             Uri fileUri = fileUris.get(i);
-            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
+            String fileName = folderName + "_" + i + "_" + timestamp +"." + getFileExtension(fileUri);
             StorageReference fileRef = storageRef.child(fileName);
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
-            userRef.child("date").setValue(timestamp);
-            userRef.child("url").setValue(fileName);
             UploadTask uploadTask = fileRef.putFile(fileUri);
-
             setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
                 successfulUploads[0]++;
                 if (successfulUploads[0] == totalFiles) {
                     showToast(successMessage);
+
+                    if (folderName =="image") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("imagename" + timestamp).setValue(fileName);
+                    }
+                    if (folderName =="video") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("videoname" + timestamp).setValue(fileName);
+                    }
+                    if (folderName =="music") {
+                        DatabaseReference datetime = FirebaseDatabase
+                                .getInstance()
+                                .getReference("users")
+                                .child(user.getUid())
+                                .child(folderName)
+                                .child(date);
+                        datetime.child("musicname" + timestamp).setValue(fileName);
+                    }
                 }
             });
         }
