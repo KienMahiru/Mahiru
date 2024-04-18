@@ -12,6 +12,13 @@
     <color name="green">#1E88E5</color>
     <color name="circle_check_background">#FF4081</color>
 
+
+
+    <color name="primary_color">#56A8EA</color>
+    <color name="primary_color_variant">#98C2E4</color>
+    <color name="secondary_color">#BCF3ED</color>
+    <color name="secondary_color_variant">#9CB1AF</color>
+
     <!-- Màu sắc cho chế độ ban ngày -->
     <color name="primaryColor">@color/purple_500</color>
     <color name="primaryDarkColor">@color/purple_700</color>

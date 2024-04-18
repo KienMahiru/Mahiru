@@ -47,7 +47,7 @@ public class FullscreenVideoActivity extends AppCompatActivity {
         playerView.setPlayer(player);
 
         // Create and set up media source
-        MediaSource mediaSource = FullscreenMusicActivity.buildMediaSource(FullscreenVideoActivity.this,Uri.parse(videoUrl));
+        MediaSource mediaSource = buildMediaSource(this,Uri.parse(videoUrl));
         player.setMediaSource(mediaSource);
         player.prepare();
         player.setPlayWhenReady(true);
@@ -67,5 +67,11 @@ public class FullscreenVideoActivity extends AppCompatActivity {
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
         super.onStop();
+    }
+
+    public static MediaSource buildMediaSource(Context context, Uri uri) {
+        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "ExoPlayerDemo"));
+        MediaItem mediaItem = MediaItem.fromUri(uri);
+        return new ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(mediaItem);
     }
 }

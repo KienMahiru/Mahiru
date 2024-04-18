@@ -76,5 +76,13 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'com.google.android.exoplayer:exoplayer-core:2.15.1'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.15.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
     implementation("com.vanniktech:android-image-cropper:4.5.0")
+
+    //for palettes for extracting colors
+    implementation 'androidx.palette:palette:1.0.0'
+
+    //blurImageView
+    implementation 'com.github.jgabrielfreitas:BlurImageView:1.0.1'
+
 }

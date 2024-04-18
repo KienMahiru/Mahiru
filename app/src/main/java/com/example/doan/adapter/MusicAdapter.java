@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.content.Intent;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,11 +51,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     private Picasso mPicasso;
     private String musicTitle;
 
+    private List<String> mMusicTitles;
+
     public MusicAdapter(Context context, List<String> musicUrls) {
         mMusicUrls = musicUrls;
         mContext = context;
         mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
+        mMusicTitles = new ArrayList<>();
     }
     public ActionMode.Callback getCallback() {
         return callback;
@@ -74,7 +76,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         getMusicTitleFromFirebaseStorage(musicUrl).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String musicTitle) {
-                MusicAdapter.this.musicTitle = musicTitle; // Gán giá trị cho biến thành viên
+                if (position < mMusicTitles.size()) {
+                    mMusicTitles.set(position, musicTitle);
+                } else {
+                    mMusicTitles.add(musicTitle);
+                }
                 holder.musicName.setText(musicTitle);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -103,9 +109,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             public void onClick(View view) {
                 // Chuyển sang một Activity khác và truyền đường dẫn của video được click qua Intent
                 Intent intent = new Intent(mContext, FullscreenMusicActivity.class);
-
                 intent.putExtra("musicUrl", musicUrl);
-                intent.putExtra("musicName", MusicAdapter.this.musicTitle); // Sử dụng biến thành viên
+                intent.putExtra("musicName", mMusicTitles.get(position)); // Sử dụng biến thành viên
+                intent.putStringArrayListExtra("musicUrlList", (ArrayList<String>) mMusicUrls);
                 mContext.startActivity(intent);
             }
         });
@@ -440,7 +446,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
     @Override
     public int getItemCount() {
-
         return mMusicUrls.size();
     }
     private Task<String> getMusicTitleFromFirebaseStorage(String musicUrl) {
