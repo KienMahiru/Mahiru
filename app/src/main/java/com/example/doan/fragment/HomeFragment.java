@@ -481,7 +481,7 @@ public class HomeFragment extends Fragment {
                                 .child(date);
                         datetime.child("imagename" + timestamp).setValue(fileName);
                     }
-                    if (folderName =="video") {
+                    else if (folderName =="video") {
                         DatabaseReference datetime = FirebaseDatabase
                                 .getInstance()
                                 .getReference("users")
@@ -490,7 +490,7 @@ public class HomeFragment extends Fragment {
                                 .child(date);
                         datetime.child("videoname" + timestamp).setValue(fileName);
                     }
-                    if (folderName =="music") {
+                    else if (folderName =="music") {
                         DatabaseReference datetime = FirebaseDatabase
                                 .getInstance()
                                 .getReference("users")
