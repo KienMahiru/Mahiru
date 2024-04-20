@@ -40,7 +40,8 @@ import java.util.Locale;
 
 public class EditImageActivity extends AppCompatActivity {
     private CropImageView edit_image;
-    private Button cancel, save,cut;
+    private PhotoView photoView;
+    private Button cancel, save,cut,edit_cut, confirm_cutter;
     private Bitmap croppedBitmap;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     @Override
@@ -48,30 +49,15 @@ public class EditImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_image);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        photoView = (PhotoView) findViewById(R.id.photo_edit);
         edit_image = (CropImageView) findViewById(R.id.edit_image);
         cancel = (Button) findViewById(R.id.cancel);
         save = (Button) findViewById(R.id.save);
         cut = (Button) findViewById(R.id.buttonCrop);
+        edit_cut = (Button) findViewById(R.id.cutter);
+        confirm_cutter = (Button) findViewById(R.id.confirm_edit);
         String imageUrl = getIntent().getStringExtra("image_url");
-        Picasso.get().load(Uri.parse(imageUrl)).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                edit_image.setImageBitmap(bitmap);
-
-
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                finish();
-                Toast.makeText(EditImageActivity.this, "Lỗi ảnh!", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                // Chuẩn bị tải ảnh (nếu cần)
-            }
-        });
+        Picasso.get().load(imageUrl).into(photoView);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,9 +68,63 @@ public class EditImageActivity extends AppCompatActivity {
         cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                photoView.setVisibility(View.GONE);
+                edit_image.setVisibility(View.VISIBLE);
+                edit_cut.setVisibility(View.VISIBLE);
+                if(croppedBitmap != null) {
+                    Uri uri = bitmapToUriConverter(croppedBitmap);
+                    Picasso.get().load(uri).into(new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    edit_image.setImageBitmap(bitmap);
+                                }
+                                @Override
+                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                                    finish();
+                                    Toast.makeText(EditImageActivity.this, "Lỗi ảnh!", Toast.LENGTH_SHORT).show();
+                                }
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                    // Chuẩn bị tải ảnh (nếu cần)
+                                }
+                            });
+                } else {
+                    Picasso.get().load(Uri.parse(imageUrl)).into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            edit_image.setImageBitmap(bitmap);
+                        }
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            finish();
+                            Toast.makeText(EditImageActivity.this, "Lỗi ảnh!", Toast.LENGTH_SHORT).show();
+                        }
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                            // Chuẩn bị tải ảnh (nếu cần)
+                        }
+                    });
+                }
+
+            }
+        });
+        edit_cut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 croppedBitmap = edit_image.getCroppedImage();
                 edit_image.setImageBitmap(croppedBitmap);
                 save.setEnabled(true);
+                confirm_cutter.setVisibility(View.VISIBLE);
+            }
+        });
+        confirm_cutter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photoView.setImageBitmap(croppedBitmap);
+                edit_cut.setVisibility(View.GONE);
+                edit_image.setVisibility(View.GONE);
+                photoView.setVisibility(View.VISIBLE);
+                confirm_cutter.setVisibility(View.GONE);
             }
         });
         save.setOnClickListener(new View.OnClickListener() {
@@ -112,7 +152,7 @@ public class EditImageActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
         progressDialog.show();
-        String fileName = folderName +"_" + timestamp + getFileExtension(croppedUri)+".jpg";
+        String fileName = folderName +"_" + timestamp +"."+getFileExtension(croppedUri);
         StorageReference fileRef = storageRef.child(fileName);
         UploadTask uploadTask = fileRef.putFile(croppedUri);
         setUploadTaskListeners(uploadTask, progressDialog,1, () -> {
