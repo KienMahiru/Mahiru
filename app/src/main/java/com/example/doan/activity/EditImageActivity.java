@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,6 +31,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.zomato.photofilters.SampleFilters;
+import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,11 +44,17 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class EditImageActivity extends AppCompatActivity {
+public class EditImageActivity extends AppCompatActivity implements View.OnClickListener {
+    static
+    {
+        System.loadLibrary("NativeImageProcessor");
+    }
     private CropImageView edit_image;
     private PhotoView photoView;
+    private ImageView boloc1,boloc2,boloc3;
     private Button cancel, save,cut,edit_cut, confirm_cutter;
-    private Bitmap croppedBitmap;
+    private Bitmap croppedBitmap,orginalbitmap;
+    private Button filter;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,21 +62,46 @@ public class EditImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_image);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         photoView = (PhotoView) findViewById(R.id.photo_edit);
+        // Giăng cắt ảnh
         edit_image = (CropImageView) findViewById(R.id.edit_image);
+        // Hủy chỉnh sửa
         cancel = (Button) findViewById(R.id.cancel);
+        // Lưu ảnh chỉnh sửa
         save = (Button) findViewById(R.id.save);
         cut = (Button) findViewById(R.id.buttonCrop);
         edit_cut = (Button) findViewById(R.id.cutter);
+        // Nút xác nhận ảnh đã cắt
         confirm_cutter = (Button) findViewById(R.id.confirm_edit);
+        // Lấy URL ảnh chỉnh sửa
         String imageUrl = getIntent().getStringExtra("image_url");
+        // Hiển thị ảnh
         Picasso.get().load(imageUrl).into(photoView);
+        // Bộ lọc
+        HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.thanhboloc);
+        boloc1 = (ImageView) findViewById(R.id.boloc1);
+        boloc2 = (ImageView) findViewById(R.id.boloc2);
+        boloc3 = (ImageView) findViewById(R.id.boloc3);
+        filter = (Button) findViewById(R.id.buttonFilter);
+        filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                horizontalScrollView.setVisibility(View.VISIBLE);
+            }
+        });
+        boloc1.setOnClickListener(this);
+        boloc2.setOnClickListener(this);
+        boloc3.setOnClickListener(this);
+        BitmapDrawable drawable =(BitmapDrawable) photoView.getDrawable();
+        orginalbitmap = drawable.getBitmap();
+
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        // Cắt ảnh
+
+        // Mở trình cắt ảnh
         cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,6 +145,8 @@ public class EditImageActivity extends AppCompatActivity {
 
             }
         });
+
+        //Cắt ảnh
         edit_cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,14 +166,44 @@ public class EditImageActivity extends AppCompatActivity {
                 confirm_cutter.setVisibility(View.GONE);
             }
         });
+        // Lưu ảnh
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Uri croppedUri = bitmapToUriConverter(croppedBitmap);
                 uploadFiles(croppedUri, "image");
-
             }
         });
+    }
+
+    @Override
+    public void onClick(View v){
+        switch (v.getId()){
+            case R.id.boloc1:
+                com.zomato.photofilters.imageprocessors.Filter myFilter = SampleFilters.getBlueMessFilter();
+                Bitmap image = orginalbitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Bitmap outputImage = myFilter.processFilter(image);
+                croppedBitmap = outputImage;
+                photoView.setImageBitmap(outputImage);
+                save.setEnabled(true);
+                break;
+            case R.id.boloc2:
+                Filter filter1 = SampleFilters.getStarLitFilter();
+                Bitmap image1 = orginalbitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Bitmap outputImage1 = filter1.processFilter(image1);
+                croppedBitmap = outputImage1;
+                photoView.setImageBitmap(outputImage1);
+                save.setEnabled(true);
+                break;
+            case R.id.boloc3:
+                Filter filter2 = SampleFilters.getNightWhisperFilter();
+                Bitmap image2 = orginalbitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Bitmap outputImage2 = filter2.processFilter(image2);
+                croppedBitmap = outputImage2;
+                photoView.setImageBitmap(outputImage2);
+                save.setEnabled(true);
+                break;
+        }
     }
     private void uploadFiles(Uri croppedUri, String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -178,12 +247,14 @@ public class EditImageActivity extends AppCompatActivity {
             progressDialog.setProgress((int) progress);
         });
     }
+    // Lấy đuôi tệp "JPG"
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver =this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+    // Chuyển đổi Bitmap sang URI
     private Uri bitmapToUriConverter(Bitmap bitmap) {
         Uri uri = null;
         try {
