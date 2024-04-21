@@ -51,7 +51,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
     }
     private CropImageView edit_image;
     private PhotoView photoView;
-    private ImageView boloc1,boloc2,boloc3;
+    private ImageView boloc1,boloc2,boloc3,boloc4,boloc5;
     private Button cancel, save,cut,edit_cut, confirm_cutter;
     private Bitmap croppedBitmap,orginalbitmap;
     private Button filter;
@@ -76,24 +76,24 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         String imageUrl = getIntent().getStringExtra("image_url");
         // Hiển thị ảnh
         Picasso.get().load(imageUrl).into(photoView);
+        // Vẽ bitmap ảnh gốc
+        BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
+        orginalbitmap = drawable.getBitmap();
         // Bộ lọc
         HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.thanhboloc);
         boloc1 = (ImageView) findViewById(R.id.boloc1);
         boloc2 = (ImageView) findViewById(R.id.boloc2);
         boloc3 = (ImageView) findViewById(R.id.boloc3);
-        filter = (Button) findViewById(R.id.buttonFilter);
-        filter.setOnClickListener(new View.OnClickListener() {
+        boloc4 = (ImageView) findViewById(R.id.boloc4);
+        boloc5 = (ImageView) findViewById(R.id.boloc5);
+        // Lưu ảnh
+        save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                horizontalScrollView.setVisibility(View.VISIBLE);
+                Uri croppedUri = bitmapToUriConverter(croppedBitmap);
+                uploadFiles(croppedUri, "image");
             }
         });
-        boloc1.setOnClickListener(this);
-        boloc2.setOnClickListener(this);
-        boloc3.setOnClickListener(this);
-        BitmapDrawable drawable =(BitmapDrawable) photoView.getDrawable();
-        orginalbitmap = drawable.getBitmap();
-
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +106,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view) {
                 photoView.setVisibility(View.GONE);
+                horizontalScrollView.setVisibility(View.GONE);
                 edit_image.setVisibility(View.VISIBLE);
                 edit_cut.setVisibility(View.VISIBLE);
                 if(croppedBitmap != null) {
@@ -166,14 +167,26 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 confirm_cutter.setVisibility(View.GONE);
             }
         });
-        // Lưu ảnh
-        save.setOnClickListener(new View.OnClickListener() {
+        // Khởi chạy sự kiện bộ lọc
+        filter = (Button) findViewById(R.id.buttonFilter);
+        filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri croppedUri = bitmapToUriConverter(croppedBitmap);
-                uploadFiles(croppedUri, "image");
+                photoView.setVisibility(View.VISIBLE);
+                edit_image.setVisibility(View.GONE);
+                edit_cut.setVisibility(View.GONE);
+                horizontalScrollView.setVisibility(View.VISIBLE);
+                confirm_cutter.setVisibility(View.GONE);
             }
         });
+        // Nhấn sự kiện các bộ lọc
+        boloc1.setOnClickListener(this);
+        boloc2.setOnClickListener(this);
+        boloc3.setOnClickListener(this);
+        boloc4.setOnClickListener(this);
+        boloc5.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -185,6 +198,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 Bitmap outputImage = myFilter.processFilter(image);
                 croppedBitmap = outputImage;
                 photoView.setImageBitmap(outputImage);
+                edit_image.setImageBitmap(outputImage);
                 save.setEnabled(true);
                 break;
             case R.id.boloc2:
@@ -193,6 +207,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 Bitmap outputImage1 = filter1.processFilter(image1);
                 croppedBitmap = outputImage1;
                 photoView.setImageBitmap(outputImage1);
+                edit_image.setImageBitmap(outputImage1);
                 save.setEnabled(true);
                 break;
             case R.id.boloc3:
@@ -201,6 +216,25 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 Bitmap outputImage2 = filter2.processFilter(image2);
                 croppedBitmap = outputImage2;
                 photoView.setImageBitmap(outputImage2);
+                edit_image.setImageBitmap(outputImage2);
+                save.setEnabled(true);
+                break;
+            case R.id.boloc4:
+                Filter filter3 = SampleFilters.getLimeStutterFilter();
+                Bitmap image3 = orginalbitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Bitmap outputImage3 = filter3.processFilter(image3);
+                croppedBitmap = outputImage3;
+                photoView.setImageBitmap(outputImage3);
+                edit_image.setImageBitmap(outputImage3);
+                save.setEnabled(true);
+                break;
+            case R.id.boloc5:
+                Filter filter4 = SampleFilters.getAweStruckVibeFilter();
+                Bitmap image4 = orginalbitmap.copy(Bitmap.Config.ARGB_8888,true);
+                Bitmap outputImage4 = filter4.processFilter(image4);
+                croppedBitmap = outputImage4;
+                photoView.setImageBitmap(outputImage4);
+                edit_image.setImageBitmap(outputImage4);
                 save.setEnabled(true);
                 break;
         }

@@ -78,17 +78,27 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/boloc1"
-                android:src="@drawable/logo" />
+                android:src="@drawable/boloc1" />
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/boloc2"
-                android:src="@drawable/logo" />
+                android:src="@drawable/boloc2" />
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:id="@+id/boloc3"
-                android:src="@drawable/logo" />
+                android:src="@drawable/boloc3" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/boloc4"
+                android:src="@drawable/boloc4" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:id="@+id/boloc5"
+                android:src="@drawable/boloc5" />
 
         </LinearLayout>
     </HorizontalScrollView>
