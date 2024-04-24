@@ -2,7 +2,7 @@
 #Tên đề tài: Thiết kế phần mềm di động lưu trữ dữ liệu media
 #Thành viên trong nhóm:
        #1. Trịnh Bảo Kiên         MSV:2020604877  
-       #2. Hoàng Quang Vinh       MSV:2020
+       #2. Hoàng Quang Vinh       MSV:2020604215
        #3. Nguyễn Quang Trường    MSV:2020
 
 

@@ -30,5 +30,7 @@
     <string name="pl">Please check your connection</string>
     <string name="retry">Retry</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="channel_name">Channel 1</string>
+    <string name="channel_description">Mieu ta cho channel 1</string>
 
 </resources>
