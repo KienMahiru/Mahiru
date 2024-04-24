@@ -10,6 +10,7 @@ import androidx.palette.graphics.Palette;
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +29,6 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.example.doan.MyNotification;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
@@ -77,6 +77,8 @@ public class FullscreenMusicActivity extends AppCompatActivity {
     private boolean isPlaying = true; // Biến để theo dõi trạng thái hiện tại của trình phát
     // Biến để theo dõi trạng thái của activity
     private boolean isActivityVisible = false;
+
+    int notificationId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -388,6 +390,8 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         // Bắt đầu phát nhạc
         player.play();
         artworkView.setAnimation(loadRotation());
+
+        isPlaying = true;
     }
 
 
@@ -500,6 +504,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             player.stop();
         }
         player.release();
+        cancelNotification(getApplicationContext(), notificationId);
     }
 
     public String getReadableTime(int duration) {
@@ -538,7 +543,13 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         isActivityVisible = false;
     }
 
-    private void sendNotification(String musicName) {
+    public static void cancelNotification(Context ctx, int notifyId) {
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(ns);
+        nMgr.cancel(notifyId);
+    }
+
+        private void sendNotification(String musicName) {
         MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(this, "tag");
 
         Intent previousIntent = new Intent(this, NotificationActionService.class)
@@ -582,7 +593,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        int notificationId = 1;
+
         managerCompat.notify(notificationId, builder);
     }
 }
