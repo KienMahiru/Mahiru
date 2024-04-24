@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -77,8 +78,8 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         // Hiển thị ảnh
         Picasso.get().load(imageUrl).into(photoView);
         // Vẽ bitmap ảnh gốc
-        BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
-        orginalbitmap = drawable.getBitmap();
+        DrawBitmap();
+
         // Bộ lọc
         HorizontalScrollView horizontalScrollView = (HorizontalScrollView) findViewById(R.id.thanhboloc);
         boloc1 = (ImageView) findViewById(R.id.boloc1);
@@ -110,7 +111,8 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 edit_image.setVisibility(View.VISIBLE);
                 edit_cut.setVisibility(View.VISIBLE);
                 if(croppedBitmap != null) {
-                    Uri uri = bitmapToUriConverter(croppedBitmap);
+                    DrawBitmap();
+                    Uri uri = bitmapToUriConverter(orginalbitmap);
                     Picasso.get().load(uri).into(new Target() {
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -161,12 +163,14 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View view) {
                 photoView.setImageBitmap(croppedBitmap);
+                DrawBitmap();
                 edit_cut.setVisibility(View.GONE);
                 edit_image.setVisibility(View.GONE);
                 photoView.setVisibility(View.VISIBLE);
                 confirm_cutter.setVisibility(View.GONE);
             }
         });
+
         // Khởi chạy sự kiện bộ lọc
         filter = (Button) findViewById(R.id.buttonFilter);
         filter.setOnClickListener(new View.OnClickListener() {
@@ -185,10 +189,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         boloc3.setOnClickListener(this);
         boloc4.setOnClickListener(this);
         boloc5.setOnClickListener(this);
-
-
     }
-
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -239,6 +240,10 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
     }
+    private void DrawBitmap(){
+        BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
+        orginalbitmap = drawable.getBitmap();
+    }
     private void uploadFiles(Uri croppedUri, String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -287,12 +292,15 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
-
     // Chuyển đổi Bitmap sang URI
     private Uri bitmapToUriConverter(Bitmap bitmap) {
         Uri uri = null;
         try {
-            File file = new File(this.getCacheDir(), "temp_image.jpg");
+            Calendar calendar1 = Calendar.getInstance();
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
+            String timestamp1 = dateFormat1.format(calendar1.getTime());
+
+            File file = new File(this.getCacheDir(), "temp_image"+timestamp1+".jpg");
             FileOutputStream outputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.flush();
