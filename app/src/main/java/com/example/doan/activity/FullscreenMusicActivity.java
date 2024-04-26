@@ -151,6 +151,13 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         //player controls method
         playerControls(musicUrls, musicUrl);
     }
+    private void updateMaxDuration() {
+        if (player.getMediaItemCount() > 0) {
+            maxDuration = player.getDuration();
+            seekbar.setMax((int) maxDuration);
+            durationView.setText(getReadableTime((int) maxDuration));
+        }
+    }
 
     public static FullscreenMusicActivity getInstance() {
         return instance;
@@ -175,8 +182,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 assert mediaItem != null;
 
                 progressView.setText(getReadableTime((int) player.getCurrentPosition()));
-                durationView.setText(getReadableTime((int) player.getDuration()));
-                seekbar.setMax((int) player.getDuration());
+                updateMaxDuration();
                 seekbar.setProgress((int) player.getCurrentPosition());
                 playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0,0 );
 
@@ -204,10 +210,8 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     // Cập nhật trạng thái phát
                     isPlaying = player.isPlaying();
                     // Cập nhật thời gian tối đa của thanh seekbar
-                    maxDuration = player.getDuration();
-                    seekbar.setMax((int) maxDuration);
+                    updateMaxDuration();
                     progressView.setText(getReadableTime((int) player.getCurrentPosition()));
-                    durationView.setText(getReadableTime((int) player.getDuration()));
                     seekbar.setProgress((int) player.getCurrentPosition());
                     playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0, 0);
 
@@ -296,6 +300,10 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     seekBar.setProgress(progressValue);
                     progressView.setText(getReadableTime(progressValue));
                     player.seekTo(progressValue);
+                } else if (player.getPlaybackState() == ExoPlayer.STATE_ENDED) {
+                    player.seekTo(progressValue);
+                    player.play();
+                    artworkView.startAnimation(loadRotation());
                 }
             }
         });
@@ -389,8 +397,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
         // Bắt đầu phát nhạc
         player.play();
-        artworkView.setAnimation(loadRotation());
-
+        artworkView.startAnimation(loadRotation());
         isPlaying = true;
     }
 
