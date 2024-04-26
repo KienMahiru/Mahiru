@@ -266,6 +266,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                         playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_outline, 0, 0, 0);
                         artworkView.clearAnimation();
                     }
+                    sendNotification(songNameView.getText().toString());
                 }
             }
         });
@@ -339,7 +340,12 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             isPlaying = false; // Cập nhật trạng thái là tạm dừng
             playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_outline, 0, 0,0);
             artworkView.clearAnimation();
-        }else {
+        } else if (player.getPlaybackState() == ExoPlayer.STATE_ENDED) {
+            player.seekTo(0);
+            isPlaying = true;
+            playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0,0);
+            artworkView.startAnimation(loadRotation());
+        } else {
             player.play();
             isPlaying = true; // Cập nhật trạng thái là đang phát
             playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0,0);
