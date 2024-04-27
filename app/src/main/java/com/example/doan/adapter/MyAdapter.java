@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,12 +38,14 @@ import java.util.ArrayList;
 import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public List<String> mImageUrls;
+    private List<String> mTextData;
     private Context mContext;
     private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     public ActionMode actionMode;
-    public MyAdapter(Context context, List<String> imageUrls) {
+    public MyAdapter(Context context, List<String> imageUrls, List<String> textData) {
         mImageUrls = imageUrls;
+        mTextData = textData;
         mContext = context;
         mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
@@ -60,9 +63,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         String imageUrl = mImageUrls.get(position);
+        String textData = "";
+
+        // Kiểm tra mTextData có null không
+        if (mTextData != null && position < mTextData.size()) {
+            textData = mTextData.get(position);
+        }
         mPicasso.load(imageUrl)
                 .placeholder(R.drawable.placeholder_image)
                 .into(holder.myImageView);
+        holder.myTextView.setText(textData);
+
 
         // Xác định trạng thái của ảnh
         boolean isSelected = mSelectedItems.get(position);
@@ -335,11 +346,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView myImageView;
         ImageView checkView;
+        TextView myTextView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             myImageView = itemView.findViewById(R.id.my_image_view);
             checkView = itemView.findViewById(R.id.check_view);
+            myTextView = itemView.findViewById(R.id.my_text_view);
         }
     }
 }

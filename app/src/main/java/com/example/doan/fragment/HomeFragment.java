@@ -37,10 +37,7 @@ import android.content.ClipData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-
-import com.example.doan.adapter.TextAdapter;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -69,7 +66,6 @@ public class HomeFragment extends Fragment {
     private View mView;
     public RecyclerView mRecyclerView;
     private MyAdapter mAdapter;
-    private TextAdapter tAdapter;
     private VideoAdapter adapter;
     private MusicAdapter musicAdapter;
     private StorageReference mStorageRef;
@@ -85,7 +81,6 @@ public class HomeFragment extends Fragment {
     private Button button_music;
     private BottomNavigationView bottomNavigationView;
     private List<String> imageStrings = new ArrayList<>();
-    private List<String> dateStrings = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,7 +103,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
         List<String> imageStrings = new ArrayList<>();
-        mAdapter = new MyAdapter(getActivity(), imageStrings);
+        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -144,7 +139,7 @@ public class HomeFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.nav_anh:
                         List<String> imageStrings = new ArrayList<>();
-                        mAdapter = new MyAdapter(getActivity(), imageStrings);
+                        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -354,8 +349,6 @@ public class HomeFragment extends Fragment {
         if(id == R.id.sapxep) {
             if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
                 saveOriginalImageData();
-                mAdapter = new MyAdapter(getActivity(), imageStrings);
-                tAdapter = new TextAdapter(getActivity(), dateStrings);
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -365,7 +358,7 @@ public class HomeFragment extends Fragment {
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
                             public void onSuccess(ListResult listResult) {
-                                List<Pair<String, Long>> tempImageList = new ArrayList<>(); // Danh sách tạm thời để lưu trữ cặp giá trị (URL ảnh, thời gian)
+                                List<Pair<String, String>> imageList = new ArrayList<>(); // Danh sách tạm thời để lưu trữ cặp giá trị (URL ảnh, thời gian)
 
                                 // Duyệt qua danh sách các tệp ảnh
                                 for (StorageReference itemRef : listResult.getItems()) {
@@ -376,36 +369,38 @@ public class HomeFragment extends Fragment {
                                         // Lấy phần thời gian từ chuỗi tên tệp ảnh
                                         String dateString = parts[2].substring(0, 8); // Lấy phần ngày (8 ký tự từ vị trí 0)
                                         String timeString = parts[3].substring(0, 6); // Lấy phần giờ (6 ký tự từ vị trí 8)
-                                        String fullTimeString = dateString + timeString; // Kết hợp phần ngày và phần giờ
+                                        String dateTimeString = dateString + "_" + timeString;// Kết hợp phần ngày và phần giờ
                                         try {
-                                            long timestamp = Long.parseLong(fullTimeString);
                                             // Lấy URL của ảnh và thêm vào danh sách chính
                                             itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                     String uriString = uri.toString();
-                                                    imageStrings.add(uriString);
-                                                    // Thêm cặp giá trị (URL ảnh, thời gian) vào danh sách tạm thời
-                                                    tempImageList.add(new Pair<>(uriString, timestamp));
+                                                    String dateTimeString = dateString + "_" + timeString;
+
+                                                    imageList.add(new Pair<>(uriString, dateTimeString));
 
                                                     // Nếu đã duyệt qua tất cả các ảnh
-                                                    if (tempImageList.size() == listResult.getItems().size()) {
+                                                    if (imageList.size() == listResult.getItems().size()) {
                                                         // Sắp xếp danh sách theo thời gian từ mới đến cũ
-                                                        Collections.sort(tempImageList, new Comparator<Pair<String, Long>>() {
+                                                        Collections.sort(imageList, new Comparator<Pair<String, String>>() {
                                                             @Override
-                                                            public int compare(Pair<String, Long> o1, Pair<String, Long> o2) {
-                                                                return Long.compare(o2.second, o1.second);
+                                                            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
+                                                                return o2.second.compareTo(o1.second);
                                                             }
                                                         });
 
-                                                        // Xóa danh sách cũ
-                                                        imageStrings.clear();
-                                                        // Thêm các URL ảnh đã được sắp xếp vào danh sách chính
-                                                        for (Pair<String, Long> pair : tempImageList) {
-                                                            imageStrings.add(pair.first);
+                                                        List<String> imageUrls = new ArrayList<>();
+                                                        List<String> imageFileNames = new ArrayList<>();
+
+                                                        for (Pair<String, String> pair : imageList) {
+                                                            imageUrls.add(pair.first);
+                                                            imageFileNames.add(pair.second);
                                                         }
-                                                        // Cập nhật Adapter
-                                                        mAdapter.notifyDataSetChanged();
+
+                                                        // Cập nhật Adapter với danh sách đã sắp xếp
+                                                        mAdapter = new MyAdapter(getActivity(), imageUrls, imageFileNames);
+                                                        mRecyclerView.setAdapter(mAdapter);
                                                     }
                                                 }
                                             });
@@ -423,7 +418,7 @@ public class HomeFragment extends Fragment {
                                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                mRecyclerView.setAdapter(mAdapter);
+
             } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_video || bottomNavigationView.getSelectedItemId() == R.id.nav_music) {
                 imageStrings.clear();
                 imageStrings.addAll(originalImageStrings);
@@ -534,9 +529,6 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         String timestamp = dateFormat.format(calendar.getTime());
-        Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String date = sdf.format(currentDate);
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang tải lên");
@@ -549,43 +541,20 @@ public class HomeFragment extends Fragment {
 
         int totalFiles = fileUris.size();
         int[] successfulUploads = {0};  // Sử dụng một mảng để thay thế biến final
+
         for (int i = 0; i < totalFiles; i++) {
             Uri fileUri = fileUris.get(i);
-            String fileName = folderName + "_" + i + "_" + timestamp +"." + getFileExtension(fileUri);
+            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
             StorageReference fileRef = storageRef.child(fileName);
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            userRef.child("date").setValue(timestamp);
+            userRef.child("url").setValue(fileName);
             UploadTask uploadTask = fileRef.putFile(fileUri);
+
             setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
                 successfulUploads[0]++;
                 if (successfulUploads[0] == totalFiles) {
                     showToast(successMessage);
-
-                    if (folderName =="image") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("imagename" + timestamp).setValue(fileName);
-                    }
-                    if (folderName =="video") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("videoname" + timestamp).setValue(fileName);
-                    }
-                    if (folderName =="music") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("musicname" + timestamp).setValue(fileName);
-                    }
                 }
             });
         }
