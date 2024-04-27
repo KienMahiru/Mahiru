@@ -50,6 +50,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import android.net.Uri;
 import android.view.MenuItem;
 import android.content.Intent;
@@ -418,7 +419,6 @@ public class HomeFragment extends Fragment {
                                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-
             } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_video || bottomNavigationView.getSelectedItemId() == R.id.nav_music) {
                 imageStrings.clear();
                 imageStrings.addAll(originalImageStrings);
