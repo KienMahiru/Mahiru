@@ -72,7 +72,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         mPicasso.load(imageUrl)
                 .placeholder(R.drawable.placeholder_image)
                 .into(holder.myImageView);
-        holder.myTextView.setText(textData);
+        if (!textData.isEmpty()) {
+            holder.myTextView.setText(textData);
+            holder.myTextView.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có dữ liệu
+        } else {
+            holder.myTextView.setVisibility(View.GONE); // Ẩn TextView nếu không có dữ liệu
+        }
 
 
         // Xác định trạng thái của ảnh
