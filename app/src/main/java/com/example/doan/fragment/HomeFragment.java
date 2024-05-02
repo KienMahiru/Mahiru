@@ -339,22 +339,14 @@ public class HomeFragment extends Fragment {
         inflater.inflate(R.menu.menu_actionbar, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
-    private List<String> originalImageStrings = new ArrayList<>();
-    private void saveOriginalImageData() {
-        originalImageStrings.clear();
-        originalImageStrings.addAll(imageStrings);
-    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.sapxep) {
-            if (bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
-                saveOriginalImageData();
+        if(bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+            if (id == R.id.sapxep) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
-
                 // Lưu trữ danh sách ảnh ban đầu
-
                 mStorageRef.listAll()
                         .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                             @Override
@@ -419,14 +411,9 @@ public class HomeFragment extends Fragment {
                                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-            } else if (bottomNavigationView.getSelectedItemId() == R.id.nav_video || bottomNavigationView.getSelectedItemId() == R.id.nav_music) {
-                imageStrings.clear();
-                imageStrings.addAll(originalImageStrings);
-                mAdapter.notifyDataSetChanged();// Gọi phương thức để khôi phục lại danh sách ảnh ban đầu
-                mRecyclerView.setAdapter(mAdapter);
-
             }
         }
+
         if(id == R.id.chontatca){
             if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
                 // Chọn tất cả video
