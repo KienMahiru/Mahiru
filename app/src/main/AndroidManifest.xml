@@ -26,11 +26,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Doan"
         tools:targetApi="31">
-
+        <activity
+            android:name=".activity.EditImageProActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!-- Đảm bảo IntentFilter cho NotificationActionService -->
         <service android:name=".activity.NotificationActionService" />
 
-        <receiver android:name=".activity.NotificationActionService"
+        <receiver
+            android:name=".activity.NotificationActionService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.doan.action.NEXT" />
@@ -126,6 +133,28 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <activity
+            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity
+            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorStickerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity
+            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorTextActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+        <activity
+            android:name="com.dsphotoeditor.sdk.activity.DsPhotoEditorDrawActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
     </application>
 
 </manifest>
