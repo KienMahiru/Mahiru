@@ -1,4 +1,5 @@
 package com.example.doan.activity;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -19,6 +20,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +29,13 @@ import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.doan.MyNotification;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
@@ -41,6 +48,8 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.jgabrielfreitas.core.BlurImageView;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -77,8 +86,11 @@ public class FullscreenMusicActivity extends AppCompatActivity {
     private boolean isPlaying = true; // Biến để theo dõi trạng thái hiện tại của trình phát
     // Biến để theo dõi trạng thái của activity
     private boolean isActivityVisible = false;
+    private boolean isNewSong = false;
 
     int notificationId = 1;
+
+    String thumbnailURL = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +100,15 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         // Get the video URL from Intent
         String musicUrl = getIntent().getStringExtra("musicUrl");
         String musicName = getIntent().getStringExtra("musicName");
+        String thumbnailUrl = getIntent().getStringExtra("thumbnailUrl");
+        thumbnailURL = thumbnailUrl;
         musicUrls = getIntent().getStringArrayListExtra("musicUrlList");
 
         //save the status color
         defaultStatusColor = getWindow().getStatusBarColor();
         //set the navigation color
         getWindow().setNavigationBarColor (ColorUtils.setAlphaComponent(defaultStatusColor, 199)); // 0 & 255
+
 
         //views
         playerCloseBtn = findViewById(R.id.playerCloseBtn);
@@ -143,13 +158,18 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             editor.apply();
             // Chuẩn bị player
         }
+
+        // Load thumbnail using Glide
+        loadThumbnail(thumbnailUrl, artworkView);
+
         player.play();
         artworkView.setAnimation(loadRotation());
 
-        sendNotification(musicName);
+        // Convert Firebase Storage URL to HTTP URL
+        convertURLNSend(musicName, thumbnailUrl);
 
         //player controls method
-        playerControls(musicUrls, musicUrl);
+        playerControls(musicUrls, musicUrl, thumbnailUrl);
     }
     private void updateMaxDuration() {
         if (player.getMediaItemCount() > 0) {
@@ -159,11 +179,46 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         }
     }
 
+    private void convertURLNSend(String musicName, String thumbnailUrl){
+        // Convert Firebase Storage URL to HTTP URL
+        StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnailUrl);
+        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+            sendNotification(musicName, uri.toString());
+        }).addOnFailureListener(e -> {
+            // Handle failure
+        });
+    }
+
+    private void loadThumbnail(String thumbnailUrl, ImageView imageView) {
+        if (thumbnailUrl != null) {
+            if (thumbnailUrl.startsWith("gs://")) {
+                // Nếu URL bắt đầu với "gs://", đây là URL của Firebase Storage
+                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnailUrl);
+                storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                    // Tải ảnh từ URL HTTP bằng Glide
+                    Glide.with(this)
+                            .load(uri)
+                            .into(imageView);
+                }).addOnFailureListener(e -> {
+                    // Xử lý khi không thể tải ảnh từ Firebase Storage
+                    imageView.setImageResource(R.drawable.default_artwork);
+                });
+            } else {
+                // Xử lý trường hợp khác nếu cần
+                imageView.setImageResource(R.drawable.default_artwork);
+            }
+        } else {
+            // Xử lý khi thumbnailUrl là null
+            imageView.setImageResource(R.drawable.default_artwork);
+        }
+    }
+
+
     public static FullscreenMusicActivity getInstance() {
         return instance;
     }
 
-    private void playerControls(ArrayList<String> musicUrls, String musicUrl) {
+    private void playerControls(ArrayList<String> musicUrls, String musicUrl, String thumbnailUrl) {
         //song name marquee
         songNameView.setSelected(true);
 
@@ -227,13 +282,16 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     //update player view colors
                     updatePlayerColors();
                 } else if (playbackState == ExoPlayer.STATE_ENDED) {
-                    // Cập nhật trạng thái phát
                     isPlaying = false;
                     if (repeatMode == 3) {
                         // Chọn ngẫu nhiên một bài hát từ danh sách
                         Random random = new Random();
                         int randomIndex = random.nextInt(musicUrls.size());
                         String randomMusicUrl = musicUrls.get(randomIndex);
+
+                        thumbnailURL = getThumbnailUrl(randomMusicUrl);
+
+                        loadThumbnail(thumbnailURL, artworkView);
 
                         // Lấy tên file từ URL
                         String fileName = randomMusicUrl.substring(randomMusicUrl.lastIndexOf("%2F") + 3, randomMusicUrl.lastIndexOf(".mp3"));
@@ -261,12 +319,16 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
                         // Bắt đầu phát nhạc
                         player.play();
+
+                        isNewSong = true;
                         artworkView.setAnimation(loadRotation());
+
                     } else {
+                        thumbnailURL = thumbnailUrl;
                         playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_outline, 0, 0, 0);
                         artworkView.clearAnimation();
                     }
-                    sendNotification(songNameView.getText().toString());
+                    convertURLNSend(songNameView.getText().toString(), thumbnailURL);
                 }
             }
         });
@@ -305,6 +367,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     player.seekTo(progressValue);
                     player.play();
                     artworkView.startAnimation(loadRotation());
+                    convertURLNSend(songNameView.getText().toString(), thumbnailURL);
                 }
             }
         });
@@ -356,7 +419,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         updatePlayerColors();
 
         // Cập nhật notification
-        sendNotification(songNameView.getText().toString());
+        convertURLNSend(songNameView.getText().toString(), thumbnailURL);
     }
 
     public void skipToNextOrPreviousSong(ArrayList<String> musicUrls, boolean isNext) {
@@ -384,10 +447,13 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
             // Cập nhật tên bài hát
             songNameView.setText(decodedFileName);
-            sendNotification(decodedFileName);
+            thumbnailURL = getThumbnailUrl(newMusicUrl);
+            convertURLNSend(decodedFileName, thumbnailURL);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+        loadThumbnail(getThumbnailUrl(newMusicUrl), artworkView);
 
         // Tạo một MediaItem từ newMusicUrl
         MediaItem mediaItem = MediaItem.fromUri(newMusicUrl);
@@ -405,9 +471,19 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         player.play();
         artworkView.startAnimation(loadRotation());
         isPlaying = true;
+
     }
 
+    private String getThumbnailUrl(String musicUrl) {
+        // Tạo một StorageReference từ URL của file mp3
+        StorageReference musicRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
 
+        // Tạo một tham chiếu đến thư mục chứa file mp3 và file ảnh thumbnail
+        StorageReference folderRef = musicRef.getParent();
+
+        // Tạo URL cho file metadata ảnh
+        return folderRef.child("thumbnail.jpg").toString();
+    }
 
     private void updatePlayerColors() {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) artworkView.getDrawable();
@@ -479,6 +555,18 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         }
         finish();
     }
+
+    private void updatePlayerStateAndNotification() {
+        // Cập nhật trạng thái phát của ExoPlayer
+        isPlaying = player.isPlaying();
+
+        // Cập nhật icon play/pause trong notification
+        int playPauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
+
+        // Cập nhật notification
+        sendNotification(songNameView.getText().toString(), thumbnailURL);
+    }
+
 
     private void updatePlayerPositionProgress() {
         new Handler().postDelayed(() -> {
@@ -554,6 +642,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         unregisterReceiver(networkChangeListener);
         super.onStop();
         isActivityVisible = false;
+        cancelNotification(getApplicationContext(), notificationId);
     }
 
     public static void cancelNotification(Context ctx, int notifyId) {
@@ -562,7 +651,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         nMgr.cancel(notifyId);
     }
 
-        private void sendNotification(String musicName) {
+    private void sendNotification(String musicName, String thumbnailUrl) {
         MediaSessionCompat mediaSessionCompat = new MediaSessionCompat(this, "tag");
 
         Intent previousIntent = new Intent(this, NotificationActionService.class)
@@ -577,36 +666,50 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 .setAction(NotificationActionService.ACTION_NEXT);
         PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        if (isNewSong){
+            isPlaying = true;
+        }
         int playPauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play; // Chọn biểu tượng tương ứng
 
-        Notification builder = new NotificationCompat.Builder(FullscreenMusicActivity.this, MyNotification.CHANNEL_ID)
-                // Show controls on lock screen even when user hides sensitive content.
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.drawable.ic_stat_player)
-                // Add media control buttons that invoke intents in your media service
-                .addAction(R.drawable.ic_skip_previous, "Previous", previousPendingIntent) // #0
-                .addAction(playPauseIcon, isPlaying ? "Pause" : "Play", playPausePendingIntent) // #1
-                .addAction(R.drawable.ic_skip_next, "Next", nextPendingIntent)     // #2
-                // Apply the media style template.
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1, 2 /* #1: pause button */)
-                        .setMediaSession(mediaSessionCompat.getSessionToken()))
-                .setContentTitle(musicName)
-                .setContentText("Music")
-                .build();
+        // Load thumbnail using Glide and convert it to Bitmap
+        Glide.with(this)
+                .asBitmap()
+                .load(thumbnailUrl)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        // Create a large icon for notification
+                        Bitmap largeIcon = Bitmap.createScaledBitmap(resource, 512, 512, false);
 
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getApplicationContext());
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+                        // Build notification with large icon
+                        Notification builder = new NotificationCompat.Builder(FullscreenMusicActivity.this, MyNotification.CHANNEL_ID)
+                                // Show controls on lock screen even when user hides sensitive content.
+                                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                .setSmallIcon(R.drawable.ic_stat_player)
+                                .setLargeIcon(largeIcon) // Set large icon here
+                                // Add media control buttons that invoke intents in your media service
+                                .addAction(R.drawable.ic_skip_previous, "Previous", previousPendingIntent) // #0
+                                .addAction(playPauseIcon, isPlaying ? "Pause" : "Play", playPausePendingIntent) // #1
+                                .addAction(R.drawable.ic_skip_next, "Next", nextPendingIntent)     // #2
+                                // Apply the media style template.
+                                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                                        .setShowActionsInCompactView(0, 1, 2 /* #1: pause button */)
+                                        .setMediaSession(mediaSessionCompat.getSessionToken()))
+                                .setContentTitle(musicName)
+                                .setContentText("Music")
+                                .build();
 
-        managerCompat.notify(notificationId, builder);
+                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getApplicationContext());
+                        if (ActivityCompat.checkSelfPermission(FullscreenMusicActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        managerCompat.notify(notificationId, builder);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // In case of load failure
+                    }
+                });
     }
 }

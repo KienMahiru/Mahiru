@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.doan.activity.FullscreenMusicActivity;
 import com.example.doan.R;
 import com.google.android.gms.tasks.Continuation;
@@ -40,6 +42,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHolder> {
@@ -49,16 +53,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     public ActionMode actionMode;
     private RecyclerView mRecyclerView;
     private Picasso mPicasso;
-    private String musicTitle;
-
-    private List<String> mMusicTitles;
 
     public MusicAdapter(Context context, List<String> musicUrls) {
         mMusicUrls = musicUrls;
         mContext = context;
         mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
-        mMusicTitles = new ArrayList<>();
     }
     public ActionMode.Callback getCallback() {
         return callback;
@@ -73,25 +73,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     @Override
     public void onBindViewHolder(@NonNull MusicViewHolder holder, int position) {
         String musicUrl = mMusicUrls.get(position);
-        getMusicTitleFromFirebaseStorage(musicUrl).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String musicTitle) {
-                if (position < mMusicTitles.size()) {
-                    mMusicTitles.set(position, musicTitle);
-                } else {
-                    mMusicTitles.add(musicTitle);
-                }
-                holder.musicName.setText(musicTitle);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Xử lý khi không thể lấy tên nhạc
-            }
-        });
-        mPicasso.load(musicUrl)
-                .placeholder(R.drawable.placeholder_music)
-                .into(holder.myMusicView);
+        String thumbnailUrl = getThumbnailUrl(musicUrl);
+
+        holder.musicName.setText(getNameSong(musicUrl));
+
+        // Tải ảnh thumbnail
+        loadThumbnail(getThumbnailUrl(musicUrl), holder.myMusicView);
 
         // Xác định trạng thái của ảnh
         boolean isSelected = mSelectedItems.get(position);
@@ -110,7 +97,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 // Chuyển sang một Activity khác và truyền đường dẫn của video được click qua Intent
                 Intent intent = new Intent(mContext, FullscreenMusicActivity.class);
                 intent.putExtra("musicUrl", musicUrl);
-                intent.putExtra("musicName", mMusicTitles.get(position)); // Sử dụng biến thành viên
+                intent.putExtra("thumbnailUrl", thumbnailUrl);
+                intent.putExtra("musicName", getNameSong(musicUrl)); // Sử dụng biến thành viên
                 intent.putStringArrayListExtra("musicUrlList", (ArrayList<String>) mMusicUrls);
                 mContext.startActivity(intent);
             }
@@ -235,6 +223,41 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 dialog.show();
             }
         });
+    }
+
+    private void loadThumbnail(String musicUrl, ImageView imageView) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Load ảnh từ URL có thể truy cập từ Internet bằng Glide
+                Glide.with(mContext)
+                        .load(uri)
+                        .placeholder(R.drawable.placeholder_music)
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Xử lý khi không thể tải URL
+                Log.e("Glide", "Load failed", e);
+            }
+        });
+    }
+
+
+
+
+    // Phương thức để lấy URL của file metadata ảnh trong cùng thư mục trên Firebase Storage
+    private String getThumbnailUrl(String musicUrl) {
+        // Tạo một StorageReference từ URL của file mp3
+        StorageReference musicRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+
+        // Tạo một tham chiếu đến thư mục chứa file mp3 và file ảnh thumbnail
+        StorageReference folderRef = musicRef.getParent();
+
+        // Tạo URL cho file metadata ảnh
+        return folderRef.child("thumbnail.jpg").toString();
     }
 
     private ActionMode.Callback callback = new ActionMode.Callback() {
@@ -436,6 +459,21 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             notifyDataSetChanged();
         }
     };
+
+    private String getNameSong (String newMusicUrl){
+        // Lấy tên file từ URL
+        String fileName = newMusicUrl.substring(newMusicUrl.lastIndexOf("%2F") + 3, newMusicUrl.lastIndexOf(".mp3"));
+        String songName = "";
+        // Giải mã tên file
+        try {
+            String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
+            songName = decodedFileName;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return songName;
+    }
     private void shareMusics(ArrayList<Uri> musicUris) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         shareIntent.setType("music/*");

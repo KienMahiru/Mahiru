@@ -85,5 +85,7 @@ dependencies {
     //blurImageView
     implementation 'com.github.jgabrielfreitas:BlurImageView:1.0.1'
     implementation 'com.github.zomato:androidphotofilters:1.0.2'
+    // FirebaseUI for Cloud Storage
+    implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
 
 }
