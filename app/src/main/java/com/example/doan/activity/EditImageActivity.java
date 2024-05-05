@@ -11,6 +11,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -20,10 +23,15 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.chrisbanes.photoview.PhotoView;
+import com.github.gcacace.signaturepad.views.SignaturePad;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,18 +52,27 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiPredicate;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class EditImageActivity extends AppCompatActivity implements View.OnClickListener {
     static
     {
         System.loadLibrary("NativeImageProcessor");
     }
+    private int defaultcolor;
     private CropImageView edit_image;
     private PhotoView photoView;
     private ImageView boloc1,boloc2,boloc3,boloc4,boloc5;
     private Button cancel, save,cut,edit_cut, confirm_cutter;
     private Bitmap croppedBitmap,orginalbitmap;
-    private Button filter;
+    private Button filter, buttonDraw;
+    private LinearLayout draw_pen, tool_draw;
+    private SignaturePad signaturePad;
+    private ImageButton eraser, colors, confirm_draw;
+    private SeekBar seekBar;
+    private TextView txtsize_pen;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +127,9 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 horizontalScrollView.setVisibility(View.GONE);
                 edit_image.setVisibility(View.VISIBLE);
                 edit_cut.setVisibility(View.VISIBLE);
+                draw_pen.setVisibility(View.GONE);
+                tool_draw.setVisibility(View.GONE);
+                signaturePad.setVisibility(View.GONE);
                 if(croppedBitmap != null) {
                     DrawBitmap();
                     Uri uri = bitmapToUriConverter(orginalbitmap);
@@ -181,6 +201,9 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 edit_cut.setVisibility(View.GONE);
                 horizontalScrollView.setVisibility(View.VISIBLE);
                 confirm_cutter.setVisibility(View.GONE);
+                draw_pen.setVisibility(View.GONE);
+                tool_draw.setVisibility(View.GONE);
+                signaturePad.setVisibility(View.GONE);
             }
         });
         // Nhấn sự kiện các bộ lọc
@@ -189,7 +212,97 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         boloc3.setOnClickListener(this);
         boloc4.setOnClickListener(this);
         boloc5.setOnClickListener(this);
+
+        //Bảng vẽ
+        signaturePad = (SignaturePad) findViewById(R.id.draw_photo);
+        // Layout size pen
+        draw_pen = (LinearLayout) findViewById(R.id.draw_pen);
+        // Layout Công cụ
+        tool_draw = (LinearLayout) findViewById(R.id.tool_draw);
+
+        // Khởi chạy trình vẽ
+        buttonDraw = (Button) findViewById(R.id.buttonDraw);
+        buttonDraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Ẩn các công cụ không liên quan
+                edit_image.setVisibility(View.GONE);
+                edit_cut.setVisibility(View.GONE);
+                horizontalScrollView.setVisibility(View.GONE);
+                confirm_cutter.setVisibility(View.GONE);
+                photoView.setVisibility(View.GONE);
+                // Hiển các công cụ liên quan
+                draw_pen.setVisibility(View.VISIBLE);
+                tool_draw.setVisibility(View.VISIBLE);
+                signaturePad.setVisibility(View.VISIBLE);
+                if(croppedBitmap!=null){
+                    signaturePad.setSignatureBitmap(croppedBitmap);
+                }else{
+                    signaturePad.setSignatureBitmap(orginalbitmap);
+                }
+            }
+        });
+
+        // Công cụ màu
+        colors = (ImageButton) findViewById(R.id.colors);
+        colors.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPenColorPicker();
+            }
+        });
+
+        //Công cụ xóa
+        eraser = (ImageButton) findViewById(R.id.eraser);
+        eraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signaturePad.setSignatureBitmap(orginalbitmap);
+            }
+        });
+        //Công cụ size pen
+        seekBar = (SeekBar) findViewById(R.id.size_pen);
+        txtsize_pen = (TextView) findViewById(R.id.textsize_pen);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                if (progress<=0) progress =1;
+                txtsize_pen.setText(progress+"dp");
+                signaturePad.setMaxWidth(progress);
+                seekBar.setMax(50);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        // Xác nhận ảnh vẽ
+        confirm_draw =(ImageButton) findViewById(R.id.confirm_draw);
+        confirm_draw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bitmap signaturePad_bitmap = signaturePad.getSignatureBitmap();
+                photoView.setImageBitmap(signaturePad_bitmap);
+                photoView.setVisibility(View.VISIBLE);
+                croppedBitmap = signaturePad_bitmap;
+                orginalbitmap = signaturePad_bitmap;
+                // Ẩn các công cụ sau khi vẽ
+                draw_pen.setVisibility(View.GONE);
+                tool_draw.setVisibility(View.GONE);
+                signaturePad.setVisibility(View.GONE);
+                // Cho phép lưu
+                save.setEnabled(true);
+            }
+        });
     }
+
+    // Click các bộ lọc
     @Override
     public void onClick(View v){
         switch (v.getId()){
@@ -240,10 +353,31 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
     }
+
+    //Mở hộp màu
+    private void onPenColorPicker(){
+        AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog(this, defaultcolor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                defaultcolor = color;
+                signaturePad.setPenColor(color);
+            }
+        });
+        ambilWarnaDialog.show();
+    }
+
+    //Vẽ bitmap dựa vào photoView
     private void DrawBitmap(){
         BitmapDrawable drawable = (BitmapDrawable) photoView.getDrawable();
         orginalbitmap = drawable.getBitmap();
     }
+
+    // Upload vào database
     private void uploadFiles(Uri croppedUri, String folderName) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -260,7 +394,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
         progressDialog.show();
-        String fileName = folderName +"_" + timestamp +"."+getFileExtension(croppedUri);
+        String fileName = folderName +"_0_" + timestamp +"."+getFileExtension(croppedUri);
         StorageReference fileRef = storageRef.child(fileName);
         UploadTask uploadTask = fileRef.putFile(croppedUri);
         setUploadTaskListeners(uploadTask, progressDialog,1, () -> {
@@ -269,6 +403,8 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         Intent intent = new Intent(EditImageActivity.this, Option.class);
         startActivity(intent);
     }
+
+    // Hiển thị UI tác vụ upload
     private void setUploadTaskListeners(UploadTask uploadTask, ProgressDialog progressDialog, int totalFiles, Runnable onSuccessAction) {
         uploadTask.addOnSuccessListener(taskSnapshot -> {
             progressDialog.setProgress(progressDialog.getProgress() + 1);
@@ -286,12 +422,14 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
             progressDialog.setProgress((int) progress);
         });
     }
+
     // Lấy đuôi tệp "JPG"
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver =this.getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
+
     // Chuyển đổi Bitmap sang URI
     private Uri bitmapToUriConverter(Bitmap bitmap) {
         Uri uri = null;
