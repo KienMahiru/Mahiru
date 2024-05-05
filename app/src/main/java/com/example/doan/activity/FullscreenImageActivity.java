@@ -1,8 +1,6 @@
 package com.example.doan.activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -50,32 +47,24 @@ import java.util.List;
 
 public class FullscreenImageActivity extends AppCompatActivity {
     private PhotoView mImageView;
-    private Button back_left,back_right; // Nút chuyển ảnh trái, phải
-    private ImageButton back;
-    private int position;//Vị trí ảnh trong List ảnh
+    private Button back,back_left,back_right;
+    private int position;
     private Context context;
-    private MyAdapter mAdapter; // Adapter
-    private String imageUrl;// Đường link URL của ảnh
-    private ArrayList<String> imageUrls;// List URL ảnh
-    private BottomNavigationView bottom_nav_image;// Thanh điều hướng dưới
-    private HomeFragment homeFragment; // Giao diện kho
-
-    // Lắng nghe sự kiện mạng
+    private MyAdapter mAdapter;
+    private String imageUrl;
+    private ArrayList<String> imageUrls;
+    public SparseBooleanArray mSelectedItems;
+    private BottomNavigationView bottom_nav_image;
+    private HomeFragment homeFragment;
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_image);
-        // Lấy list ảnh
         imageUrls = getIntent().getStringArrayListExtra("imageUrls");
-        // Nút quay lại
-        back = (ImageButton) findViewById(R.id.back);
-        // Nút chuyển ảnh bên trái
+        back = (Button) findViewById(R.id.back);
         back_left = (Button) findViewById(R.id.back_left);
-        // Nút chuyển ảnh bên phải
         back_right = (Button) findViewById(R.id.back_right);
-        // Lắng nghe sự kiện nút back
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,29 +83,6 @@ public class FullscreenImageActivity extends AppCompatActivity {
                         shareImage(imageUrl);
                         return true;
                     case R.id.edit_image:
-                        // Tạo hộp thoại lựa chọn
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FullscreenImageActivity.this);
-                        builder.setTitle("Lựa chọn chỉnh sửa ảnh");
-                        builder.setItems(new CharSequence[]{"Đơn giản", "Chuyên nghiệp"}, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Xử lý sự kiện khi người dùng chọn một mục
-                                switch (which) {
-                                    case 0:
-                                        // Xử lý khi chọn Đơn giản
-                                        edit_image(imageUrl);
-                                        break;
-                                    case 1:
-                                        // Xử lý khi chọn Chuyên nghiệp
-                                        edit_image_pro(imageUrl);
-                                        break;
-                                }
-                            }
-                        });
-
-                        // Hiển thị hộp thoại lựa chọn
-                        builder.show();
-
                         return true;
                     case R.id.delete_image:
                         deleteImage(imageUrl, imageUrls);
@@ -144,7 +110,6 @@ public class FullscreenImageActivity extends AppCompatActivity {
         mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mImageView.setZoomable(true);
 
-        // Lắng nghe sự kiện nhấn nút chuyển ảnh trái
         back_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,7 +133,6 @@ public class FullscreenImageActivity extends AppCompatActivity {
         });
     }
 
-    // Trình chia sẻ ảnh
     private void shareImage(String imageUrl) {
         // Thêm dữ liệu ảnh vào intent
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
@@ -193,22 +157,6 @@ public class FullscreenImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-    // Trình chỉnh sửa ảnh đơn giản
-    private void edit_image(String imageUrl) {
-        Intent intent = new Intent(FullscreenImageActivity.this, EditImageActivity.class);
-        intent.putExtra("image_url", imageUrl);
-        startActivity(intent);
-    }
-
-    // Trình chỉnh sửa ảnh chuyên nghiệp
-    private void edit_image_pro(String imageUrl) {
-        Intent intent = new Intent(FullscreenImageActivity.this, EditImageProActivity.class);
-        intent.putExtra("image_url", imageUrl);
-        startActivity(intent);
-    }
-
-    // Trình xóa ảnh
     private void deleteImage(String imageUrl, ArrayList<String> imageUrls) {
         // Tạo progressDialog
         ProgressDialog progressDialog = new ProgressDialog(FullscreenImageActivity.this);
@@ -238,13 +186,16 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                         imageUrls.remove(imageUrl);
 
                                         // Hiển thị ảnh mới
-                                        if (position >= 0 && position < imageUrls.size()) {
+                                        if (position >= 0) {
                                             position--;
                                             Picasso.get().load(imageUrls.get(position)).into(mImageView);
                                         } else {
                                             // Không còn ảnh trong danh sách, kết thúc FullscreenImageActivity
                                             finish();
                                         }
+
+
+
                                         // Ẩn progressDialog
                                         progressDialog.dismiss();
 
