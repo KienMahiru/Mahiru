@@ -17,7 +17,7 @@
         app:showAsAction="never">
         <menu>
             <item android:id="@+id/khoi_phuc_anh"
-                android:title="Hoàn tác"
+                android:title="@string/Undo_1"
                 android:icon="@drawable/ic_baseline_update_24"/>
         </menu>
     </item>

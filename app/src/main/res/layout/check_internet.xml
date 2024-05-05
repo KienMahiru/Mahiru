@@ -23,14 +23,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mất kết nối mạng"
+        android:text="@string/internet_drop"
         android:textSize="25sp"
         android:textColor="@color/black"
         android:id="@+id/inter"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Vui lòng kiểm tra lại mạng!"
+        android:text="@string/check_net"
         android:textColor="@color/black"
         android:textSize="15sp"
         android:id="@+id/check"/>

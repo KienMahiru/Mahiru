@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Mahiru</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="prompt_email" translatable="false">Email</string>
+    <string name="prompt_password" translatable="false">Mật khẩu</string>
+    <string name="action_sign_in" translatable="false">Đăng nhập hoặc đăng kí</string>
+    <string name="action_sign_in_short" translatable="false">Đăng nhập</string>
+    <string name="welcome" translatable="false">"Xin chào !"</string>
+    <string name="invalid_username" translatable="false">Tên người dùng không hợp lệ</string>
+    <string name="invalid_password" translatable="false">Mật khẩu phải > 5 kí tự</string>
+    <string name="login_failed" translatable="false">"Đăng nhập thất bại"</string>
+    <string name="nav_home" translatable="false">Lưu trữ</string>
+    <string name="nav_settings" translatable="false">Cài đặt</string>
+    <string name="nav_delete" translatable="false">Thùng rác</string>
+    <string name="nav_account" translatable="false">Tài khoản</string>
+    <string name="nav_my_profile" translatable="false">Thông tin cá nhân</string>
+    <string name="nav_change_password" translatable="false">Đổi mật khẩu</string>
+    <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
+    <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+    <string name="share" translatable="false">Chia sẻ</string>
+    <string name="delete" translatable="false">Xoá</string>
+    <string name="more">Thêm</string>
+    <string name="content_description_share">Share content</string>
+    <string name="content_description_delete">Delete content</string>
+    <string name="content_description_more">More options</string>
+
+
+    --check_internet---
+    <string name="op">OOPS!</string>
+    <string name="no">Không có kết nối Internet</string>
+    <string name="pl">Hãy kiểm tra kết nối Internet của bạn</string>
+    <string name="retry">Thử lại</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="channel_name">Channel 1</string>
+    <string name="channel_description">Mieu ta cho channel 1</string>
+
+    <string name="title_login">Đăng nhập tài khoản</string>
+    <string name="maintain_login">Duy trì đăng nhập</string>
+    <string name="forgot_password">Quên mật khẩu</string>
+    <string name="title_pleaseregister">Nếu chưa có tài khoản. Hãy đăng ký tại đây!</string>
+    <string name="save_image">Tải về máy</string>
+    <string name="title_signup">Đăng kí tài khoản</string>
+    <string name="signup">Đăng kí</string>
+    <string name="cancel">Huỷ</string>
+    <string name="save_edit">Lưu</string>
+    <string name="TV_sp">1dp</string>
+    <string name="reset_pass">Khôi phục mật khẩu</string>
+    <string name="reset_bt">Khôi phục</string>
+    <string name="internet_drop">Mất kết nối mạng</string>
+    <string name="check_net">Vui lòng kiểm tra lại mạng!</string>
+    <string name="old_pass">Nhập mật khẩu cũ</string>
+    <string name="new_pass">Nhập mật khẩu mới</string>
+    <string name="confirm_newpass">Xác nhận mật khẩu mới</string>
+    <string name="update_pass">Cập nhật</string>
+    <string name="title_report">Chọn các phương thức sau để\\nphản hồi lại với nhà phát triển</string>
+    <string name="Intro_title">Giới thiệu về Mahiru</string>
+    <string name="Intro_conten">Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng\n và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com</string>
+    <string name="input_name">Nhập tên</string>
+    <string name="update_infor">Cập nhật thông tin</string>
+    <string name="dark_mode">Chế độ Tối</string>
+    <string name="dele_cache">Xóa bộ nhớ đệm</string>
+    <string name="con_quest1">Tải ảnh/video/nhạc lên như thế nào?</string>
+    <string name="anwser_ques1">Tải ảnh/video/nhạc lên bằng cách nhấn nút upload hoặc nhấn giữ nút upload để chọn tệp cần tải</string>
+    <string name="con_quest2">Tải ảnh/video/nhạc về điện thoại như thế nào?</string>
+    <string name="anwser_ques2">Tải ảnh/video/nhạc về điện thoại bằng cách nhấn giữ ảnh/video/nhạc cần tải về sau đó bấm nút More(3 chấm dọc) và bấm nút Download ảnh</string>
+    <string name="Undo_1">Hoàn tác</string>
+    <string name="select_all">Chọn tất cả</string>
+    <string name="sort">Sắp xếp</string>
+    <string name="Image">Ảnh</string>
+    <string name="Video">Video</string>
+    <string name="Music">Âm nhạc</string>
+    <string name="cut">Cắt</string>
+    <string name="draw">Vẽ</string>
+    <string name="filter">Bộ lọc</string>
+    <string name="edit_image">Chỉnh sửa</string>
+    <string name="recovery_image">Khôi phục</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="Feedback">Phản hồi</string>
+    <string name="infor_app">Thông tin App</string>
+    <string name="support">Trợ giúp</string>
+
+</resources>

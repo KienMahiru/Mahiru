@@ -24,7 +24,7 @@
         app:showAsAction="never">
         <menu>
             <item android:id="@+id/save_image"
-                android:title="Tải về máy"
+                android:title="@string/save_image"
                 android:icon="@drawable/ic_baseline_save_alt_24"/>
         </menu>
     </item>

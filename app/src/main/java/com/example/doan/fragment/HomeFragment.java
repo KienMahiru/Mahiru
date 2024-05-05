@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +35,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -97,7 +100,7 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
         List<String> imageStrings = new ArrayList<>();
-        mAdapter = new MyAdapter(getActivity(), imageStrings);
+        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -133,7 +136,7 @@ public class HomeFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.nav_anh:
                         List<String> imageStrings = new ArrayList<>();
-                        mAdapter = new MyAdapter(getActivity(), imageStrings);
+                        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -336,6 +339,77 @@ public class HomeFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        if(bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+            if (id == R.id.sapxep) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
+                // Lưu trữ danh sách ảnh ban đầu
+                mStorageRef.listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                List<Pair<String, String>> imageList = new ArrayList<>(); // Danh sách tạm thời để lưu trữ cặp giá trị (URL ảnh, thời gian)
+
+                                // Duyệt qua danh sách các tệp ảnh
+                                for (StorageReference itemRef : listResult.getItems()) {
+                                    String imageName = itemRef.getName();
+                                    // Tách chuỗi tên tệp ảnh để lấy ra phần thời gian
+                                    String[] parts = imageName.split("_");
+                                    if (parts.length >= 3) { // Kiểm tra xem có đủ phần tử sau khi tách không
+                                        // Lấy phần thời gian từ chuỗi tên tệp ảnh
+                                        String dateString = parts[2].substring(0, 8); // Lấy phần ngày (8 ký tự từ vị trí 0)
+                                        String timeString = parts[3].substring(0, 6); // Lấy phần giờ (6 ký tự từ vị trí 8)
+                                        String dateTimeString = dateString + "_" + timeString;// Kết hợp phần ngày và phần giờ
+                                        try {
+                                            // Lấy URL của ảnh và thêm vào danh sách chính
+                                            itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String uriString = uri.toString();
+                                                    String dateTimeString = dateString + "_" + timeString;
+
+                                                    imageList.add(new Pair<>(uriString, dateTimeString));
+
+                                                    // Nếu đã duyệt qua tất cả các ảnh
+                                                    if (imageList.size() == listResult.getItems().size()) {
+                                                        // Sắp xếp danh sách theo thời gian từ mới đến cũ
+                                                        Collections.sort(imageList, new Comparator<Pair<String, String>>() {
+                                                            @Override
+                                                            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
+                                                                return o2.second.compareTo(o1.second);
+                                                            }
+                                                        });
+
+                                                        List<String> imageUrls = new ArrayList<>();
+                                                        List<String> imageFileNames = new ArrayList<>();
+
+                                                        for (Pair<String, String> pair : imageList) {
+                                                            imageUrls.add(pair.first);
+                                                            imageFileNames.add(pair.second);
+                                                        }
+
+                                                        // Cập nhật Adapter với danh sách đã sắp xếp
+                                                        mAdapter = new MyAdapter(getActivity(), imageUrls, imageFileNames);
+                                                        mRecyclerView.setAdapter(mAdapter);
+                                                    }
+                                                }
+                                            });
+                                        } catch (NumberFormatException e) {
+                                            // Xử lý nếu không thể chuyển đổi thời gian thành số
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
         if(id == R.id.chontatca){
             if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
                 // Chọn tất cả video

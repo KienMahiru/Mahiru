@@ -24,6 +24,7 @@ public class SettingsFragment extends Fragment {
     private View mView;
     private Switch aSwitch;
     private Button xoa_cache;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class SettingsFragment extends Fragment {
         aSwitch = mView.findViewById(R.id.darkmode);
         xoa_cache = mView.findViewById(R.id.xoa_cache);
         progressBar = mView.findViewById(R.id.progressBar);
+
 
         initSwitch();
 

@@ -37,7 +37,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:layout_marginLeft="10dp"
-                            android:text="Tải ảnh/video/nhạc lên như thế nào?"/>
+                            android:text="@string/con_quest1"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -57,7 +57,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:layout_marginLeft="10dp"
-                            android:text="Tải ảnh/video/nhạc lên bằng cách nhấn nút upload hoặc nhấn giữ nút upload để chọn tệp cần tải"/>
+                            android:text="@string/anwser_ques1"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -76,7 +76,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:layout_marginLeft="10dp"
-                            android:text="Tải ảnh/video/nhạc về điện thoại như thế nào?"/>
+                            android:text="@string/con_quest2"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -96,7 +96,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:layout_marginLeft="10dp"
-                            android:text="Tải ảnh/video/nhạc về điện thoại bằng cách nhấn giữ ảnh/video/nhạc cần tải về sau đó bấm nút More(3 chấm dọc) và bấm nút Download ảnh"/>
+                            android:text="@string/anwser_ques2"/>
 
                     </LinearLayout>
                 </LinearLayout>

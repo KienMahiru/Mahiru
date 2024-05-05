@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@drawable/border_login"
-        android:text="Chế độ Tối"
+        android:text="@string/dark_mode"
         android:textColor="@color/white"
         android:textSize="18sp" />
 
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_login"
         android:drawableEnd="@drawable/trash_icon"
-        android:text="Xóa bộ nhớ đệm"
+        android:text="@string/dele_cache"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="18sp" />
@@ -36,4 +36,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
+
 </LinearLayout>

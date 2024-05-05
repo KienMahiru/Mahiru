@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_my_profile"
         android:drawablePadding="10dp"
-        android:hint="Nhập tên"
+        android:hint="@string/input_name"
         android:minHeight="48dp"
         android:singleLine="true" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/email_icon"
         android:drawablePadding="10dp"
-        android:hint="Email"
+        android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:maxLength="30"
         android:minHeight="48dp"
@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_button"
-        android:text="Cập nhật thông tin"
+        android:text="@string/update_infor"
         android:textColor="#fff"
         android:textStyle="bold" />
 </LinearLayout>
