@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -47,24 +48,32 @@ import java.util.List;
 
 public class FullscreenImageActivity extends AppCompatActivity {
     private PhotoView mImageView;
-    private Button back,back_left,back_right;
-    private int position;
+    private Button back_left,back_right; // Nút chuyển ảnh trái, phải
+    private ImageButton back;
+    private int position;//Vị trí ảnh trong List ảnh
     private Context context;
-    private MyAdapter mAdapter;
-    private String imageUrl;
-    private ArrayList<String> imageUrls;
-    public SparseBooleanArray mSelectedItems;
-    private BottomNavigationView bottom_nav_image;
-    private HomeFragment homeFragment;
+    private MyAdapter mAdapter; // Adapter
+    private String imageUrl;// Đường link URL của ảnh
+    private ArrayList<String> imageUrls;// List URL ảnh
+    private BottomNavigationView bottom_nav_image;// Thanh điều hướng dưới
+    private HomeFragment homeFragment; // Giao diện kho
+
+    // Lắng nghe sự kiện mạng
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_image);
+        // Lấy list ảnh
         imageUrls = getIntent().getStringArrayListExtra("imageUrls");
-        back = (Button) findViewById(R.id.back);
+        // Nút quay lại
+        back = (ImageButton) findViewById(R.id.back);
+        // Nút chuyển ảnh bên trái
         back_left = (Button) findViewById(R.id.back_left);
+        // Nút chuyển ảnh bên phải
         back_right = (Button) findViewById(R.id.back_right);
+        // Lắng nghe sự kiện nút back
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +92,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
                         shareImage(imageUrl);
                         return true;
                     case R.id.edit_image:
+
                         edit_image(imageUrl);
                         return true;
                     case R.id.delete_image:
@@ -111,6 +121,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
         mImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         mImageView.setZoomable(true);
 
+        // Lắng nghe sự kiện nhấn nút chuyển ảnh trái
         back_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,6 +145,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
         });
     }
 
+    // Trình chia sẻ ảnh
     private void shareImage(String imageUrl) {
         // Thêm dữ liệu ảnh vào intent
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
@@ -158,11 +170,15 @@ public class FullscreenImageActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    // Trình chỉnh sửa ảnh
     private void edit_image(String imageUrl) {
         Intent intent = new Intent(FullscreenImageActivity.this, EditImageActivity.class);
         intent.putExtra("image_url", imageUrl);
         startActivity(intent);
     }
+
+    // Trình xóa ảnh
     private void deleteImage(String imageUrl, ArrayList<String> imageUrls) {
         // Tạo progressDialog
         ProgressDialog progressDialog = new ProgressDialog(FullscreenImageActivity.this);
