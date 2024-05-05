@@ -139,6 +139,7 @@ public class HomeFragment extends Fragment {
 
                 switch (item.getItemId()) {
                     case R.id.nav_anh:
+
                         List<String> imageStrings = new ArrayList<>();
                         mAdapter = new MyAdapter(getActivity(), imageStrings);
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -172,6 +173,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_video:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> videoStrings = new ArrayList<>();
                         adapter = new VideoAdapter(getActivity(), videoStrings);
                         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
@@ -205,6 +208,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_music:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> musicStrings = new ArrayList<>();
                         musicAdapter = new MusicAdapter(getActivity(), musicStrings);
                         FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
@@ -377,15 +382,18 @@ public class HomeFragment extends Fragment {
             return true;
         }
         //Sắp xếp ảnh
-        if (id == R.id.grid_mode){
-            if (layoutManager instanceof StaggeredGridLayoutManager) {
-                 layoutManager = new GridLayoutManager(getActivity(),2);
-            } else {
-                 layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
-            }
+        if(bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+            if (id == R.id.grid_mode){
+                if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    layoutManager = new GridLayoutManager(getActivity(),2);
+                } else {
+                    layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                }
 
-            mRecyclerView.setLayoutManager(layoutManager);
+                mRecyclerView.setLayoutManager(layoutManager);
+            }
         }
+
         return super.onOptionsItemSelected(item);
     }
     @Override
@@ -477,34 +485,6 @@ public class HomeFragment extends Fragment {
                 successfulUploads[0]++;
                 if (successfulUploads[0] == totalFiles) {
                     showToast(successMessage);
-
-                    if (folderName =="image") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("imagename" + timestamp).setValue(fileName);
-                    }
-                    else if (folderName =="video") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("videoname" + timestamp).setValue(fileName);
-                    }
-                    else if (folderName =="music") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("musicname" + timestamp).setValue(fileName);
-                    }
                 }
             });
         }
