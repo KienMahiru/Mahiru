@@ -62,18 +62,22 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         System.loadLibrary("NativeImageProcessor");
     }
     private int defaultcolor;
-    private CropImageView edit_image;
-    private PhotoView photoView;
-    private ImageView boloc1,boloc2,boloc3,boloc4,boloc5;
-    private Button cancel, save,cut,edit_cut, confirm_cutter;
-    private Bitmap croppedBitmap,orginalbitmap;
-    private Button filter, buttonDraw;
-    private LinearLayout draw_pen, tool_draw;
-    private SignaturePad signaturePad;
-    private ImageButton eraser, colors, confirm_draw;
-    private SeekBar seekBar;
-    private TextView txtsize_pen;
+    private CropImageView edit_image;// Ảnh có lưới cắt ảnh
+    private PhotoView photoView; // Ảnh
+    private ImageView boloc1,boloc2,boloc3,boloc4,boloc5; // Các bộ lọc
+    private Button cancel, save; // Nút hủy, lưu
+    private ImageButton edit_cut, confirm_cutter; // Các nút trong trình cắt ảnh
+    private ImageButton cut,filter, buttonDraw; // Nút mở trình cắt ảnh, lọc ảnh, vẽ ảnh
+    private Bitmap croppedBitmap,orginalbitmap; // Ảnh bitmap của ảnh cắt, ảnh gốc
+    private LinearLayout draw_pen, tool_draw; // Layout bút vẽ, công cụ vẽ
+    private SignaturePad signaturePad; // Bảng vẽ
+    private ImageButton eraser, colors, confirm_draw;// Các nút trong trình vẽ ảnh
+    private SeekBar seekBar; // Thanh kích cỡ bút vẽ
+    private TextView txtsize_pen;// Text hiển thị kích cỡ bút
+
+    // Trình lắng nghe sự kiện mạng
     NetworkChangeListener networkChangeListener = new NetworkChangeListener();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +90,10 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         cancel = (Button) findViewById(R.id.cancel);
         // Lưu ảnh chỉnh sửa
         save = (Button) findViewById(R.id.save);
-        cut = (Button) findViewById(R.id.buttonCrop);
-        edit_cut = (Button) findViewById(R.id.cutter);
+        cut = (ImageButton) findViewById(R.id.buttonCrop);
+        edit_cut = (ImageButton) findViewById(R.id.cutter);
         // Nút xác nhận ảnh đã cắt
-        confirm_cutter = (Button) findViewById(R.id.confirm_edit);
+        confirm_cutter = (ImageButton)findViewById(R.id.confirm_edit);
         // Lấy URL ảnh chỉnh sửa
         String imageUrl = getIntent().getStringExtra("image_url");
         // Hiển thị ảnh
@@ -123,6 +127,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                confirm_cutter.setVisibility(View.GONE);
                 photoView.setVisibility(View.GONE);
                 horizontalScrollView.setVisibility(View.GONE);
                 edit_image.setVisibility(View.VISIBLE);
@@ -192,7 +197,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         });
 
         // Khởi chạy sự kiện bộ lọc
-        filter = (Button) findViewById(R.id.buttonFilter);
+        filter = (ImageButton) findViewById(R.id.buttonFilter);
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,13 +220,16 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
 
         //Bảng vẽ
         signaturePad = (SignaturePad) findViewById(R.id.draw_photo);
+        int width = photoView.getWidth();
+        int height = photoView.getHeight();
+
         // Layout size pen
         draw_pen = (LinearLayout) findViewById(R.id.draw_pen);
         // Layout Công cụ
         tool_draw = (LinearLayout) findViewById(R.id.tool_draw);
 
         // Khởi chạy trình vẽ
-        buttonDraw = (Button) findViewById(R.id.buttonDraw);
+        buttonDraw = (ImageButton)findViewById(R.id.buttonDraw);
         buttonDraw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -287,7 +295,8 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         confirm_draw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bitmap signaturePad_bitmap = signaturePad.getSignatureBitmap();
+                // Lấy bitmap sau khi vẽ
+                Bitmap signaturePad_bitmap = signaturePad.getTransparentSignatureBitmap();
                 photoView.setImageBitmap(signaturePad_bitmap);
                 photoView.setVisibility(View.VISIBLE);
                 croppedBitmap = signaturePad_bitmap;

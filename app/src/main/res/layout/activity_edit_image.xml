@@ -75,28 +75,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/boloc1"
                 android:src="@drawable/boloc1" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/boloc2"
                 android:src="@drawable/boloc2" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/boloc3"
                 android:src="@drawable/boloc3" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/boloc4"
                 android:src="@drawable/boloc4" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/boloc5"
                 android:src="@drawable/boloc5" />
 
@@ -104,25 +104,26 @@
     </HorizontalScrollView>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="93dp"
         android:layout_marginStart="300dp"
         android:layout_marginBottom="500dp"
         android:gravity="right"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.557"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.797">
 
-        <Button
+        <ImageButton
             android:id="@+id/cutter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
             android:background="@color/black"
-            android:text="Cắt"
+            android:src="@drawable/ic_baseline_content_cut_24"
             android:visibility="gone"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -130,14 +131,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
-        <Button
+        <ImageButton
             android:id="@+id/confirm_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@color/black"
-            android:text="Xác nhận"
-            android:visibility="gone"
-            android:textColor="@color/white"
+            android:src="@drawable/ic_baseline_done_24"
+            android:visibility="gone
+"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -149,36 +150,39 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="403dp"
+        android:layout_height="37dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.879">
+        app:layout_constraintVertical_bias="0.916">
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonCrop"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="Cắt" />
+            android:background="@color/black"
+            android:src="@drawable/ic_baseline_content_cut_24" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonFilter"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="Bộ lọc" />
+            android:background="@color/black"
+            android:src="@drawable/ic_baseline_photo_filter_24" />
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonDraw"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:layout_weight="1"
-            android:text="Vẽ" />
+            android:background="@color/black"
+            android:src="@drawable/ic_baseline_draw_24" />
 
 
     </LinearLayout>
