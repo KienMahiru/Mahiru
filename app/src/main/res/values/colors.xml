@@ -28,4 +28,10 @@
     <color name="primaryColorNight">@color/purple_200</color>
     <color name="primaryDarkColorNight">@color/black</color>
     <color name="accentColorNight">@color/teal_700</color>
+
+
+
+    <color name="ucrop_color_toolbar">@color/teal_200</color>
+    <color name="ucrop_color_statusbar">@color/teal_700</color>
+    <color name="ucrop_color_widget_active">@color/teal_200</color>
 </resources>
