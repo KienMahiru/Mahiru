@@ -3,6 +3,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.util.SparseBooleanArray;
@@ -13,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -47,9 +49,10 @@ import java.util.List;
 
 public class FullscreenImageActivity extends AppCompatActivity {
     private PhotoView mImageView;
-    private Button back,back_left,back_right;
+    private Button back_left,back_right;
     private int position;
     private Context context;
+    private ImageButton back;
     private MyAdapter mAdapter;
     private String imageUrl;
     private ArrayList<String> imageUrls;
@@ -62,7 +65,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_image);
         imageUrls = getIntent().getStringArrayListExtra("imageUrls");
-        back = (Button) findViewById(R.id.back);
+        back = (ImageButton) findViewById(R.id.back);
         back_left = (Button) findViewById(R.id.back_left);
         back_right = (Button) findViewById(R.id.back_right);
         back.setOnClickListener(new View.OnClickListener() {
