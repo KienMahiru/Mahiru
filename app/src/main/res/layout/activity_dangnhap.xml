@@ -11,7 +11,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Đăng nhập tài khoản"
+        android:text="@string/title_login"
         android:textColor="#FFFFFF"
         android:drawablePadding="15dp"
         android:textSize="30sp"
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/email_icon"
         android:drawablePadding="10dp"
-        android:hint="Email"
+        android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
         android:maxLength="30"
         android:minHeight="48dp"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/password_icon"
             android:drawablePadding="10dp"
-            android:hint="Mật khẩu"
+            android:hint="@string/prompt_password"
             android:inputType="textPassword"
             android:maxLength="30" />
 
@@ -74,7 +74,7 @@
             android:id="@+id/remember_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duy trì đăng nhập"
+            android:text="@string/maintain_login"
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="#F1A177" />
@@ -86,7 +86,7 @@
             android:layout_marginStart="64dp"
             android:maxLength="20"
             android:textStyle="bold"
-            android:text="Quên mật khẩu"
+            android:text="@string/forgot_password"
             android:textColor="#F1A177"
             android:textSize="16sp" />
     </LinearLayout>
@@ -99,7 +99,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_button"
-        android:text="Đăng nhập"
+        android:text="@string/action_sign_in_short"
         android:textAllCaps="false"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -111,7 +111,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="14sp"
-        android:text="Nếu chưa có tài khoản. Hãy đăng ký tại đây!"
+        android:text="@string/title_pleaseregister"
         android:textColor="#8E8E8E"
         android:textStyle="bold"
         />

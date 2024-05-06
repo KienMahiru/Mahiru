@@ -1,8 +1,6 @@
 package com.example.doan.activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -94,29 +92,8 @@ public class FullscreenImageActivity extends AppCompatActivity {
                         shareImage(imageUrl);
                         return true;
                     case R.id.edit_image:
-                        // Tạo hộp thoại lựa chọn
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FullscreenImageActivity.this);
-                        builder.setTitle("Lựa chọn chỉnh sửa ảnh");
-                        builder.setItems(new CharSequence[]{"Đơn giản", "Chuyên nghiệp"}, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Xử lý sự kiện khi người dùng chọn một mục
-                                switch (which) {
-                                    case 0:
-                                        // Xử lý khi chọn Đơn giản
-                                        edit_image(imageUrl);
-                                        break;
-                                    case 1:
-                                        // Xử lý khi chọn Chuyên nghiệp
-                                        edit_image_pro(imageUrl);
-                                        break;
-                                }
-                            }
-                        });
 
-                        // Hiển thị hộp thoại lựa chọn
-                        builder.show();
-
+                        edit_image(imageUrl);
                         return true;
                     case R.id.delete_image:
                         deleteImage(imageUrl, imageUrls);
@@ -194,16 +171,9 @@ public class FullscreenImageActivity extends AppCompatActivity {
         }
     }
 
-    // Trình chỉnh sửa ảnh đơn giản
+    // Trình chỉnh sửa ảnh
     private void edit_image(String imageUrl) {
         Intent intent = new Intent(FullscreenImageActivity.this, EditImageActivity.class);
-        intent.putExtra("image_url", imageUrl);
-        startActivity(intent);
-    }
-
-    // Trình chỉnh sửa ảnh chuyên nghiệp
-    private void edit_image_pro(String imageUrl) {
-        Intent intent = new Intent(FullscreenImageActivity.this, EditImageProActivity.class);
         intent.putExtra("image_url", imageUrl);
         startActivity(intent);
     }

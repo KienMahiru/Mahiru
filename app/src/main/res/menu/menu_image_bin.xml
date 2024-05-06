@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/recovery_image"
-        android:title="Khôi phục"
+        android:title="@string/recovery_image"
         android:icon="@drawable/ic_baseline_settings_backup_restore_24"/>
     <item android:id="@+id/delete_image_bin"
-        android:title="Xóa"
+        android:title="@string/delete"
         android:icon="@drawable/ic_baseline_delete_25"/>
 </menu>

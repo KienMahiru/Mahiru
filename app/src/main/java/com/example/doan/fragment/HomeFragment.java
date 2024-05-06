@@ -1,18 +1,17 @@
 package com.example.doan.fragment;
+import static com.example.doan.activity.Option.MY_REQUEST_CODE;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.OpenableColumns;
+import android.util.Pair;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,16 +27,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.doan.AppSettings;
+import com.example.doan.activity.Option;
 import com.example.doan.adapter.MusicAdapter;
 import com.example.doan.R;
 import com.example.doan.adapter.MyAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,8 +44,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -57,7 +54,6 @@ import android.content.Intent;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
 import android.app.ProgressDialog;
 
 public class HomeFragment extends Fragment {
@@ -104,10 +100,10 @@ public class HomeFragment extends Fragment {
         mRecyclerView.setLayoutManager(layoutManager);
         bottomNavigationView= mView.findViewById(R.id.bottom_nav);
         List<String> imageStrings = new ArrayList<>();
-        mAdapter = new MyAdapter(getActivity(), imageStrings);
+        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
+
         mStorageRef.listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
@@ -140,7 +136,7 @@ public class HomeFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.nav_anh:
                         List<String> imageStrings = new ArrayList<>();
-                        mAdapter = new MyAdapter(getActivity(), imageStrings);
+                        mAdapter = new MyAdapter(getActivity(), imageStrings,null);
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
 
@@ -211,38 +207,31 @@ public class HomeFragment extends Fragment {
                         mStorageRef = FirebaseStorage.getInstance().getReference().child("music").child(user2.getUid());
 
                         mStorageRef.listAll()
-                                .addOnSuccessListener(listResult -> {
-                                    musicStrings.clear();
-                                    for (StorageReference prefixRef : listResult.getPrefixes()) {
-                                        // Lấy tên folder chứa bài hát
-                                        String folderName = prefixRef.getName();
-                                        StorageReference folderRef = mStorageRef.child(folderName);
-
-                                        // Lấy danh sách file trong folder
-                                        folderRef.listAll()
-                                                .addOnSuccessListener(folderListResult -> {
-                                                    for (StorageReference itemRef : folderListResult.getItems()) {
-                                                        // Kiểm tra phần mở rộng của tệp và chỉ thêm vào danh sách nếu là file mp3
-                                                        itemRef.getMetadata().addOnSuccessListener(metadata -> {
-                                                            String fileName = metadata.getName();
-                                                            if (fileName.toLowerCase().endsWith(".mp3")) {
-                                                                itemRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                                                    String uriString = uri.toString();
-                                                                    musicStrings.add(uriString);
-                                                                    musicAdapter.notifyItemInserted(musicStrings.size() - 1);
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                })
-                                                .addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
+                                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                                    @Override
+                                    public void onSuccess(ListResult listResult) {
+                                        musicStrings.clear();
+                                        for (StorageReference itemRef : listResult.getItems()) {
+                                            itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String uriString2 = uri.toString();
+                                                    musicStrings.add(uriString2);
+                                                    musicAdapter.notifyItemInserted(musicStrings.size() - 1);
+                                                }
+                                            });
+                                        }
                                     }
                                 })
-                                .addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                         mRecyclerView.setAdapter(musicAdapter);
                         return true;
-
                     default:
                         return false;
                 }
@@ -350,6 +339,77 @@ public class HomeFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        if(bottomNavigationView.getSelectedItemId() == R.id.nav_anh) {
+            if (id == R.id.sapxep) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                mStorageRef = FirebaseStorage.getInstance().getReference().child("image").child(user.getUid());
+                // Lưu trữ danh sách ảnh ban đầu
+                mStorageRef.listAll()
+                        .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                            @Override
+                            public void onSuccess(ListResult listResult) {
+                                List<Pair<String, String>> imageList = new ArrayList<>(); // Danh sách tạm thời để lưu trữ cặp giá trị (URL ảnh, thời gian)
+
+                                // Duyệt qua danh sách các tệp ảnh
+                                for (StorageReference itemRef : listResult.getItems()) {
+                                    String imageName = itemRef.getName();
+                                    // Tách chuỗi tên tệp ảnh để lấy ra phần thời gian
+                                    String[] parts = imageName.split("_");
+                                    if (parts.length >= 3) { // Kiểm tra xem có đủ phần tử sau khi tách không
+                                        // Lấy phần thời gian từ chuỗi tên tệp ảnh
+                                        String dateString = parts[2].substring(0, 8); // Lấy phần ngày (8 ký tự từ vị trí 0)
+                                        String timeString = parts[3].substring(0, 6); // Lấy phần giờ (6 ký tự từ vị trí 8)
+                                        String dateTimeString = dateString + "_" + timeString;// Kết hợp phần ngày và phần giờ
+                                        try {
+                                            // Lấy URL của ảnh và thêm vào danh sách chính
+                                            itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String uriString = uri.toString();
+                                                    String dateTimeString = dateString + "_" + timeString;
+
+                                                    imageList.add(new Pair<>(uriString, dateTimeString));
+
+                                                    // Nếu đã duyệt qua tất cả các ảnh
+                                                    if (imageList.size() == listResult.getItems().size()) {
+                                                        // Sắp xếp danh sách theo thời gian từ mới đến cũ
+                                                        Collections.sort(imageList, new Comparator<Pair<String, String>>() {
+                                                            @Override
+                                                            public int compare(Pair<String, String> o1, Pair<String, String> o2) {
+                                                                return o2.second.compareTo(o1.second);
+                                                            }
+                                                        });
+
+                                                        List<String> imageUrls = new ArrayList<>();
+                                                        List<String> imageFileNames = new ArrayList<>();
+
+                                                        for (Pair<String, String> pair : imageList) {
+                                                            imageUrls.add(pair.first);
+                                                            imageFileNames.add(pair.second);
+                                                        }
+
+                                                        // Cập nhật Adapter với danh sách đã sắp xếp
+                                                        mAdapter = new MyAdapter(getActivity(), imageUrls, imageFileNames);
+                                                        mRecyclerView.setAdapter(mAdapter);
+                                                    }
+                                                }
+                                            });
+                                        } catch (NumberFormatException e) {
+                                            // Xử lý nếu không thể chuyển đổi thời gian thành số
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
         if(id == R.id.chontatca){
             if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
                 // Chọn tất cả video
@@ -383,7 +443,6 @@ public class HomeFragment extends Fragment {
             } else {
                  layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
             }
-
             mRecyclerView.setLayoutManager(layoutManager);
         }
         return super.onOptionsItemSelected(item);
@@ -453,9 +512,6 @@ public class HomeFragment extends Fragment {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US);
         String timestamp = dateFormat.format(calendar.getTime());
-        Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String date = sdf.format(currentDate);
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang tải lên");
@@ -468,43 +524,18 @@ public class HomeFragment extends Fragment {
 
         int totalFiles = fileUris.size();
         int[] successfulUploads = {0};  // Sử dụng một mảng để thay thế biến final
+
         for (int i = 0; i < totalFiles; i++) {
             Uri fileUri = fileUris.get(i);
-            String fileName = folderName + "_" + i + "_" + timestamp +"." + getFileExtension(fileUri);
+            String fileName = folderName + "_" + i + "_" + timestamp + getFileExtension(fileUri);
             StorageReference fileRef = storageRef.child(fileName);
+
             UploadTask uploadTask = fileRef.putFile(fileUri);
+
             setUploadTaskListeners(uploadTask, progressDialog, totalFiles, () -> {
                 successfulUploads[0]++;
                 if (successfulUploads[0] == totalFiles) {
                     showToast(successMessage);
-
-                    if (folderName =="image") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("imagename" + timestamp).setValue(fileName);
-                    }
-                    else if (folderName =="video") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("videoname" + timestamp).setValue(fileName);
-                    }
-                    else if (folderName =="music") {
-                        DatabaseReference datetime = FirebaseDatabase
-                                .getInstance()
-                                .getReference("users")
-                                .child(user.getUid())
-                                .child(folderName)
-                                .child(date);
-                        datetime.child("musicname" + timestamp).setValue(fileName);
-                    }
                 }
             });
         }
@@ -544,69 +575,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void uploadMusics(List<Uri> musicUris) {
-        for (Uri musicUri : musicUris) {
-            String musicFileName = getFileNameFromUri(musicUri);
-            // Lấy hình ảnh thumbnail từ file mp3
-            Bitmap thumbnail = getThumbnailFromMp3(musicUri);
-            if (thumbnail != null) {
-                // Tạo một tên cho thư mục chứa file mp3 và file hình ảnh
-                String folderName = "music_" + System.currentTimeMillis();
-                // Upload file mp3 và hình ảnh thumbnail vào thư mục đó
-                uploadFilesWithThumbnail(musicUri, thumbnail, folderName);
-                Toast.makeText(getActivity(), "Upload thành công", Toast.LENGTH_SHORT).show();
-            }
-        }
+        uploadFiles(musicUris, "music", "Tải nhạc lên thành công");
     }
-
-    private void uploadFilesWithThumbnail(Uri musicUri, Bitmap thumbnail, String folderName) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        StorageReference storageRef = storage.getReference().child("music").child(user.getUid()).child(folderName);
-
-        // Upload file mp3
-        String musicFileName = getFileNameFromUri(musicUri);
-        StorageReference musicFileRef = storageRef.child(musicFileName);
-        UploadTask musicUploadTask = musicFileRef.putFile(musicUri);
-        musicUploadTask.addOnFailureListener(exception -> {
-            // Xử lý khi upload file mp3 thất bại
-        }).addOnSuccessListener(taskSnapshot -> {
-            // Xử lý khi upload file mp3 thành công
-
-            // Upload hình ảnh thumbnail
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] thumbnailData = baos.toByteArray();
-            StorageReference thumbnailRef = storageRef.child("thumbnail.jpg");
-            UploadTask thumbnailUploadTask = thumbnailRef.putBytes(thumbnailData);
-            thumbnailUploadTask.addOnFailureListener(thumbnailException -> {
-                // Xử lý khi upload hình ảnh thumbnail thất bại
-            }).addOnSuccessListener(thumbnailTaskSnapshot -> {
-                // Xử lý khi upload hình ảnh thumbnail thành công
-            });
-        });
-    }
-
-    private String getFileNameFromUri(Uri uri) {
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            String fileName = cursor.getString(index);
-            cursor.close();
-            return fileName;
-        }
-        return null;
-    }
-
-    private Bitmap getThumbnailFromMp3(Uri musicUri) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-        retriever.setDataSource(getActivity(), musicUri);
-        byte[] data = retriever.getEmbeddedPicture();
-        if (data != null) {
-            return BitmapFactory.decodeByteArray(data, 0, data.length);
-        }
-        return null;
-    }
-
 
     private void uploadVideos(List<Uri> videoUris) {
         uploadFiles(videoUris, "video", "Tải video lên thành công");

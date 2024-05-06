@@ -16,7 +16,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Giới thiệu về Mahiru"
+            android:text="@string/Intro_title"
             android:textColor="#595959"
             android:textSize="30dp"
             android:textStyle="bold" />
@@ -33,8 +33,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng
- và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com"
+                android:text="@string/Intro_conten"
                 android:textColor="#595959"
                 android:textSize="20dp"
                 android:textStyle="bold"/>

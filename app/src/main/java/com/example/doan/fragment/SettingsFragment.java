@@ -10,13 +10,16 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import com.example.doan.AppSettings;
+import com.example.doan.activity.LanguageManager;
 import com.example.doan.R;
+
 import java.io.File;
 
 public class SettingsFragment extends Fragment {
@@ -24,6 +27,8 @@ public class SettingsFragment extends Fragment {
     private View mView;
     private Switch aSwitch;
     private Button xoa_cache;
+    private ImageButton btn_vn, btn_eng;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,6 +41,19 @@ public class SettingsFragment extends Fragment {
         aSwitch = mView.findViewById(R.id.darkmode);
         xoa_cache = mView.findViewById(R.id.xoa_cache);
         progressBar = mView.findViewById(R.id.progressBar);
+        btn_eng = mView.findViewById(R.id.btn_eng);
+        btn_vn = mView.findViewById(R.id.btn_vn);
+        LanguageManager lang = new LanguageManager(requireContext());
+
+        btn_vn.setOnClickListener(view -> {
+            lang.updateResource("vi");
+            //getActivity().recreate();
+        });
+
+        btn_eng.setOnClickListener(view -> {
+            lang.updateResource("en");
+            //getActivity().recreate();
+        });
 
         initSwitch();
 
@@ -44,6 +62,9 @@ public class SettingsFragment extends Fragment {
         return mView;
     }
 
+    private void LanguageClass(){
+
+    }
     private void initSwitch() {
         boolean isDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
         aSwitch.setChecked(isDarkMode);
