@@ -131,8 +131,7 @@ public class EditImageProActivity extends AppCompatActivity {
             }
         }
         else{
-            Intent intent = new Intent(EditImageProActivity.this,FullscreenImageActivity.class);
-            startActivity(intent);
+           finish();
         }
     }
     @Override
