@@ -367,7 +367,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     player.seekTo(progressValue);
                     player.play();
                     artworkView.startAnimation(loadRotation());
-                    convertURLNSend(songNameView.getText().toString(), thumbnailURL);
                 }
             }
         });
@@ -471,7 +470,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         player.play();
         artworkView.startAnimation(loadRotation());
         isPlaying = true;
-
     }
 
     private String getThumbnailUrl(String musicUrl) {
