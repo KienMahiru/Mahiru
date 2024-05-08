@@ -45,6 +45,10 @@
     <string name="input_name">Enter name</string>
     <string name="update_infor">Update information</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="lang_switch">Language</string>
+    <string name="quest_language">Choose language:</string>
+    <string name="lang1">Vietnamese</string>
+    <string name="lang2">English</string>
     <string name="dele_cache">Clear cache</string>
     <string name="con_quest1">How to upload photos/videos/music?</string>
     <string name="anwser_ques1">To upload photos/videos/music, tap the upload button or long-press the upload button to select the file you want to upload</string>

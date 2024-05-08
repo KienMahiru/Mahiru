@@ -33,6 +33,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="channel_name">Channel 1</string>
     <string name="channel_description">Mieu ta cho channel 1</string>
+    --layout--
     <string name="title_login">Đăng nhập tài khoản</string>
     <string name="maintain_login">Duy trì đăng nhập</string>
     <string name="forgot_password">Quên mật khẩu</string>
@@ -57,6 +58,10 @@
     <string name="input_name">Nhập tên</string>
     <string name="update_infor">Cập nhật thông tin</string>
     <string name="dark_mode">Chế độ Tối</string>
+    <string name="lang_switch">Ngôn ngữ</string>
+    <string name="quest_language">Chọn ngôn ngữ:</string>
+    <string name="lang1">Tiếng Việt</string>
+    <string name="lang2">Tiếng Anh</string>
     <string name="dele_cache">Xóa bộ nhớ đệm</string>
     <string name="con_quest1">Tải ảnh/video/nhạc lên như thế nào?</string>
     <string name="anwser_ques1">Tải ảnh/video/nhạc lên bằng cách nhấn nút upload hoặc nhấn giữ nút upload để chọn tệp cần tải</string>

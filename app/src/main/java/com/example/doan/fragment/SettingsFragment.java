@@ -2,7 +2,10 @@ package com.example.doan.fragment;
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
@@ -10,15 +13,16 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import com.example.doan.AppSettings;
-import com.example.doan.activity.LanguageManager;
+import com.example.doan.LanguageManager;
 import com.example.doan.R;
+import com.example.doan.activity.FullscreenImageActivity;
 
 import java.io.File;
 
@@ -26,8 +30,9 @@ public class SettingsFragment extends Fragment {
     private ProgressBar progressBar;
     private View mView;
     private Switch aSwitch;
-    private Button xoa_cache;
-    private ImageButton btn_vn, btn_eng;
+    private Button xoa_cache, langSwitch;
+    private ImageView btn_vn, btn_eng;
+    private LanguageManager languageManager;
 
     @Nullable
     @Override
@@ -41,29 +46,41 @@ public class SettingsFragment extends Fragment {
         aSwitch = mView.findViewById(R.id.darkmode);
         xoa_cache = mView.findViewById(R.id.xoa_cache);
         progressBar = mView.findViewById(R.id.progressBar);
-        btn_eng = mView.findViewById(R.id.btn_eng);
-        btn_vn = mView.findViewById(R.id.btn_vn);
-        LanguageManager lang = new LanguageManager(requireContext());
+        languageManager = new LanguageManager(requireContext());
+        String currentLanguage = languageManager.getSavedLanguage();
 
-        String currentLanguage = lang.getSavedLanguage();
-
-        btn_vn.setOnClickListener(view -> {
-            lang.updateResource("vi");
-            getActivity().recreate();
-        });
-
-        btn_eng.setOnClickListener(view -> {
-            lang.updateResource("en");
-            getActivity().recreate();
-        });
-
+        // Nút thay đổi ngôn ngữ
+        langSwitch = mView.findViewById(R.id.lang_switch);
+        langSwitch.setOnClickListener(view -> lang_Switch());
         initSwitch();
-
         xoa_cache.setOnClickListener(view -> clearCache());
-
         return mView;
     }
 
+    private void lang_Switch(){
+        // Tạo hộp thoại lựa chọn
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.quest_language);
+        builder.setItems(new CharSequence[]{getString(R.string.lang1), getString(R.string.lang2)}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Xử lý sự kiện khi người dùng chọn một mục
+                switch (which) {
+                    case 0:
+                        // Xử lý khi chọn Tiếng Việt
+                        languageManager.updateResource("vi");
+                        getActivity().recreate();
+                        break;
+                    case 1:
+                        // Xử lý khi chọn Tiếng Anh
+                        languageManager.updateResource("en");
+                        getActivity().recreate();
+                        break;
+                }
+            }
+        });
+        builder.show();
+    }
     private void initSwitch() {
         boolean isDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
         aSwitch.setChecked(isDarkMode);

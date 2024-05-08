@@ -176,6 +176,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_video:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> videoStrings = new ArrayList<>();
                         adapter = new VideoAdapter(getActivity(), videoStrings);
                         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
@@ -209,6 +211,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_music:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> musicStrings = new ArrayList<>();
                         musicAdapter = new MusicAdapter(getActivity(), musicStrings);
                         FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
@@ -455,7 +459,7 @@ public class HomeFragment extends Fragment {
             return true;
         }
         //Sắp xếp ảnh
-        if (id == R.id.grid_mode){
+        if (id == R.id.grid_mode && bottomNavigationView.getSelectedItemId() == R.id.nav_anh){
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                  layoutManager = new GridLayoutManager(getActivity(),2);
             } else {

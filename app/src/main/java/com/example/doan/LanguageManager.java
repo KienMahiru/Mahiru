@@ -1,4 +1,4 @@
-package com.example.doan.activity;
+package com.example.doan;
 
 import android.content.Context;
 import android.content.SharedPreferences;

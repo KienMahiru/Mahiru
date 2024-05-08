@@ -8,6 +8,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.content.pm.ActivityInfo;
+
+import com.example.doan.LanguageManager;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
 
