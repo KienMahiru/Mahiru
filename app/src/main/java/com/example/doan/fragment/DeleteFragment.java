@@ -205,7 +205,7 @@ public class DeleteFragment extends Fragment {
         });
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Thùng rác");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_delete));
         return mView;
     }
     @Override

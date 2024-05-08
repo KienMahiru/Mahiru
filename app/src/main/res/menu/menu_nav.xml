@@ -24,7 +24,7 @@
                 android:icon="@drawable/ic_logout"/>
         </menu>
     </item>
-    <item android:title="Ứng dụng">
+    <item android:title="@string/title_app">
         <menu>
             <item android:id="@+id/phan_hoi"
                 android:icon="@drawable/ic_baseline_feedback_24"

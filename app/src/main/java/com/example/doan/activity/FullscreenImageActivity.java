@@ -96,8 +96,8 @@ public class FullscreenImageActivity extends AppCompatActivity {
                     case R.id.edit_image:
                         // Tạo hộp thoại lựa chọn
                         AlertDialog.Builder builder = new AlertDialog.Builder(FullscreenImageActivity.this);
-                        builder.setTitle("Lựa chọn chỉnh sửa ảnh");
-                        builder.setItems(new CharSequence[]{"Đơn giản", "Chuyên nghiệp"}, new DialogInterface.OnClickListener() {
+                        builder.setTitle(R.string.quest_editimg);
+                        builder.setItems(new CharSequence[]{getString(R.string.simple1), getString(R.string.pro1)}, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Xử lý sự kiện khi người dùng chọn một mục
@@ -181,12 +181,12 @@ public class FullscreenImageActivity extends AppCompatActivity {
                     Intent shareIntent = new Intent(Intent.ACTION_SEND);
                     shareIntent.setType("image/*");
                     shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                    startActivity(Intent.createChooser(shareIntent, "Chia sẻ hình ảnh"));
+                    startActivity(Intent.createChooser(shareIntent, getString(R.string.share_img)));
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(FullscreenImageActivity.this, "Chia sẻ ảnh thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FullscreenImageActivity.this, R.string.error_share, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (IOException e) {
@@ -212,7 +212,7 @@ public class FullscreenImageActivity extends AppCompatActivity {
     private void deleteImage(String imageUrl, ArrayList<String> imageUrls) {
         // Tạo progressDialog
         ProgressDialog progressDialog = new ProgressDialog(FullscreenImageActivity.this);
-        progressDialog.setMessage("Đang xóa ảnh...");
+        progressDialog.setMessage(getString(R.string.loading2));
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -249,18 +249,18 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                         progressDialog.dismiss();
 
                                         // Hiển thị thông báo xóa thành công
-                                        Toast.makeText(FullscreenImageActivity.this, "Xóa ảnh thành công", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(FullscreenImageActivity.this, R.string.succes_del, Toast.LENGTH_SHORT).show();
                                     } else {
                                         // Xóa ảnh không thành công, hiển thị thông báo lỗi
                                         progressDialog.dismiss();
-                                        Toast.makeText(FullscreenImageActivity.this, "Xóa ảnh thất bại", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(FullscreenImageActivity.this, R.string.error_delimg1, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                         } else {
                             // Copy file không thành công, hiển thị thông báo lỗi
                             progressDialog.dismiss();
-                            Toast.makeText(FullscreenImageActivity.this, "Xóa ảnh thất bại", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FullscreenImageActivity.this, R.string.error_delimg1, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

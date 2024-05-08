@@ -70,7 +70,7 @@ public class Dangnhap extends AppCompatActivity {
     private void checkAutoLogin() {
         SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
         if (prefs.getBoolean("remember", false)) {
-            progressDialog.setMessage("Đang đăng nhập tự động...");
+            progressDialog.setMessage(getString(R.string.auto_login));
             progressDialog.setCancelable(false);
             progressDialog.show();
             String email = prefs.getString("email", "");
@@ -86,31 +86,31 @@ public class Dangnhap extends AppCompatActivity {
                                     if(isValidUser(email, password))
                                         loginUserAutomatically(auth, email, password);
                                 } else {
-                                    handleAutoLoginFailure("Đăng nhập tự động thất bại! Tài khoản đã lưu không tồn tại");
+                                    handleAutoLoginFailure(getString(R.string.failed_login1));
                                 }
                             } else {
-                                Toast.makeText(this, "Đăng nhập tự động thất bại! Hãy kiểm tra lại tài khoản hoặc mạng của bạn", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(this, R.string.failed_login2, Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
                         });
             } else {
-                handleAutoLoginFailure("Đăng nhập tự động thất bại! Hãy kiểm tra lại tài khoản của bạn!");
+                handleAutoLoginFailure(getString(R.string.failed_login3));
 
             }
         } else {
-            Toast.makeText(this, "Chào mừng bạn tới kho lưu trữ ảnh Mahiru!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.welcome_login, Toast.LENGTH_SHORT).show();
         }
     }
     private void loginUserAutomatically(FirebaseAuth auth, String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(loginTask -> {
                     if (loginTask.isSuccessful()) {
-                        Toast.makeText(Dangnhap.this, "Đăng nhập tự động thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Dangnhap.this, R.string.succes_login1, Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Dangnhap.this, Option.class));
                         progressDialog.dismiss();
                         finish();
                     } else {
-                        handleAutoLoginFailure("Đăng nhập tự động thất bại! Hãy kiểm tra lại mật khẩu hoặc mạng của bạn");
+                        handleAutoLoginFailure(getString(R.string.failed_login4));
                     }
                 });
     }
@@ -142,14 +142,14 @@ public class Dangnhap extends AppCompatActivity {
                             if (providers != null && providers.size() > 0) {
                                 loginUserManually(auth, email, password);
                             } else {
-                                handleManualLoginFailure("Đăng nhập thất bại! Tài khoản này không tồn tại.");
+                                handleManualLoginFailure(getString(R.string.failed_login5));
                             }
                         } else {
-                            handleManualLoginFailure("Đăng nhập thất bại! Hãy kiểm tra lại tài khoản của bạn!");
+                            handleManualLoginFailure(getString(R.string.failed_login6));
                         }
                     });
         } else {
-            handleManualLoginFailure("Tên đăng nhập hoặc mật khẩu không đúng");
+            handleManualLoginFailure(getString(R.string.incorrect_data));
         }
     }
 
@@ -157,10 +157,10 @@ public class Dangnhap extends AppCompatActivity {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(Dangnhap.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Dangnhap.this, R.string.succes_login2, Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Dangnhap.this, Option.class));
                     } else {
-                        mPasswordEditText.setError("Mật khẩu của bạn không đúng! Vui lòng nhập lại mật khẩu.");
+                        mPasswordEditText.setError(getString(R.string.incorrect_pass));
                         handleManualLoginFailure("");
                     }
                 });
@@ -180,13 +180,13 @@ public class Dangnhap extends AppCompatActivity {
 
     private boolean isValidUser(String email, String password) {
         if (TextUtils.isEmpty(email) || !Dangky.isGmailAddress(email)) {
-            mEmail.setError("Email không được để trống và phải là địa chỉ gmail!!!");
+            mEmail.setError(getString(R.string.email_blank));
             return false;
         }
 
         if (TextUtils.isEmpty(password) || password.length() < 6 || !Dangky.containsUpperCaseLetter(password) || !Dangky.containsLowerCaseLetter(password) ||
                 !Dangky.containsNumber(password)) {
-            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường, 1 số và tối thiểu là 6 ký tự");
+            mPasswordEditText.setError(getString(R.string.change_pass));
             return false;
         }
         return true;
@@ -194,10 +194,10 @@ public class Dangnhap extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận thoát ứng dụng")
-                .setMessage("Bạn có chắc chắn muốn thoát ứng dụng?")
-                .setPositiveButton("Có", (dialog, which) -> finishAffinity())
-                .setNegativeButton("Không", null)
+                .setTitle(R.string.title_exit)
+                .setMessage(R.string.quest_exit)
+                .setPositiveButton(R.string.yes1, (dialog, which) -> finishAffinity())
+                .setNegativeButton(R.string.no1, null)
                 .setIcon(R.drawable.warning_icon)
                 .show();
     }

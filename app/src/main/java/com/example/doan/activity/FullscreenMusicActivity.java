@@ -8,7 +8,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
-
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -24,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -654,15 +654,21 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
         Intent previousIntent = new Intent(this, NotificationActionService.class)
                 .setAction(NotificationActionService.ACTION_PREVIOUS);
-        PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        int intentFlagType = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            intentFlagType = PendingIntent.FLAG_IMMUTABLE;  // or only use FLAG_MUTABLE >> if it needs to be used with inline replies or bubbles.
+        }
+
+        PendingIntent previousPendingIntent = PendingIntent.getService(this, 0, previousIntent, intentFlagType);
 
         Intent playPauseIntent = new Intent(this, NotificationActionService.class)
                 .setAction(NotificationActionService.ACTION_PLAY_PAUSE);
-        PendingIntent playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent playPausePendingIntent = PendingIntent.getService(this, 0, playPauseIntent, intentFlagType);
 
         Intent nextIntent = new Intent(this, NotificationActionService.class)
                 .setAction(NotificationActionService.ACTION_NEXT);
-        PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, intentFlagType);
 
         if (isNewSong){
             isPlaying = true;

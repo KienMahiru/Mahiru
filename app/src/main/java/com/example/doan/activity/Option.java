@@ -117,10 +117,10 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
     }
     private void showExitConfirmationDialog(){
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận thoát ứng dụng")
-                .setMessage("Bạn có chắc chắn muốn thoát ứng dụng?")
-                .setNegativeButton("Không", null)
-                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_exit)
+                .setMessage(R.string.quest_exit)
+                .setNegativeButton(R.string.no1, null)
+                .setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // Thoát ứng dụng
                         finishAffinity();
@@ -196,14 +196,14 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
     }
     private void showSignOutConfirmationDialog(){
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận đăng xuất")
-                .setMessage("Bạn có chắc chắn muốn đăng xuất?")
-                .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.title_signout)
+                .setMessage(R.string.quest_signout)
+                .setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         signOutUser();
                     }
                 })
-                .setNegativeButton("Hủy", null)
+                .setNegativeButton(R.string.no1, null)
                 .setIcon(R.drawable.warning_icon)
                 .show();
     }
@@ -214,7 +214,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
         editor.clear();
         editor.apply();
-        Toast.makeText(Option.this, "Bạn đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Option.this, R.string.confim_exit, Toast.LENGTH_SHORT).show();
         finish();
     }
     public void showInf() {
@@ -233,7 +233,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
                         Exception exception = task.getException();
                         if (exception != null) {
                             // Hiển thị thông báo lỗi
-                            Toast.makeText(Option.this, "Lỗi tải lại thông tin người dùng", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Option.this, R.string.error_infor, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -270,7 +270,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
                 openGallery();
 
             }else{
-                Toast.makeText(this, "Vui lòng cấp quyền truy cập!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.confim_asset, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -278,7 +278,7 @@ public class Option extends AppCompatActivity implements NavigationView.OnNaviga
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        mActivityResultLauncher.launch(Intent.createChooser(intent,"Chọn Ảnh"));
+        mActivityResultLauncher.launch(Intent.createChooser(intent,getString(R.string.select_img)));
 
     }
 

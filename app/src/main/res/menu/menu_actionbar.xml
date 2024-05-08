@@ -11,7 +11,7 @@
 
     <item
         android:id="@+id/more_actionbar"
-        android:title="More"
+        android:title="@string/more"
         android:icon="@drawable/ic_baseline_more_vert_24"
         app:showAsAction="always"
         android:contentDescription="@string/content_description_more">

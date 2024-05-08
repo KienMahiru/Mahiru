@@ -140,14 +140,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Đổi tên tệp");
+                builder.setTitle(R.string.rename1);
 
                 // Create an EditText view to get the new music name
                 final EditText input = new EditText(mContext);
                 builder.setView(input);
 
                 // Set positive button for OK action
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newMusicName = input.getText().toString();
@@ -180,13 +180,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                                     // Cập nhật dữ liệu trong danh sách và cập nhật giao diện người dùng
 
                                                     notifyDataSetChanged();
-                                                    Toast.makeText(mContext, "Đổi tên tệp thành công", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý khi xóa tệp hiện tại thất bại
-                                                    Toast.makeText(mContext, "Lỗi khi xóa tệp hiện tại", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
@@ -194,7 +194,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý khi tạo tệp mới thất bại
-                                            Toast.makeText(mContext, "Lỗi khi tạo tệp mới", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -202,7 +202,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý khi sao chép nội dung tệp thất bại
-                                    Toast.makeText(mContext, "Lỗi khi sao chép nội dung tệp", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -210,7 +210,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 });
 
                 // Thiết lập nút Không cho hành động từ chối
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Không làm gì, đóng hộp thoại
@@ -319,7 +319,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Chia sẻ music về thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_shamu, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {
@@ -333,7 +333,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     List<String> tempMusicUrls = new ArrayList<>(mMusicUrls);
                     ProgressDialog progressDialog3 = new ProgressDialog(mContext);
                     progressDialog3.setCancelable(false);
-                    progressDialog3.setMessage("Đang xóa nhạc");
+                    progressDialog3.setMessage(mContext.getString(R.string.loading_del1));
                     progressDialog3.show();
                     // Xóa các ảnh được chọn khỏi Firebase Storage và danh sách mImageUrls
                     for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
@@ -365,13 +365,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                                     // Cập nhật lại giao diện người dùng
                                                     notifyDataSetChanged();
                                                     progressDialog3.dismiss();
-                                                    Toast.makeText(mContext, "Xóa nhạc thành công", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_del1, Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý lỗi nếu xóa không thành công
-                                                    Toast.makeText(mContext, "Error deleting music", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_delmu, Toast.LENGTH_SHORT).show();
                                                     progressDialog3.dismiss();
                                                 }
                                             });
@@ -380,7 +380,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý lỗi nếu copy không thành công
-                                            Toast.makeText(mContext, "Error moving music to delete folder", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_movemu, Toast.LENGTH_SHORT).show();
                                             progressDialog3.dismiss();
                                         }
                                     });
@@ -389,7 +389,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý lỗi nếu không tải được tệp tin ảnh
-                                    Toast.makeText(mContext, "Error downloading music", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_downmu1, Toast.LENGTH_SHORT).show();
                                     progressDialog3.dismiss();
                                 }
                             });
@@ -403,7 +403,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     // Download and save the selected images
                     int numSelected = mSelectedItems.size();
                     ProgressDialog progressDialog = new ProgressDialog(mContext); // Tạo một ProgressDialog mới
-                    progressDialog.setMessage("Đang tải nhạc về..."); // Thiết lập thông báo cho ProgressDialog
+                    progressDialog.setMessage(mContext.getString(R.string.loading_downmu)); // Thiết lập thông báo cho ProgressDialog
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); // Thiết lập kiểu hiển thị của ProgressDialog
                     progressDialog.setMax(numSelected); // Thiết lập giá trị tối đa của ProgressDialog
                     progressDialog.show(); // Hiển thị ProgressDialog
@@ -427,7 +427,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                         // Check if this is the last image to download
                                         if (finalI == numSelected - 1) {
                                             // Display a message to the user that all images have been saved
-                                            Toast.makeText(mContext, "Tải nhạc về thành công!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.succes_downmu, Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
                                             actionMode.finish();
                                             mSelectedItems.clear(); // Clear all selected items
@@ -440,7 +440,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                     public void onFailure(@NonNull Exception e) {
                                         // Display an error message to the user if the download fails
                                         progressDialog.dismiss();
-                                        Toast.makeText(mContext, "Tải nhạc về thất bại", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.error_downmu2, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
@@ -478,7 +478,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         shareIntent.setType("music/*");
         shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, musicUris);
-        mContext.startActivity(Intent.createChooser(shareIntent, "Chia sẻ nhạc"));
+        mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_mu)));
     }
 
 

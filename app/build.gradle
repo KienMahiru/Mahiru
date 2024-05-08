@@ -62,7 +62,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:4.7"
     testImplementation 'org.mockito:mockito-core:3.12.4'
     implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'androidx.sqlite:sqlite:2.3.1'
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.28'

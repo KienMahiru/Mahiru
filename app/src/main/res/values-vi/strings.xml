@@ -25,7 +25,6 @@
     <string name="content_description_delete">Delete content</string>
     <string name="content_description_more">More options</string>
 
-
     --check_internet---
     <string name="op">OOPS!</string>
     <string name="no">Không có kết nối Internet</string>
@@ -34,7 +33,6 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="channel_name">Channel 1</string>
     <string name="channel_description">Mieu ta cho channel 1</string>
-
     <string name="title_login">Đăng nhập tài khoản</string>
     <string name="maintain_login">Duy trì đăng nhập</string>
     <string name="forgot_password">Quên mật khẩu</string>
@@ -79,5 +77,149 @@
     <string name="Feedback">Phản hồi</string>
     <string name="infor_app">Thông tin App</string>
     <string name="support">Trợ giúp</string>
+    <string name="title_app">Ứng dụng</string>
+
+    --Option--
+    <string name="title_exit">Xác nhận thoát ứng dụng</string>
+    <string name="quest_exit">Bạn có chắc chắn muốn thoát ứng dụng?</string>
+    <string name="yes1">Đồng ý</string>
+    <string name="no1">Huỷ</string>
+    <string name="title_signout">Xác nhận đăng xuất</string>
+    <string name="quest_signout">Bạn có chắc chắn muốn đăng xuất?</string>
+    <string name="confim_exit">Bạn đã đăng xuất thành công!</string>
+    <string name="error_infor">Lỗi tải lại thông tin người dùng</string>
+    <string name="confim_asset">Vui lòng cấp quyền truy cập!</string>
+    <string name="select_img">Chọn Ảnh</string>
+
+    --Dang ki--
+    <string name="email_blank">Email không được để trống và phải là địa chỉ Gmail!!!</string>
+    <string name="change_pass">Mật khẩu phải chứa ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường, 1 số và tối thiểu là 6 ký tự</string>
+    <string name="verifi_email">Đang chờ xác minh</string>
+    <string name="exists_acc">Tài khoản đã tồn tại!!!</string>
+    <string name="verifi_sent">Đã gửi email xác minh</string>
+    <string name="error_email">Lỗi xảy ra khi kiểm tra tài khoản</string>
+    <string name="load_verifi">Đang chờ xác minh...</string>
+    <string name="confim_verifi">Tài khoản đã được xác minh! Tạo tài khoản thành công!</string>
+    <string name="error_verifi">Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn và thử lại sau.</string>
+    <string name="del_acc">Đã xóa tài khoản của bạn!!!</string>
+    <string name="error_creatacc">Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.</string>
+
+    --Dang Nhap--
+    <string name="auto_login">Đang đăng nhập tự động...</string>
+    <string name="failed_login1">Đăng nhập tự động thất bại! Tài khoản đã lưu không tồn tại</string>
+    <string name="failed_login2">Đăng nhập tự động thất bại! Hãy kiểm tra lại tài khoản hoặc mạng của bạn.</string>
+    <string name="failed_login3">Đăng nhập tự động thất bại! Hãy kiểm tra lại tài khoản của bạn!</string>
+    <string name="welcome_login">Chào mừng bạn tới kho lưu trữ ảnh Mahiru!</string>
+    <string name="succes_login1">Đăng nhập tự động thành công!</string>
+    <string name="failed_login4">Đăng nhập tự động thất bại! Hãy kiểm tra lại mật khẩu hoặc mạng của bạn.</string>
+    <string name="failed_login5">Đăng nhập thất bại! Tài khoản này không tồn tại.</string>
+    <string name="failed_login6">Đăng nhập thất bại! Hãy kiểm tra lại tài khoản của bạn!</string>
+    <string name="incorrect_data">Tên đăng nhập hoặc mật khẩu không đúng.</string>
+    <string name="succes_login2">Đăng nhập thành công!</string>
+    <string name="incorrect_pass">Mật khẩu của bạn không đúng! Vui lòng nhập lại mật khẩu.</string>
+
+    --EditImageActivity and EditImageProActivity--
+    <string name="error_img">Lỗi ảnh!</string>
+    <string name="upload1">Đang tải lên... </string>
+    <string name="loading1">Vui lòng đợi...</string>
+    <string name="succes_saveimg">Lưu ảnh thành công!</string>
+
+    --Khoiphuc--
+    <string name="invalid_email">Email không hợp lệ!</string>
+    <string name="exist_acc">Tài khoản không tồn tại!</string>
+    <string name="error_checkacc">Lỗi xảy ra khi kiểm tra tài khoản!</string>
+    <string name="check_email">Hãy kiểm tra email để nhập mật khẩu mới!</string>
+
+
+    --BinMusic and MusicAdapter--
+    <string name="quest_delmusic">Bạn có chắc muốn xóa vĩnh viễn nhạc đã chọn không?</string>
+    <string name="error_delmu">Lỗi xóa nhạc!</string>
+    <string name="loading_undo1">Đang hoàn tác nhạc...</string>
+    <string name="error_undomu">Lỗi hoàn tác nhạc!</string>
+    <string name="rename1">Đổi tên tệp</string>
+    <string name="succes_rename1">Đổi tên tệp thành công!</string>
+    <string name="error_delfile">Lỗi khi xóa tệp hiện tại</string>
+    <string name="error_crefile">Lỗi khi tạo tệp mới</string>
+    <string name="error_copyfile">Lỗi khi sao chép nội dung tệp</string>
+    <string name="error_shamu">Chia sẻ music về thất bại.</string>
+    <string name="loading_del1">Đang xóa nhạc...</string>
+    <string name="succes_del1">Xóa nhạc thành công!</string>
+    <string name="error_movemu">Lỗi khi di chuyển nhạc vào thư mục xóa</string>
+    <string name="error_downmu1">Lỗi tải nhạc xuống</string>
+    <string name="succes_downmu">Tải nhạc về thành công!</string>
+    <string name="error_downmu2">Tải nhạc về thất bại</string>
+    <string name="share_mu">Chia sẻ nhạc</string>
+    <string name="loading_downmu">Đang tải nhạc về...</string>
+
+    --FullscreenImage and BinAdapter-
+    <string name="quest_delimg">Bạn có chắc muốn xóa ảnh vĩnh viễn không?</string>
+    <string name="quest_undoimg">Bạn có chắc muốn hoàn tác bức ảnh không?</string>
+    <string name="loading2">Đang xóa ảnh...</string>
+    <string name="error_delimg">Lỗi xóa ảnh</string>
+    <string name="loading_undo">Đang hoàn tác ảnh...</string>
+    <string name="succes_undoimg">Hoàn tác ảnh thành công!</string>
+    <string name="error_undoimg">Lỗi hoàn tác ảnh!</string>
+    <string name="error_urlimg">Lỗi đường dẫn ảnh!</string>
+    <string name="quest_editimg">Lựa chọn chỉnh sửa ảnh:</string>
+    <string name="simple1">Đơn giản</string>
+    <string name="pro1">Chuyên nghiệp</string>
+    <string name="share_img">Chia sẻ hình ảnh</string>
+    <string name="error_share">Chia sẻ ảnh thất bại</string>
+    <string name="succes_del">Xóa ảnh thành công!</string>
+    <string name="error_delimg1">Xóa ảnh thất bại</string>
+    <string name="quest_delimg1">Bạn có chắc muốn xóa ảnh đã chọn không?</string>
+    <string name="error_moveimg">Lỗi khi di chuyển hình ảnh vào thư mục xóa.</string>
+    <string name="error_downimg1">Lỗi tải tệp ảnh!</string>
+    <string name="loading_downimg">Đang tải ảnh về...</string>
+    <string name="succes_dowmimg">Tải ảnh về thành công!</string>
+    <string name="error_downimg2">Tải ảnh về thất bại</string>
+
+    --BinVideo and VideoAdapter--
+    <string name="quest_delvid">Bạn có chắc muốn xóa video đã chọn không?</string>
+    <string name="loading_del2">Đang xóa video...</string>
+    <string name="succes_del2">Đã xóa video thành công!</string>
+    <string name="error_delvid">Lỗi xóa video!</string>
+    <string name="loading_undo3">Đang hoàn tác video...</string>
+    <string name="succes_undovid">Hoàn tác video thành công!</string>
+    <string name="error_video">Lỗi video</string>
+    <string name="error_undovid">Lỗi hoàn tác video</string>
+    <string name="error_urlvid">Lỗi đường dẫn video</string>
+    <string name="error_sharevid">Chia sẻ video thất bại!</string>
+    <string name="error_movevid">Lỗi xóa video vào thùng rác</string>
+    <string name="error_filevid">Lỗi tệp tin video</string>
+    <string name="loading_downvid">Đang tải video về...</string>
+    <string name="succes_downvid">Tải video về thành công!</string>
+    <string name="error_downvid">Tải video về thất bại</string>
+    <string name="share_vid">Chia sẻ video</string>
+
+    --ChangePassword--
+    <string name="succes_changepass">Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại!</string>
+    <string name="error_uppass">Cập nhật mật khẩu thất bại!</string>
+    <string name="incorrect_oldpass">Mật khẩu cũ không đúng! Vui lòng nhập lại mật khẩu!</string>
+    <string name="input_oldpass">Hãy nhập mật khẩu cũ</string>
+    <string name="input_newpass">Hãy nhập mật khẩu mới</string>
+    <string name="re_inputpass">Hãy nhập lại xác nhận mật khẩu mới</string>
+    <string name="least_6char">Hãy nhập ít nhất 6 ký tự!</string>
+    <string name="one_upper">Mật khẩu phải chứa ít nhất một ký tự viết hoa</string>
+    <string name="one_lower">Mật khẩu phải chứa ít nhất một chữ cái thường</string>
+    <string name="one_number">Mật khẩu phải chứa ít nhất một số</string>
+
+    --Home--
+    <string name="succes_upimg1">Tải ảnh lên thành công</string>
+    <string name="succes_upimg2">Upload thành công</string>
+    <string name="succes_upvid">Tải video lên thành công</string>
+
+    --MyProfile--
+    <string name="update_user">Vui lòng nhập tên người dùng</string>
+    <string name="loading_up">Đang cập nhật...</string>
+    <string name="succes_upuser">Cập nhật tên người dùng thành công!</string>
+    <string name="error_upuser">Cập nhật tên người dùng thất bại!</string>
+    <string name="select_imguser">Vui lòng chọn ảnh đại diện</string>
+    <string name="error_updateimg">Cập nhật ảnh đại diện thất bại!</string>
+    <string name="error_uploadimg">"Tải ảnh lên thất bại: "</string>
+    <string name="succes_updateimg">Cập nhật ảnh đại diện thành công!</string>
+    <string name="error_saveimg">"Lưu thông tin ảnh đại diện thất bại: "</string>
+    --Setting--
+    <string name="succes_delset">Xóa thành công</string>
 
 </resources>

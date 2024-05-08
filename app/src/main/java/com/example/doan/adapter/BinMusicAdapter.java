@@ -181,14 +181,14 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
 
         private void showDeleteConfirmationDialog() {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage("Bạn có chắc muốn xóa vĩnh viễn nhạc đã chọn không?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            builder.setMessage(R.string.quest_delmusic);
+            builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     deleteSelectedMusic();
                 }
             });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // Không làm gì cả
@@ -231,13 +231,13 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
         }
 
         private void handleDeleteFailure(int position) {
-            Toast.makeText(mContext, "Lỗi xóa nhạc", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.error_delmu, Toast.LENGTH_SHORT).show();
         }
 
         private void showRestoreConfirmationDialog() {
             ProgressDialog progressDialog = new ProgressDialog(mContext);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage("Đang hoàn tác nhạc");
+            progressDialog.setMessage(mContext.getString(R.string.loading_undo1));
             progressDialog.show();
 
             for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
@@ -302,7 +302,7 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
         }
 
         private void handleRestoreFailure(int position, ProgressDialog progressDialog) {
-            Toast.makeText(mContext, "Lỗi hoàn tác nhạc", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.error_undomu, Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
         }
 

@@ -64,13 +64,13 @@ public class Dangky extends AppCompatActivity {
     // Kiểm tra đầu vào các trường dữ liệu
     public boolean isInputValid(String email, String password){
         if (TextUtils.isEmpty(email) || !isGmailAddress(email)) {
-            mEmail.setError("Email không được để trống và phải là địa chỉ gmail!!!");
+            mEmail.setError(getString(R.string.email_blank));
             return false;
         }
 
         if (TextUtils.isEmpty(password) || password.length() < 6 || !containsUpperCaseLetter(password) || !containsLowerCaseLetter(password) ||
                 !containsNumber(password)) {
-            mPasswordEditText.setError("Mật khẩu phải chứa ít nhất 1 chữ cái viết hoa, 1 chữ cái viết thường, 1 số và tối thiểu là 6 ký tự");
+            mPasswordEditText.setError(getString(R.string.change_pass));
             return false;
         }
         return true;
@@ -78,7 +78,7 @@ public class Dangky extends AppCompatActivity {
     //Quá trình xác minh tài khoản
     private void registerAndVerifyUser(String email, String password) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        progressDialog.setMessage("Đang chờ xác minh");
+        progressDialog.setMessage(getString(R.string.verifi_email));
         progressDialog.setCancelable(false);
         progressDialog.show();
         //API Firebase Auth
@@ -87,7 +87,7 @@ public class Dangky extends AppCompatActivity {
                 SignInMethodQueryResult result = task.getResult();
                 List<String> providers = result.getSignInMethods();
                 if (providers != null && providers.size() > 0) {
-                    Toast.makeText(Dangky.this, "Tài khoản đã tồn tại!!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Dangky.this, R.string.exists_acc, Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
                 } else {
                     auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(Dangky.this, task1 -> {
@@ -95,7 +95,7 @@ public class Dangky extends AppCompatActivity {
                             FirebaseUser user = auth.getCurrentUser();
                             user.sendEmailVerification().addOnCompleteListener(task2 -> {
                                 if (task2.isSuccessful()) {
-                                    Toast.makeText(Dangky.this, "Đã gửi email xác minh", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Dangky.this, R.string.verifi_sent, Toast.LENGTH_SHORT).show();
                                     startEmailVerificationCountdown(user);
                                 } else {
                                     handleRegistrationFailure(user);
@@ -107,7 +107,7 @@ public class Dangky extends AppCompatActivity {
                     });
                 }
             } else {
-                Toast.makeText(Dangky.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Dangky.this, R.string.error_email, Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });
@@ -121,7 +121,7 @@ public class Dangky extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 long secondsLeft = millisUntilFinished / 1000;
                 String timeLeftFormatted = String.format("%02d:%02d", secondsLeft / 60, secondsLeft % 60);
-                progressDialog.setMessage("Đang chờ xác minh... " + timeLeftFormatted); // Cập nhật thông báo tiến trình
+                progressDialog.setMessage(R.string.load_verifi + timeLeftFormatted); // Cập nhật thông báo tiến trình
             }
 
             public void onFinish() {
@@ -129,7 +129,7 @@ public class Dangky extends AppCompatActivity {
                 user.reload().addOnCompleteListener(task2 -> {
                     if (user.isEmailVerified()) {
                         // Tài khoản đã được xác minh
-                        Toast.makeText(Dangky.this, "Tài khoản đã được xác minh! Tạo tài khoản thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Dangky.this, R.string.confim_verifi, Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
                         Intent intent = new Intent(Dangky.this, Dangnhap.class);
                         startActivity(intent); // Chuyển đến màn hình đăng nhập
@@ -144,13 +144,13 @@ public class Dangky extends AppCompatActivity {
 
     // Xử lý khi email xác minh thất bại
     private void handleEmailVerificationFailure(FirebaseUser user) {
-        Toast.makeText(Dangky.this, "Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn và thử lại sau.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Dangky.this, R.string.error_verifi, Toast.LENGTH_SHORT).show();
         progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
         if (user != null) {
             // Nếu có tài khoản, xóa tài khoản đã tạo
             user.delete().addOnCompleteListener(task3 -> {
                 if (task3.isSuccessful()) {
-                    new Handler().postDelayed(() -> Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn!!!", Toast.LENGTH_SHORT).show(), 2000);
+                    new Handler().postDelayed(() -> Toast.makeText(Dangky.this, R.string.del_acc, Toast.LENGTH_SHORT).show(), 2000);
                 }
             });
         }
@@ -158,13 +158,13 @@ public class Dangky extends AppCompatActivity {
 
     // Xử lý khi tạo tài khoản thất bại
     private void handleRegistrationFailure(FirebaseUser user) {
-        Toast.makeText(Dangky.this, "Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Dangky.this, R.string.error_creatacc, Toast.LENGTH_SHORT).show();
         progressDialog.dismiss(); // Ẩn hộp thoại tiến trình
         if (user != null) {
             // Nếu có tài khoản, xóa tài khoản đã tạo
             user.delete().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(Dangky.this, "Đã xóa tài khoản của bạn.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Dangky.this, R.string.del_acc, Toast.LENGTH_SHORT).show();
                 }
             });
         }

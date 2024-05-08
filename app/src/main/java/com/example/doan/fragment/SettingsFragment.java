@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Cài đặt");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_settings));
 
         aSwitch = mView.findViewById(R.id.darkmode);
         xoa_cache = mView.findViewById(R.id.xoa_cache);
@@ -45,14 +45,16 @@ public class SettingsFragment extends Fragment {
         btn_vn = mView.findViewById(R.id.btn_vn);
         LanguageManager lang = new LanguageManager(requireContext());
 
+        String currentLanguage = lang.getSavedLanguage();
+
         btn_vn.setOnClickListener(view -> {
             lang.updateResource("vi");
-            //getActivity().recreate();
+            getActivity().recreate();
         });
 
         btn_eng.setOnClickListener(view -> {
             lang.updateResource("en");
-            //getActivity().recreate();
+            getActivity().recreate();
         });
 
         initSwitch();
@@ -62,9 +64,6 @@ public class SettingsFragment extends Fragment {
         return mView;
     }
 
-    private void LanguageClass(){
-
-    }
     private void initSwitch() {
         boolean isDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
         aSwitch.setChecked(isDarkMode);
@@ -83,7 +82,7 @@ public class SettingsFragment extends Fragment {
         if (cacheDir != null && cacheDir.isDirectory()) {
             deleteDir(cacheDir);
             progressBar.setVisibility(View.GONE);
-            Toast.makeText(context, "Xóa thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.succes_delset, Toast.LENGTH_SHORT).show();
         }
     }
 

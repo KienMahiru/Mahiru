@@ -23,7 +23,7 @@ public class InforFragment extends Fragment {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(),"Thông tin app");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(),getString(R.string.infor_app));
 
         setupImageViewRotation();
         return mView;

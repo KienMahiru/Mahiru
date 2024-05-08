@@ -154,14 +154,14 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
 
         private void showDeleteConfirmationDialog(ActionMode mode) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage("Bạn có chắc muốn xóa ảnh đã chọn không?")
-                    .setPositiveButton("Yes", (dialog, which) -> deleteSelectedImages(mode))
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+            builder.setMessage(R.string.quest_delimg1)
+                    .setPositiveButton(R.string.yes1, (dialog, which) -> deleteSelectedImages(mode))
+                    .setNegativeButton(R.string.no1, (dialog, which) -> dialog.dismiss())
                     .show();
         }
 
         private void deleteSelectedImages(ActionMode mode) {
-            ProgressDialog progressDialog = createProgressDialog("Đang xóa ảnh...");
+            ProgressDialog progressDialog = createProgressDialog(mContext.getString(R.string.loading2));
             progressDialog.show();
 
             for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
@@ -178,7 +178,7 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
                                 }
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(mContext, "Lỗi xóa ảnh", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, R.string.error_delimg, Toast.LENGTH_SHORT).show();
                             })
                             .addOnCompleteListener(task -> progressDialog.dismiss());
                 }
@@ -188,7 +188,7 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
         }
 
         private void restoreSelectedImages(ActionMode mode) {
-            ProgressDialog progressDialog = createProgressDialog("Đang hoàn tác ảnh...");
+            ProgressDialog progressDialog = createProgressDialog(mContext.getString(R.string.loading_undo));
             progressDialog.show();
 
             for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
@@ -219,22 +219,22 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
                                                     mImageUrls.remove(position);
                                                     mSelectedItems.delete(position);
                                                     notifyDataSetChanged();
-                                                    Toast.makeText(mContext, "Hoàn tác ảnh thành công!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_undoimg, Toast.LENGTH_SHORT).show();
                                                 }
                                             })
                                             .addOnFailureListener(e -> {
-                                                Toast.makeText(mContext, "Lỗi xóa ảnh", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, R.string.error_delimg, Toast.LENGTH_SHORT).show();
                                             })
                                             .addOnCompleteListener(task -> progressDialog.dismiss());
                                 })
                                 .addOnFailureListener(e -> {
                                     progressDialog.dismiss();
-                                    Toast.makeText(mContext, "Lỗi hoàn tác ảnh", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_undoimg, Toast.LENGTH_SHORT).show();
                                 });
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(mContext, "Lỗi đường dẫn ảnh", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, R.string.error_urlimg, Toast.LENGTH_SHORT).show();
                     });
         }
 

@@ -18,6 +18,13 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Khởi tạo LanguageManager
+        LanguageManager lang = new LanguageManager(this);
+        // Lấy ngôn ngữ đã lưu từ SharedPreferences
+        String savedLanguage = lang.getSavedLanguage();
+        // Cập nhật ngôn ngữ của ứng dụng
+        lang.updateResource(savedLanguage);
+
         setContentView(R.layout.activity_welcome);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         mProgressBar = findViewById(R.id.progress_bar);
