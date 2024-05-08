@@ -194,7 +194,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Chia sẻ ảnh thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_share, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {
@@ -207,7 +207,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                     // Tạo một danh sách tạm thời để lưu lại các giá trị của mImageUrls
                     List<String> tempImageUrls = new ArrayList<>(mImageUrls);
                     ProgressDialog progressDialog1 = new ProgressDialog(mContext);
-                    progressDialog1.setMessage("Đang xóa ảnh...");
+                    progressDialog1.setMessage(mContext.getString(R.string.loading2));
                     progressDialog1.setCancelable(false);
                     progressDialog1.show();
                     // Xóa các ảnh được chọn khỏi Firebase Storage và danh sách mImageUrls
@@ -240,14 +240,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                                     // Cập nhật lại giao diện người dùng
                                                     notifyDataSetChanged();
                                                     progressDialog1.dismiss();
-                                                    Toast.makeText(mContext, "Xóa ảnh thành công!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_del, Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý lỗi nếu xóa không thành công
                                                     progressDialog1.dismiss();
-                                                    Toast.makeText(mContext, "Xóa ảnh thất bại!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_delimg1, Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
@@ -256,7 +256,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý lỗi nếu copy không thành công
                                             progressDialog1.dismiss();
-                                            Toast.makeText(mContext, "Error moving image to delete folder", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_moveimg, Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -265,7 +265,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý lỗi nếu không tải được tệp tin ảnh
                                     progressDialog1.dismiss();
-                                    Toast.makeText(mContext, "Lỗi tải tệp ảnh! ", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_downimg1, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -303,7 +303,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                         // Check if this is the last image to download
                                         if (finalI == numSelected - 1) {
                                             // Display a message to the user that all images have been saved
-                                            Toast.makeText(mContext, "Tải ảnh về thành công!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.succes_dowmimg, Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
                                             actionMode.finish();
                                             mSelectedItems.clear(); // Clear all selected items
@@ -316,7 +316,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
                                     public void onFailure(@NonNull Exception e) {
                                         // Display an error message to the user if the download fails
                                         progressDialog.dismiss();
-                                        Toast.makeText(mContext, "Tải ảnh về thất bại", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.error_downimg2, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
@@ -339,7 +339,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         shareIntent.setType("image/*");
         shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-        mContext.startActivity(Intent.createChooser(shareIntent, "Chia sẻ ảnh"));
+        mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_img)));
     }
 
 

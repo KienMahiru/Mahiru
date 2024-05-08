@@ -177,14 +177,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Đổi tên tệp");
+                builder.setTitle(R.string.rename1);
 
                 // Create an EditText view to get the new music name
                 final EditText input = new EditText(mContext);
                 builder.setView(input);
 
                 // Set positive button for OK action
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newVideoName = input.getText().toString();
@@ -217,13 +217,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                                     // Cập nhật dữ liệu trong danh sách và cập nhật giao diện người dùng
 
                                                     notifyDataSetChanged();
-                                                    Toast.makeText(mContext, "Đổi tên tệp thành công", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý khi xóa tệp hiện tại thất bại
-                                                    Toast.makeText(mContext, "Lỗi khi xóa tệp hiện tại", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
@@ -231,7 +231,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý khi tạo tệp mới thất bại
-                                            Toast.makeText(mContext, "Lỗi khi tạo tệp mới", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -239,7 +239,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý khi sao chép nội dung tệp thất bại
-                                    Toast.makeText(mContext, "Lỗi khi sao chép nội dung tệp", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -247,7 +247,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                 });
 
                 // Thiết lập nút Không cho hành động từ chối
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Không làm gì, đóng hộp thoại
@@ -320,7 +320,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
-                                    Toast.makeText(mContext, "Chia sẻ video thất bại", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_sharevid, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         } catch (IOException e) {
@@ -334,7 +334,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                     List<String> tempVideoUrls = new ArrayList<>(mVideoUrls);
                     ProgressDialog progressDialog1 =new ProgressDialog(mContext);
                     progressDialog1.setCancelable(false);
-                    progressDialog1.setMessage("Đang xóa video...");
+                    progressDialog1.setMessage(mContext.getString(R.string.loading_del2));
                     progressDialog1.show();
                     // Xóa các ảnh được chọn khỏi Firebase Storage và danh sách mImageUrls
                     for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
@@ -366,13 +366,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                                     // Cập nhật lại giao diện người dùng
                                                     notifyDataSetChanged();
                                                     progressDialog1.dismiss();
-                                                    Toast.makeText(mContext, "Xóa video thành công!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.succes_del2, Toast.LENGTH_SHORT).show();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý lỗi nếu xóa không thành công
-                                                    Toast.makeText(mContext, "Lỗi xóa video", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_delvid, Toast.LENGTH_SHORT).show();
                                                     progressDialog1.dismiss();
                                                 }
                                             });
@@ -381,7 +381,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý lỗi nếu copy không thành công
-                                            Toast.makeText(mContext, "Lỗi xóa video vào thùng rác", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_movevid, Toast.LENGTH_SHORT).show();
                                             progressDialog1.dismiss();
                                         }
                                     });
@@ -390,7 +390,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý lỗi nếu không tải được tệp tin ảnh
-                                    Toast.makeText(mContext, "Lỗi tệp tin video", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_filevid, Toast.LENGTH_SHORT).show();
 
                                 }
                             });
@@ -404,7 +404,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                     // Download and save the selected images
                     int numSelected = mSelectedItems.size();
                     ProgressDialog progressDialog = new ProgressDialog(mContext); // Tạo một ProgressDialog mới
-                    progressDialog.setMessage("Đang tải video về..."); // Thiết lập thông báo cho ProgressDialog
+                    progressDialog.setMessage(mContext.getString(R.string.loading_downvid)); // Thiết lập thông báo cho ProgressDialog
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); // Thiết lập kiểu hiển thị của ProgressDialog
                     progressDialog.setMax(numSelected); // Thiết lập giá trị tối đa của ProgressDialog
                     progressDialog.show(); // Hiển thị ProgressDialog
@@ -428,7 +428,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                         // Check if this is the last image to download
                                         if (finalI == numSelected - 1) {
                                             // Display a message to the user that all images have been saved
-                                            Toast.makeText(mContext, "Tải video về thành công!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.succes_downvid, Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
                                             actionMode.finish();
                                             mSelectedItems.clear(); // Clear all selected items
@@ -441,7 +441,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                     public void onFailure(@NonNull Exception e) {
                                         // Display an error message to the user if the download fails
                                         progressDialog.dismiss();
-                                        Toast.makeText(mContext, "Tải video về thất bại", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, R.string.error_downvid, Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
@@ -464,7 +464,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         Intent shareIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         shareIntent.setType("video/*");
         shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, videoUris);
-        mContext.startActivity(Intent.createChooser(shareIntent, "Chia sẻ video"));
+        mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_vid)));
     }
 
     private Task<String> getVideoTitleFromFirebaseStorage(String videoUrl) {

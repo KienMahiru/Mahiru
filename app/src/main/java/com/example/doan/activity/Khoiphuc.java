@@ -36,7 +36,7 @@ public class Khoiphuc extends AppCompatActivity {
 
         String emailAddress = email.getText().toString().trim();
         if (TextUtils.isEmpty(emailAddress) || Dangky.isGmailAddress(emailAddress)) {
-            email.setError("Email không hợp lệ");
+            email.setError(getString(R.string.invalid_email));
             return;
         }
 
@@ -48,11 +48,11 @@ public class Khoiphuc extends AppCompatActivity {
                     // Tài khoản tồn tại
                     resetPassword(emailAddress);
                 } else {
-                    Toast.makeText(Khoiphuc.this, "Tài khoản không tồn tại!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Khoiphuc.this, R.string.exist_acc, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 // Lỗi xảy ra khi kiểm tra tài khoản
-                Toast.makeText(Khoiphuc.this, "Lỗi xảy ra khi kiểm tra tài khoản", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Khoiphuc.this, R.string.error_checkacc, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -61,7 +61,7 @@ public class Khoiphuc extends AppCompatActivity {
         FirebaseAuth.getInstance().sendPasswordResetEmail(emailAddress)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        Toast.makeText(Khoiphuc.this, "Hãy kiểm tra email để nhập mật khẩu mới!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Khoiphuc.this, R.string.check_email, Toast.LENGTH_SHORT).show();
                         navigateToLoginActivity();
                     }
                 });

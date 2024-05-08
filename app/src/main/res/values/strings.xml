@@ -4,7 +4,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in_short">Sign In</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
@@ -29,7 +29,7 @@
     <string name="title_pleaseregister">Please register here!</string>
     <string name="save_image">Save to device</string>
     <string name="title_signup">Sign Up</string>
-    <string name="signup">Sign up</string>
+    <string name="signup">Sign Up</string>
     <string name="cancel">Cancel</string>
     <string name="save_edit">Save</string>
     <string name="TV_sp">1dp</string>
@@ -45,13 +45,17 @@
     <string name="input_name">Enter name</string>
     <string name="update_infor">Update information</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="lang_switch">Language</string>
+    <string name="quest_language">Choose language:</string>
+    <string name="lang1">Vietnamese</string>
+    <string name="lang2">English</string>
     <string name="dele_cache">Clear cache</string>
     <string name="con_quest1">How to upload photos/videos/music?</string>
     <string name="anwser_ques1">To upload photos/videos/music, tap the upload button or long-press the upload button to select the file you want to upload</string>
     <string name="con_quest2">How to download photos/videos/music to your phone?</string>
     <string name="anwser_ques2">To download photos/videos/music to your phone, long-press the photo/video/music you want to download, then tap the More (three vertical dots) button and tap Download image</string>
     <string name="Undo_1">Undo</string>
-    <string name="select_all">Select all</string>
+    <string name="select_all">Select All</string>
     <string name="sort">Sort</string>
     <string name="Image">Image</string>
     <string name="Video">Video</string>
@@ -61,10 +65,11 @@
     <string name="filter">Filter</string>
     <string name="edit_image">Edit</string>
     <string name="recovery_image">Recover</string>
-    <string name="sign_out">Sign out</string>
+    <string name="sign_out">Sign Out</string>
     <string name="Feedback">Feedback</string>
     <string name="infor_app">Information</string>
     <string name="support">Support</string>
+    <string name="title_app">Application</string>
 
     --check_internet---
     <string name="op">OOPS!</string>
@@ -76,5 +81,148 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="channel_name">Channel 1</string>
     <string name="channel_description">Mieu ta cho channel 1</string>
+
+    --Option--
+    <string name="title_exit">Confirm Application Exit</string>
+    <string name="quest_exit">Are you sure you want to exit the application?</string>
+    <string name="yes1">Yes</string>
+    <string name="no1">Cancel</string>
+    <string name="title_signout">Confirm Sign Out</string>
+    <string name="quest_signout">Are you sure you want to sign out?</string>
+    <string name="confim_exit">You have successfully logged out!</string>
+    <string name="error_infor">Error reloading user information</string>
+    <string name="confim_asset">Please grant access permissions!</string>
+    <string name="select_img">Select Image</string>
+
+    --Registration--
+    <string name="email_blank">Email must not be empty and must be a Gmail address!!!</string>
+    <string name="change_pass">Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and at least 6 characters</string>
+    <string name="verifi_email">Waiting for verification</string>
+    <string name="exists_acc">Account already exists!!!</string>
+    <string name="verifi_sent">Verification email sent</string>
+    <string name="error_email">Error checking account</string>
+    <string name="load_verifi">Verifying...</string>
+    <string name="confim_verifi">Account verified! Account created successfully!</string>
+    <string name="error_verifi">Account not verified. Please check your email and try again later.</string>
+    <string name="del_acc">Your account has been deleted!!!</string>
+    <string name="error_creatacc">Failed to create account. Please check the information and try again later.</string>
+
+    --Login--
+    <string name="auto_login">Logging in automatically...</string>
+    <string name="failed_login1">Automatic login failed! Saved account does not exist</string>
+    <string name="failed_login2">Automatic login failed! Please check your account or network.</string>
+    <string name="failed_login3">Automatic login failed! Please check your account!</string>
+    <string name="welcome_login">Welcome to Mahiru photo storage!</string>
+    <string name="succes_login1">Automatic login successful!</string>
+    <string name="failed_login4">Automatic login failed! Please check your password or network.</string>
+    <string name="failed_login5">Login failed! This account does not exist.</string>
+    <string name="failed_login6">Login failed! Please check your account!</string>
+    <string name="incorrect_data">Incorrect username or password.</string>
+    <string name="succes_login2">Login successful!</string>
+    <string name="incorrect_pass">Incorrect password! Please re-enter your password.</string>
+
+    --EditImageActivity and EditImageProActivity--
+    <string name="error_img">Image error!</string>
+    <string name="upload1">Uploading...</string>
+    <string name="loading1">Please wait...</string>
+    <string name="succes_saveimg">Image saved successfully!</string>
+
+    --Restore--
+    <string name="invalid_email">Invalid email!</string>
+    <string name="exist_acc">Account does not exist!</string>
+    <string name="error_checkacc">Error checking account!</string>
+    <string name="check_email">Please check your email to enter a new password!</string>
+
+    --BinMusic and MusicAdapter--
+    <string name="quest_delmusic">Are you sure you want to permanently delete the selected music?</string>
+    <string name="error_delmu">Error deleting music!</string>
+    <string name="loading_undo1">Undoing music...</string>
+    <string name="error_undomu">Error undoing music!</string>
+    <string name="rename1">Rename file</string>
+    <string name="succes_rename1">File renamed successfully!</string>
+    <string name="error_delfile">Error deleting current file</string>
+    <string name="error_crefile">Error creating new file</string>
+    <string name="error_copyfile">Error copying file content</string>
+    <string name="error_shamu">Sharing music failed.</string>
+    <string name="loading_del1">Deleting music...</string>
+    <string name="succes_del1">Music deleted successfully!</string>
+    <string name="error_movemu">Error moving music to trash folder</string>
+    <string name="error_downmu1">Error downloading music</string>
+    <string name="succes_downmu">Music downloaded successfully!</string>
+    <string name="error_downmu2">Failed to download music</string>
+    <string name="share_mu">Share music</string>
+    <string name="loading_downmu">Downloading music...</string>
+
+    --FullscreenImage and BinAdapter--
+    <string name="quest_delimg">Are you sure you want to permanently delete this image?</string>
+    <string name="quest_undoimg">Are you sure you want to undo this image?</string>
+    <string name="loading2">Deleting image...</string>
+    <string name="error_delimg">Error deleting image</string>
+    <string name="loading_undo">Undoing image...</string>
+    <string name="succes_undoimg">Image undone successfully!</string>
+    <string name="error_undoimg">Error undoing image!</string>
+    <string name="error_urlimg">Image path error!</string>
+    <string name="quest_editimg">Choose image editing:</string>
+    <string name="simple1">Simple</string>
+    <string name="pro1">Professional</string>
+    <string name="share_img">Share image</string>
+    <string name="error_share">Failed to share image</string>
+    <string name="succes_del">Image deleted successfully!</string>
+    <string name="error_delimg1">Failed to delete image</string>
+    <string name="quest_delimg1">Are you sure you want to delete the selected images?</string>
+    <string name="error_moveimg">Error moving image to trash folder.</string>
+    <string name="error_downimg1">Error downloading image!</string>
+    <string name="loading_downimg">Downloading image...</string>
+    <string name="succes_dowmimg">Image downloaded successfully!</string>
+    <string name="error_downimg2">Failed to download image</string>
+
+    --BinVideo and VideoAdapter--
+    <string name="quest_delvid">Are you sure you want to delete the selected video?</string>
+    <string name="loading_del2">Deleting video...</string>
+    <string name="succes_del2">Video deleted successfully!</string>
+    <string name="error_delvid">Error deleting video!</string>
+    <string name="loading_undo3">Undoing video...</string>
+    <string name="succes_undovid">Video undone successfully!</string>
+    <string name="error_video">Video error</string>
+    <string name="error_undovid">Error undoing video</string>
+    <string name="error_urlvid">Video path error</string>
+    <string name="error_sharevid">Failed to share video!</string>
+    <string name="error_movevid">Error deleting video to trash</string>
+    <string name="error_filevid">Video file error</string>
+    <string name="loading_downvid">Downloading video...</string>
+    <string name="succes_downvid">Video downloaded successfully!</string>
+    <string name="error_downvid">Failed to download video</string>
+    <string name="share_vid">Share video</string>
+
+    --ChangePassword--
+    <string name="succes_changepass">Password updated successfully! Please log in again!</string>
+    <string name="error_uppass">Failed to update password!</string>
+    <string name="incorrect_oldpass">Incorrect old password! Please enter your password again!</string>
+    <string name="input_oldpass">Please enter your old password</string>
+    <string name="input_newpass">Please enter a new password</string>
+    <string name="re_inputpass">Please re-enter the new password</string>
+    <string name="least_6char">Please enter at least 6 characters!</string>
+    <string name="one_upper">Password must contain at least one uppercase letter</string>
+    <string name="one_lower">Password must contain at least one lowercase letter</string>
+    <string name="one_number">Password must contain at least one number</string>
+
+    --Home--
+    <string name="succes_upimg1">Image uploaded successfully</string>
+    <string name="succes_upimg2">Upload successful</string>
+    <string name="succes_upvid">Video uploaded successfully</string>
+
+    --MyProfile--
+    <string name="update_user">Please enter a username</string>
+    <string name="loading_up">Updating...</string>
+    <string name="succes_upuser">Username updated successfully!</string>
+    <string name="error_upuser">Failed to update username!</string>
+    <string name="select_imguser">Please select a profile picture</string>
+    <string name="error_updateimg">Failed to update profile picture!</string>
+    <string name="error_uploadimg">Failed to upload image: </string>
+    <string name="succes_updateimg">Profile picture updated successfully!</string>
+    <string name="error_saveimg">Failed to save profile picture: </string>
+
+    --Setting--
+    <string name="succes_delset">Deleted successfully</string>
 
 </resources>

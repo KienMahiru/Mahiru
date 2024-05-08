@@ -8,6 +8,10 @@
     android:orientation="vertical"
     android:gravity="center">
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
     <Switch
         android:paddingLeft="15dp"
         android:id="@+id/darkmode"
@@ -19,14 +23,26 @@
         android:textSize="18sp" />
 
     <Button
-        android:gravity="left"
+        android:id="@+id/lang_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:background="@drawable/border_login"
+        android:gravity="left"
         android:padding="15dp"
+        android:text="@string/lang_switch"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+    <Button
         android:id="@+id/xoa_cache"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:background="@drawable/border_login"
         android:drawableEnd="@drawable/trash_icon"
+        android:gravity="left"
+        android:padding="15dp"
         android:text="@string/dele_cache"
         android:textAllCaps="false"
         android:textColor="@color/white"
@@ -38,19 +54,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="150dp" />
 
-    <ImageButton
-        android:id="@+id/btn_vn"
-        android:layout_width="94dp"
-        android:layout_height="104dp"
-        android:src="@drawable/img_2"
-        tools:ignore="SpeakableTextPresentCheck" />
-
-    <ImageButton
-        android:id="@+id/btn_eng"
-        android:layout_width="94dp"
-        android:layout_height="104dp"
-        android:src="@drawable/img"
-        tools:ignore="SpeakableTextPresentCheck" />
 
 </LinearLayout>

@@ -79,8 +79,8 @@ public class EditImageProActivity extends AppCompatActivity {
         String timestamp = dateFormat.format(calendar.getTime());
 
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Đang tải lên");
-        progressDialog.setMessage("Vui lòng đợi...");
+        progressDialog.setTitle(R.string.upload1);
+        progressDialog.setMessage(getString(R.string.loading1));
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
@@ -89,7 +89,7 @@ public class EditImageProActivity extends AppCompatActivity {
         StorageReference fileRef = storageRef.child(fileName);
         UploadTask uploadTask = fileRef.putFile(outputUri);
         setUploadTaskListeners(uploadTask, progressDialog,1, () -> {
-            Toast.makeText(this, "Lưu ảnh thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.succes_saveimg, Toast.LENGTH_SHORT).show();
         });
         Intent intent = new Intent(EditImageProActivity.this, Option.class);
         startActivity(intent);

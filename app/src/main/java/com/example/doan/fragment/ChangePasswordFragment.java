@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class ChangePasswordFragment extends Fragment {
         confirmpass= view.findViewById(R.id.xacnhan_newpassword);
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Đổi mật khẩu");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_change_password));
 
         ImageButton showPasswordButton = view.findViewById(R.id.show_password_button);
 
@@ -75,7 +76,7 @@ public class ChangePasswordFragment extends Fragment {
                 if (task.isSuccessful()) {
                     user.updatePassword(newPassword).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.succes_changepass, Toast.LENGTH_SHORT).show();
                             FirebaseAuth.getInstance().signOut();
                             Intent intent = new Intent(getActivity(), Dangnhap.class);
                             startActivity(intent);
@@ -84,49 +85,49 @@ public class ChangePasswordFragment extends Fragment {
                             editor.clear();
                             editor.apply();
                         } else {
-                            Toast.makeText(getActivity(), "Cập nhật mật khẩu thất bại!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.error_uppass, Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
-                    oldpass.setError("Mật khẩu cũ không đúng! Vui lòng nhập lại mật khẩu!");
+                    oldpass.setError(getString(R.string.incorrect_oldpass));
                 }
             });
         } else {
-            Toast.makeText(getActivity(), "Cập nhật mật khẩu thất bại!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.error_uppass, Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean Kiemtra(String oldpassword,String newpassword, String confirmpassword){
         // Kiểm tra thông tin nhập vào có hợp lệ hay không
         if (oldpassword.isEmpty()) {
-            oldpass.setError("Hãy nhập mật khẩu cũ");
+            oldpass.setError(getString(R.string.input_oldpass));
             return false;
         }
         if (newpassword.isEmpty()) {
-            newpass.setError("Hãy nhập mật khẩu mới");
+            newpass.setError(getString(R.string.input_newpass));
             return false;
         }
         if (confirmpassword.isEmpty()) {
-            confirmpass.setError("Hãy nhập mật khẩu cũ");
+            confirmpass.setError(getString(R.string.input_oldpass));
             return false;
         }
         if (!newpassword.equals(confirmpassword)) {
-            confirmpass.setError("Hãy nhập lại xác nhận mật khẩu mới");
+            confirmpass.setError(getString(R.string.re_inputpass));
             return false;
         }
         if(newpassword.length()<6){
-            newpass.setError( "Hãy nhập ít nhất 6 ký tự!");
+            newpass.setError(getString(R.string.least_6char));
             return false;
         }
         else if (!Dangky.containsUpperCaseLetter(newpassword)) {
-            newpass.setError("Mật khẩu phải chứa ít nhất một ký tự viết hoa");
+            newpass.setError(getString(R.string.one_upper));
             return false;
         } else if (!Dangky.containsLowerCaseLetter(newpassword)) {
-            newpass.setError("Mật khẩu phải chứa ít nhất một chữ cái thường");
+            newpass.setError(getString(R.string.one_lower));
             return false;
         }
         else if (!Dangky.containsNumber(newpassword)) {
-            newpass.setError("Mật khẩu phải chứa ít nhất một số");
+            newpass.setError(getString(R.string.one_number));
             return false;
         }
         return true;

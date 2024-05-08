@@ -203,16 +203,16 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                 case R.id.delete_1:
                     // Tạo một hộp thoại AlertDialog.Builder mới
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                    builder.setMessage("Bạn có chắc muốn xóa video đã chọn không?");
+                    builder.setMessage(R.string.quest_delvid);
 
                     // Thêm nút Yes vào hộp thoại
-                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Xóa các ảnh được chọn khỏi Firebase Storage và danh sách mImageUrls
                             ProgressDialog progressDialog =new ProgressDialog(mContext);
                             progressDialog.setCancelable(false);
-                            progressDialog.setMessage("Đang xóa video...");
+                            progressDialog.setMessage(mContext.getString(R.string.loading_del2));
                             progressDialog.show();
                             for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
                                 int position = mSelectedItems.keyAt(i);
@@ -227,14 +227,14 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                                                 mVideoUrls.remove(position);
                                                 mSelectedItems.delete(position);
                                                 notifyDataSetChanged();
-                                                Toast.makeText(mContext, "Đã xóa video thành công!", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(mContext, R.string.succes_del2, Toast.LENGTH_SHORT).show();
                                                 progressDialog.dismiss();
                                             }
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(mContext, "Lỗi xóa video", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_delvid, Toast.LENGTH_SHORT).show();
                                             progressDialog.dismiss();
                                         }
                                     });
@@ -245,7 +245,7 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                     });
 
                     // Thêm nút No vào hộp thoại
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             // Không làm gì cả
@@ -292,14 +292,14 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                                                         // Cập nhật lại giao diện người dùng
                                                         notifyDataSetChanged();
                                                         progressDialog1.dismiss();
-                                                        Toast.makeText(mContext, "Hoàn tác video thành công!", Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(mContext, R.string.succes_undovid, Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý lỗi nếu xóa không thành công
-                                                    Toast.makeText(mContext, "Lỗi video", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(mContext, R.string.error_video, Toast.LENGTH_SHORT).show();
                                                     progressDialog1.dismiss();
                                                 }
                                             });
@@ -308,7 +308,7 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý lỗi nếu copy không thành công
-                                            Toast.makeText(mContext, "Lỗi hoàn tác video", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, R.string.error_undovid, Toast.LENGTH_SHORT).show();
                                             progressDialog1.dismiss();
                                         }
                                     });
@@ -317,7 +317,7 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý lỗi nếu không tải được tệp tin ảnh
-                                    Toast.makeText(mContext, "Lỗi đường dẫn video", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(mContext, R.string.error_urlvid, Toast.LENGTH_SHORT).show();
                                     progressDialog1.dismiss();
                                 }
                             });

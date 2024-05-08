@@ -22,7 +22,7 @@ public class SupportFragment extends Fragment {
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Trợ giúp");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.support));
 
         setupQuestionAnswerPairs();
         return mView;

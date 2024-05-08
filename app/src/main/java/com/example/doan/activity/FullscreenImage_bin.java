@@ -65,16 +65,16 @@ public class FullscreenImage_bin extends AppCompatActivity {
                 switch (item.getItemId()){
                     case R.id.delete_image_bin:
                         AlertDialog.Builder builder_delete = new AlertDialog.Builder(FullscreenImage_bin.this);
-                        builder_delete.setMessage("Bạn có chắc muốn xóa ảnh vĩnh viễn không?")
-                                .setPositiveButton("Yes", (dialog, which) -> delete_image_bin(imageUrl, imageUrls))
-                                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                        builder_delete.setMessage(R.string.quest_delimg)
+                                .setPositiveButton(R.string.yes1, (dialog, which) -> delete_image_bin(imageUrl, imageUrls))
+                                .setNegativeButton(R.string.no1, (dialog, which) -> dialog.dismiss())
                                 .show();
                         return true;
                     case R.id.recovery_image:
                         AlertDialog.Builder builder_recovery = new AlertDialog.Builder(FullscreenImage_bin.this);
-                        builder_recovery.setMessage("Bạn có chắc muốn hoàn tác bức ảnh không?")
-                                .setPositiveButton("Yes", (dialog, which) -> recovery_image_bin(imageUrl, imageUrls))
-                                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                        builder_recovery.setMessage(R.string.quest_undoimg)
+                                .setPositiveButton(R.string.yes1, (dialog, which) -> recovery_image_bin(imageUrl, imageUrls))
+                                .setNegativeButton(R.string.no1, (dialog, which) -> dialog.dismiss())
                                 .show();
                         return true;
                 }
@@ -126,7 +126,7 @@ public class FullscreenImage_bin extends AppCompatActivity {
     private void delete_image_bin(String imageUrl, ArrayList<String> imageUrls){
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("Đang xóa ảnh...");
+        progressDialog.setMessage(getString(R.string.loading2));
         progressDialog.show();
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
         storageRef.delete()
@@ -144,14 +144,14 @@ public class FullscreenImage_bin extends AppCompatActivity {
 
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(FullscreenImage_bin.this, "Lỗi xóa ảnh", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FullscreenImage_bin.this, R.string.error_delimg, Toast.LENGTH_SHORT).show();
                 })
                 .addOnCompleteListener(task -> progressDialog.dismiss());
     }
     private void recovery_image_bin(String imageUrl, ArrayList<String> imageUrls){
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
-        progressDialog.setMessage("Đang hoàn tác ảnh...");
+        progressDialog.setMessage(getString(R.string.loading_undo));
         progressDialog.show();
         // Vị trí ban đầu của ảnh trong thùng rác
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
@@ -178,21 +178,21 @@ public class FullscreenImage_bin extends AppCompatActivity {
                                             else{
                                                 finish();
                                             }
-                                            Toast.makeText(FullscreenImage_bin.this, "Hoàn tác ảnh thành công", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FullscreenImage_bin.this, R.string.succes_undoimg, Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnFailureListener(e -> {
-                                            Toast.makeText(FullscreenImage_bin.this, "Lỗi xóa ảnh", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(FullscreenImage_bin.this, R.string.error_delimg, Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnCompleteListener(task -> progressDialog.dismiss());
                             })
                             .addOnFailureListener(e -> {
-                                Toast.makeText(FullscreenImage_bin.this, "Lỗi hoàn tác ảnh!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(FullscreenImage_bin.this, R.string.error_undoimg, Toast.LENGTH_SHORT).show();
                             })
                             .addOnCompleteListener(task -> progressDialog.dismiss());
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Toast.makeText(FullscreenImage_bin.this, "Lỗi đường dẫn ảnh", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FullscreenImage_bin.this, R.string.error_urlimg, Toast.LENGTH_SHORT).show();
                 });
     }
 

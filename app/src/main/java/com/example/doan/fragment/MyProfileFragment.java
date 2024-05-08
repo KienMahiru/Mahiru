@@ -56,7 +56,7 @@ public class MyProfileFragment extends Fragment {
         imageAva.setOnClickListener(v -> onClickRequestPermission());
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Thông tin cá nhân");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_my_profile));
 
         update.setOnClickListener(v -> onClickUpdateProfile());
 
@@ -109,11 +109,11 @@ public class MyProfileFragment extends Fragment {
 
         String name = fullname.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
-            Toast.makeText(getActivity(), "Vui lòng nhập tên người dùng", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.update_user, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        progressDialog.setMessage("Đang cập nhật...");
+        progressDialog.setMessage(getString(R.string.loading_up));
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -131,10 +131,10 @@ public class MyProfileFragment extends Fragment {
             user.updateProfile(profileUpdates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(getActivity(), "Cập nhật tên người dùng thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.succes_upuser, Toast.LENGTH_SHORT).show();
                             mOption.showInf();
                         } else {
-                            Toast.makeText(getActivity(), "Cập nhật tên người dùng thất bại!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), R.string.error_upuser, Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -143,7 +143,7 @@ public class MyProfileFragment extends Fragment {
     private void updateProfilePhoto() {
         if (uri == null) {
             progressDialog.dismiss();
-            Toast.makeText(getActivity(), "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.select_imguser, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -165,7 +165,7 @@ public class MyProfileFragment extends Fragment {
                                     updateProfileData(fileName, downloadUrl.toString());
                                 } else {
                                     progressDialog.dismiss();
-                                    Toast.makeText(getActivity(), "Cập nhật ảnh đại diện thất bại!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.error_updateimg, Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
@@ -173,7 +173,7 @@ public class MyProfileFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();
-                    Toast.makeText(getActivity(), "Tải ảnh lên thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.error_uploadimg + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -185,12 +185,12 @@ public class MyProfileFragment extends Fragment {
             userRef.child("avatarName").setValue(fileName)
                     .addOnSuccessListener(aVoid -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Cập nhật ảnh đại diện thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.succes_updateimg, Toast.LENGTH_SHORT).show();
                         mOption.showInf();
                     })
                     .addOnFailureListener(e -> {
                         progressDialog.dismiss();
-                        Toast.makeText(getActivity(), "Lưu thông tin ảnh đại diện thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.error_saveimg + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
     }

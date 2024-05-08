@@ -44,6 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import com.example.doan.adapter.VideoAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -175,6 +176,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_video:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> videoStrings = new ArrayList<>();
                         adapter = new VideoAdapter(getActivity(), videoStrings);
                         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
@@ -208,6 +211,8 @@ public class HomeFragment extends Fragment {
 
                         return true;
                     case R.id.nav_music:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> musicStrings = new ArrayList<>();
                         musicAdapter = new MusicAdapter(getActivity(), musicStrings);
                         FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
@@ -251,7 +256,7 @@ public class HomeFragment extends Fragment {
         });
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
-        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Home");
+        feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_home));
 
         Button myButton = mView.findViewById(R.id.my_button);
         button_image = mView.findViewById(R.id.my_button2);
@@ -379,8 +384,13 @@ public class HomeFragment extends Fragment {
                                                 public void onSuccess(Uri uri) {
                                                     String uriString = uri.toString();
                                                     String dateTimeString = dateString + "_" + timeString;
+                                                    String dateString1 = dateTimeString.substring(6, 8) + "/" + dateTimeString.substring(4, 6) + "/" + dateTimeString.substring(0, 4);
+                                                    String timeString1 = dateTimeString.substring(9, 11) + ":" + dateTimeString.substring(11, 13) + ":" + dateTimeString.substring(13, 15);
 
-                                                    imageList.add(new Pair<>(uriString, dateTimeString));
+                                                    // Định dạng lại thành định dạng mới
+                                                    String formattedDateTime = timeString1 + "-" + dateString1;
+
+                                                    imageList.add(new Pair<>(uriString, formattedDateTime));
 
                                                     // Nếu đã duyệt qua tất cả các ảnh
                                                     if (imageList.size() == listResult.getItems().size()) {
@@ -449,7 +459,7 @@ public class HomeFragment extends Fragment {
             return true;
         }
         //Sắp xếp ảnh
-        if (id == R.id.grid_mode){
+        if (id == R.id.grid_mode && bottomNavigationView.getSelectedItemId() == R.id.nav_anh){
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                  layoutManager = new GridLayoutManager(getActivity(),2);
             } else {
@@ -491,7 +501,7 @@ public class HomeFragment extends Fragment {
                 handleButtonClick();
             } else {
                 // Quyền bị từ chối
-                Toast.makeText(getActivity(), "Vui lòng cấp quyền truy cập!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.confim_asset, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -526,8 +536,8 @@ public class HomeFragment extends Fragment {
         String timestamp = dateFormat.format(calendar.getTime());
 
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("Đang tải lên");
-        progressDialog.setMessage("Vui lòng đợi...");
+        progressDialog.setTitle(R.string.upload1);
+        progressDialog.setMessage(getString(R.string.loading1));
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMax(fileUris.size());
@@ -583,7 +593,7 @@ public class HomeFragment extends Fragment {
 
     // Sử dụng các phương thức uploadFiles cho từng loại tệp tin
     private void uploadImages(List<Uri> imageUris) {
-        uploadFiles(imageUris, "image", "Tải ảnh lên thành công");
+        uploadFiles(imageUris, "image", getString(R.string.succes_upimg1));
     }
 
     private void uploadMusics(List<Uri> musicUris) {
@@ -596,7 +606,7 @@ public class HomeFragment extends Fragment {
                 String folderName = "music_" + System.currentTimeMillis();
                 // Upload file mp3 và hình ảnh thumbnail vào thư mục đó
                 uploadFilesWithThumbnail(musicUri, thumbnail, folderName);
-                Toast.makeText(getActivity(), "Upload thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.succes_upimg2, Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -651,7 +661,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void uploadVideos(List<Uri> videoUris) {
-        uploadFiles(videoUris, "video", "Tải video lên thành công");
+        uploadFiles(videoUris, "video", getString(R.string.succes_upvid));
     }
 
     private void selectImages() {

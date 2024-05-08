@@ -23,7 +23,7 @@ public class FeedbackFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_feed, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), "Phản hồi");
+        setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.Feedback));
         setupViews();
         return mView;
     }

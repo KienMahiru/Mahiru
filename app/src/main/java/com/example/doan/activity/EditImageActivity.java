@@ -146,7 +146,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                                     finish();
-                                    Toast.makeText(EditImageActivity.this, "Lỗi ảnh!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(EditImageActivity.this, R.string.error_img, Toast.LENGTH_SHORT).show();
                                 }
                                 @Override
                                 public void onPrepareLoad(Drawable placeHolderDrawable) {
@@ -162,7 +162,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onBitmapFailed(Exception e, Drawable errorDrawable) {
                             finish();
-                            Toast.makeText(EditImageActivity.this, "Lỗi ảnh!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditImageActivity.this, R.string.error_img, Toast.LENGTH_SHORT).show();
                         }
                         @Override
                         public void onPrepareLoad(Drawable placeHolderDrawable) {
@@ -397,8 +397,8 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         String timestamp = dateFormat.format(calendar.getTime());
 
         ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Đang tải lên");
-        progressDialog.setMessage("Vui lòng đợi...");
+        progressDialog.setTitle(R.string.upload1);
+        progressDialog.setMessage(getString(R.string.loading1));
         progressDialog.setCancelable(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setProgress(0);
@@ -407,7 +407,7 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         StorageReference fileRef = storageRef.child(fileName);
         UploadTask uploadTask = fileRef.putFile(croppedUri);
         setUploadTaskListeners(uploadTask, progressDialog,1, () -> {
-            Toast.makeText(this, "Lưu ảnh thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.succes_saveimg, Toast.LENGTH_SHORT).show();
         });
         Intent intent = new Intent(EditImageActivity.this, Option.class);
         startActivity(intent);
