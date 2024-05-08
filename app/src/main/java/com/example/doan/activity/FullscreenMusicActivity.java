@@ -8,7 +8,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
-
 import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -25,14 +24,12 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -83,14 +80,11 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
     ArrayList<String> musicUrls;
 
-    private boolean isPlaying = true; // Biến để theo dõi trạng thái hiện tại của trình phát
-    // Biến để theo dõi trạng thái của activity
-    private boolean isActivityVisible = false;
-    private boolean isNewSong = false;
-
     int notificationId = 1;
 
     String thumbnailURL = "";
+
+    String musicURL = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +163,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         convertURLNSend(musicName, thumbnailUrl);
 
         //player controls method
-        playerControls(musicUrls, musicUrl, thumbnailUrl);
+        playerControls(musicUrls, musicUrl);
     }
     private void updateMaxDuration() {
         if (player.getMediaItemCount() > 0) {
@@ -218,13 +212,15 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         return instance;
     }
 
-    private void playerControls(ArrayList<String> musicUrls, String musicUrl, String thumbnailUrl) {
+    private void playerControls(ArrayList<String> musicUrls, String musicUrl) {
         //song name marquee
         songNameView.setSelected(true);
 
+        musicURL = musicUrl;
+
         //exit the player view
-        playerCloseBtn.setOnClickListener(view -> exitPlayerView(musicUrl));
-        playlistBtn.setOnClickListener(view -> exitPlayerView(musicUrl));
+        playerCloseBtn.setOnClickListener(view -> exitPlayerView(musicURL));
+        playlistBtn.setOnClickListener(view -> exitPlayerView(musicURL));
 
         //player listener
         player.addListener(new Player.Listener() {
@@ -232,7 +228,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             public void onMediaItemTransition(@Nullable MediaItem mediaItem, int reason) {
                 Player.Listener.super.onMediaItemTransition(mediaItem, reason);
                 // Cập nhật trạng thái phát
-                isPlaying = player.isPlaying();
                 //show the playing song title
                 assert mediaItem != null;
 
@@ -252,10 +247,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
                 //update player view colors
                 updatePlayerColors();
-
-                if (!player.isPlaying()){
-                    player.play();
-                }
             }
 
             @Override
@@ -263,7 +254,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 Player.Listener.super.onPlaybackStateChanged(playbackState);
                 if (playbackState == ExoPlayer.STATE_READY) {
                     // Cập nhật trạng thái phát
-                    isPlaying = player.isPlaying();
                     // Cập nhật thời gian tối đa của thanh seekbar
                     updateMaxDuration();
                     progressView.setText(getReadableTime((int) player.getCurrentPosition()));
@@ -282,12 +272,13 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     //update player view colors
                     updatePlayerColors();
                 } else if (playbackState == ExoPlayer.STATE_ENDED) {
-                    isPlaying = false;
                     if (repeatMode == 3) {
                         // Chọn ngẫu nhiên một bài hát từ danh sách
                         Random random = new Random();
                         int randomIndex = random.nextInt(musicUrls.size());
                         String randomMusicUrl = musicUrls.get(randomIndex);
+
+                        musicURL = randomMusicUrl;
 
                         thumbnailURL = getThumbnailUrl(randomMusicUrl);
 
@@ -319,12 +310,9 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
                         // Bắt đầu phát nhạc
                         player.play();
-
-                        isNewSong = true;
                         artworkView.setAnimation(loadRotation());
 
                     } else {
-                        thumbnailURL = thumbnailUrl;
                         playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_outline, 0, 0, 0);
                         artworkView.clearAnimation();
                     }
@@ -332,8 +320,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 }
             }
         });
-
-        // Cập nhật thanh seekbar khi bài hát thay đổi vị trí phát
 
         //skip to next track
         skipNextBtn.setOnClickListener(view -> skipToNextOrPreviousSong(musicUrls, true));
@@ -368,6 +354,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                     player.play();
                     artworkView.startAnimation(loadRotation());
                 }
+                convertURLNSend(songNameView.getText().toString(), thumbnailURL);
             }
         });
 
@@ -399,17 +386,14 @@ public class FullscreenMusicActivity extends AppCompatActivity {
     public void playOrPausePlayer() {
         if(player.isPlaying()){
             player.pause();
-            isPlaying = false; // Cập nhật trạng thái là tạm dừng
             playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_outline, 0, 0,0);
             artworkView.clearAnimation();
         } else if (player.getPlaybackState() == ExoPlayer.STATE_ENDED) {
             player.seekTo(0);
-            isPlaying = true;
             playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0,0);
             artworkView.startAnimation(loadRotation());
         } else {
             player.play();
-            isPlaying = true; // Cập nhật trạng thái là đang phát
             playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_outline, 0, 0,0);
             artworkView.startAnimation(loadRotation());
         }
@@ -436,7 +420,15 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             }
         }
 
+        // Kiểm tra nếu bài hát hiện tại là bài hát đã được lưu
+        if (musicUrls.get(currentIndex).equals(musicURL)) {
+            // Tăng chỉ số currentIndex thêm một lần nữa để chuyển sang bài hát khác
+            skipToNextOrPreviousSong(musicUrls, true);
+            return;
+        }
+
         String newMusicUrl = musicUrls.get(currentIndex);
+        musicURL = newMusicUrl;
 
         // Lấy tên file từ URL
         String fileName = newMusicUrl.substring(newMusicUrl.lastIndexOf("%2F") + 3, newMusicUrl.lastIndexOf(".mp3"));
@@ -447,7 +439,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             // Cập nhật tên bài hát
             songNameView.setText(decodedFileName);
             thumbnailURL = getThumbnailUrl(newMusicUrl);
-            convertURLNSend(decodedFileName, thumbnailURL);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -469,7 +460,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         // Bắt đầu phát nhạc
         player.play();
         artworkView.startAnimation(loadRotation());
-        isPlaying = true;
+        convertURLNSend(songNameView.getText().toString(), thumbnailURL);
     }
 
     private String getThumbnailUrl(String musicUrl) {
@@ -553,19 +544,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         }
         finish();
     }
-
-    private void updatePlayerStateAndNotification() {
-        // Cập nhật trạng thái phát của ExoPlayer
-        isPlaying = player.isPlaying();
-
-        // Cập nhật icon play/pause trong notification
-        int playPauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play;
-
-        // Cập nhật notification
-        sendNotification(songNameView.getText().toString(), thumbnailURL);
-    }
-
-
     private void updatePlayerPositionProgress() {
         new Handler().postDelayed(() -> {
             if(player.isPlaying()){
@@ -632,14 +610,12 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(networkChangeListener, filter);
         super.onStart();
-        isActivityVisible = true;
     }
 
     @Override
     protected void onStop() {
         unregisterReceiver(networkChangeListener);
         super.onStop();
-        isActivityVisible = false;
         cancelNotification(getApplicationContext(), notificationId);
     }
 
@@ -664,10 +640,13 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 .setAction(NotificationActionService.ACTION_NEXT);
         PendingIntent nextPendingIntent = PendingIntent.getService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (isNewSong){
-            isPlaying = true;
+        int playbackState = player.getPlaybackState();
+        int playPauseIcon;
+        if ((playbackState == ExoPlayer.STATE_READY || playbackState == ExoPlayer.STATE_BUFFERING) && player.getPlayWhenReady()) {
+            playPauseIcon = R.drawable.ic_pause;
+        } else {
+            playPauseIcon = R.drawable.ic_play;
         }
-        int playPauseIcon = isPlaying ? R.drawable.ic_pause : R.drawable.ic_play; // Chọn biểu tượng tương ứng
 
         // Load thumbnail using Glide and convert it to Bitmap
         Glide.with(this)
@@ -687,7 +666,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                                 .setLargeIcon(largeIcon) // Set large icon here
                                 // Add media control buttons that invoke intents in your media service
                                 .addAction(R.drawable.ic_skip_previous, "Previous", previousPendingIntent) // #0
-                                .addAction(playPauseIcon, isPlaying ? "Pause" : "Play", playPausePendingIntent) // #1
+                                .addAction(playPauseIcon, playbackState == ExoPlayer.STATE_READY || playbackState == ExoPlayer.STATE_BUFFERING ? "Pause" : "Play", playPausePendingIntent) // #1
                                 .addAction(R.drawable.ic_skip_next, "Next", nextPendingIntent)     // #2
                                 // Apply the media style template.
                                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
