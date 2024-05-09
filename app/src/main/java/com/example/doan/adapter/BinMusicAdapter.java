@@ -334,29 +334,58 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
         }
 
         private void deleteMusicTask(final int position) {
-            // Logic xóa nhạc
+            // Lấy URL của file mp3 và thumbnail
             final String musicUrl = mMusicUrls.get(position);
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+            final String thumbnailUrl = getThumbnailUrl(musicUrl);
 
-            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            // Tạo tham chiếu đến file mp3
+            StorageReference musicRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+
+            // Lấy tham chiếu của thư mục chứa file mp3
+            final StorageReference folderRef = musicRef.getParent();
+
+            // Xóa file mp3
+            musicRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    if (position < mMusicUrls.size()) {
-                        mMusicUrls.remove(position);
-                        mSelectedItems.delete(position);
-                        notifyDataSetChanged();
-                    }
+                    // Xóa file thumbnail
+                    StorageReference thumbnailRef = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnailUrl);
+                    thumbnailRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            // Xóa thư mục chứa file mp3 và thumbnail
+                            folderRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Cập nhật UI
+                                    if (position < mMusicUrls.size()) {
+                                        mMusicUrls.remove(position);
+                                        mSelectedItems.delete(position);
+                                        notifyDataSetChanged();
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Xử lý khi xóa thư mục thất bại
+                                }
+                            });
+                        }
+                        
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            // Xử lý khi xóa file thumbnail thất bại
+                        }
+                    });
+                    Toast.makeText(mContext, R.string.succes_del1, Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    handleDeleteFailure(position);
+                    Toast.makeText(mContext, R.string.error_delmu, Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-
-        private void handleDeleteFailure(int position) {
-            Toast.makeText(mContext, R.string.error_delmu, Toast.LENGTH_SHORT).show();
         }
 
         private void showRestoreConfirmationDialog() {
@@ -375,17 +404,43 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
 
         private void restoreMusicTask(final int position, final ProgressDialog progressDialog) {
             final String musicUrl = mMusicUrls.get(position);
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+            final String thumbnailUrl = getThumbnailUrl(musicUrl);
 
-            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            // Tạo một StorageReference từ URL music và thumbnail
+            StorageReference musicStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+            StorageReference thumbnailStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnailUrl);
+
+            // Tạo một StorageReference mới tới thư mục "music" trên Firebase Storage
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            String folderName = "music_" + System.currentTimeMillis();
+            StorageReference FolderRef = FirebaseStorage.getInstance().getReference().child("music/" + user.getUid() + "/" + folderName);
+
+            // Upload tệp nhạc và thumbnail vào thư mục mới
+            uploadFileToStorage(musicStorageRef,FolderRef, musicStorageRef.getName(), progressDialog);
+            uploadFileToStorage(thumbnailStorageRef, FolderRef, "thumbnail.jpg", progressDialog);
+            // Cập nhật lại giao diện người dùng
+            notifyDataSetChanged();
+            progressDialog.dismiss();
+            Toast.makeText(mContext, R.string.succes_downmu, Toast.LENGTH_SHORT).show();
+        }
+
+        private void uploadFileToStorage(StorageReference sourceRef, StorageReference destinationRef, String fileName, ProgressDialog progressDialog) {
+            sourceRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
-                    uploadRestoredMusic(bytes, storageRef, position, progressDialog);
+                    // Upload tệp lên thư mục mới
+                    destinationRef.child(fileName).putBytes(bytes);
+                    // Xóa tệp gốc
+                    sourceRef.delete();
+                    // Cập nhật progressbar
+                    progressDialog.incrementProgressBy(1);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    handleRestoreFailure(position, progressDialog);
+                    // Xử lý lỗi nếu không tải được tệp
+                    Toast.makeText(mContext, R.string.error_undomu, Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 }
             });
         }
