@@ -19,27 +19,21 @@ import android.widget.ImageView;
 import android.content.Intent;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.doan.activity.FullscreenMusicActivity;
 import com.example.doan.R;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -51,13 +45,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     private Context mContext;
     public SparseBooleanArray mSelectedItems;
     public ActionMode actionMode;
-    private RecyclerView mRecyclerView;
-    private Picasso mPicasso;
 
     public MusicAdapter(Context context, List<String> musicUrls) {
         mMusicUrls = musicUrls;
         mContext = context;
-        mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
     }
     public ActionMode.Callback getCallback() {
@@ -245,9 +236,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         });
     }
 
-
-
-
     // Phương thức để lấy URL của file metadata ảnh trong cùng thư mục trên Firebase Storage
     private String getThumbnailUrl(String musicUrl) {
         // Tạo một StorageReference từ URL của file mp3
@@ -261,7 +249,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     }
 
     private ActionMode.Callback callback = new ActionMode.Callback() {
-
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = mode.getMenuInflater();
@@ -329,76 +316,49 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     mode.finish();
                     return true;
                 case R.id.delete:
-                    // Tạo một danh sách tạm thời để lưu lại các giá trị của mImageUrls
+                    // Tạo một danh sách tạm thời để lưu lại các giá trị của mMusicUrls và thumbnailUrls
                     List<String> tempMusicUrls = new ArrayList<>(mMusicUrls);
+                    List<String> tempThumbnailUrls = new ArrayList<>();
+
                     ProgressDialog progressDialog3 = new ProgressDialog(mContext);
                     progressDialog3.setCancelable(false);
                     progressDialog3.setMessage(mContext.getString(R.string.loading_del1));
                     progressDialog3.show();
-                    // Xóa các ảnh được chọn khỏi Firebase Storage và danh sách mImageUrls
+
+                    // Xóa các music được chọn khỏi Firebase Storage và danh sách mMusicUrls
                     for (int i = mSelectedItems.size() - 1; i >= 0; i--) {
                         int position = mSelectedItems.keyAt(i);
                         if (mSelectedItems.get(position)) {
                             String musicUrl = tempMusicUrls.get(position);
-                            // Tạo một StorageReference từ URL ảnh
-                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+                            String thumbnailUrl = getThumbnailUrl(musicUrl);
+                            tempThumbnailUrls.add(thumbnailUrl);
 
-                            // Tải tệp tin ảnh dưới dạng một mảng byte
-                            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    // Tạo một StorageReference mới tới thư mục "delete"
-                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                    StorageReference deleteRef = FirebaseStorage.getInstance().getReference().child("deletemusic/" +user.getUid()+"/"+ storageRef.getName());
-                                    // Copy video vào thư mục "delete" trên Firebase Storage
-                                    deleteRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            // Xóa video khỏi Firebase Storage
-                                            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // Xóa URL video khỏi danh sách mImageUrls
-                                                    mMusicUrls.remove(musicUrl);
-                                                    // Xóa phần tử tương ứng trong SparseBooleanArray
-                                                    mSelectedItems.delete(position);
-                                                    // Cập nhật lại giao diện người dùng
-                                                    notifyDataSetChanged();
-                                                    progressDialog3.dismiss();
-                                                    Toast.makeText(mContext, R.string.succes_del1, Toast.LENGTH_SHORT).show();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // Xử lý lỗi nếu xóa không thành công
-                                                    Toast.makeText(mContext, R.string.error_delmu, Toast.LENGTH_SHORT).show();
-                                                    progressDialog3.dismiss();
-                                                }
-                                            });
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Xử lý lỗi nếu copy không thành công
-                                            Toast.makeText(mContext, R.string.error_movemu, Toast.LENGTH_SHORT).show();
-                                            progressDialog3.dismiss();
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // Xử lý lỗi nếu không tải được tệp tin ảnh
-                                    Toast.makeText(mContext, R.string.error_downmu1, Toast.LENGTH_SHORT).show();
-                                    progressDialog3.dismiss();
-                                }
-                            });
+                            // Tạo một StorageReference từ URL music và thumbnail
+                            StorageReference musicStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+                            StorageReference thumbnailStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(thumbnailUrl);
+
+                            // Tạo một StorageReference mới tới thư mục "deletemusic" trên Firebase Storage
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            String folderName = "music_" + System.currentTimeMillis();
+                            StorageReference deleteFolderRef = FirebaseStorage.getInstance().getReference().child("deletemusic/" + user.getUid() + "/" + folderName);
+
+                            // Upload tệp nhạc và thumbnail vào thư mục mới
+                            uploadFileToStorage(musicStorageRef, deleteFolderRef, musicStorageRef.getName(), progressDialog3);
+                            uploadFileToStorage(thumbnailStorageRef, deleteFolderRef, "thumbnail.jpg", progressDialog3);
+
+                            // Xóa URL video khỏi danh sách mMusicUrls
+                            mMusicUrls.remove(musicUrl);
+
+                            // Xóa phần tử tương ứng trong SparseBooleanArray
+                            mSelectedItems.delete(position);
                         }
                     }
-                    // Xóa danh sách tạm thời
-                    tempMusicUrls.clear();
-                    mode.finish(); // Kết thúc ActionMode
-                    return true;
+                            // Cập nhật lại giao diện người dùng
+                            notifyDataSetChanged();
+                            progressDialog3.dismiss();
+                            Toast.makeText(mContext, R.string.succes_del1, Toast.LENGTH_SHORT).show();
+                            mode.finish(); // Kết thúc ActionMode
+                            return true;
                 case R.id.save_image:
                     // Download and save the selected images
                     int numSelected = mSelectedItems.size();
@@ -460,6 +420,27 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         }
     };
 
+    private void uploadFileToStorage(StorageReference sourceRef, StorageReference destinationRef, String fileName, ProgressDialog progressDialog) {
+        sourceRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                // Upload tệp lên thư mục mới
+                destinationRef.child(fileName).putBytes(bytes);
+                // Xóa tệp gốc
+                sourceRef.delete();
+                // Cập nhật progressbar
+                progressDialog.incrementProgressBy(1);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Xử lý lỗi nếu không tải được tệp
+                Toast.makeText(mContext, R.string.error_movemu, Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
+    }
+
     private String getNameSong (String newMusicUrl){
         // Lấy tên file từ URL
         String fileName = newMusicUrl.substring(newMusicUrl.lastIndexOf("%2F") + 3, newMusicUrl.lastIndexOf(".mp3"));
@@ -481,29 +462,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
         mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_mu)));
     }
 
-
     @Override
     public int getItemCount() {
         return mMusicUrls.size();
-    }
-    private Task<String> getMusicTitleFromFirebaseStorage(String musicUrl) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl(musicUrl);
-
-        return storageRef.getMetadata().continueWith(new Continuation<StorageMetadata, String>() {
-            @Override
-            public String then(@NonNull Task<StorageMetadata> task) throws Exception {
-                if (task.isSuccessful()) {
-                    StorageMetadata storageMetadata = task.getResult();
-                    return storageMetadata.getName();
-                } else {
-                    // Xử lý khi không thể lấy thông tin metadata
-                    Exception exception = task.getException();
-                    // ...
-                    return null;
-                }
-            }
-        });
     }
     public static class MusicViewHolder extends RecyclerView.ViewHolder {
         ImageView myMusicView;

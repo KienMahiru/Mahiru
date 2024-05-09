@@ -22,6 +22,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.example.doan.adapter.MusicAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -167,35 +169,42 @@ public class DeleteFragment extends Fragment {
 
                         return true;
                     case R.id.nav_music:
+                        layoutManager= new StaggeredGridLayoutManager(2, GridLayoutManager.VERTICAL);
+                        mRecyclerView.setLayoutManager(layoutManager);
                         List<String> musicStrings = new ArrayList<>();
-                        binMusicAdapter = new BinMusicAdapter(getActivity(), musicStrings );
+                        binMusicAdapter = new BinMusicAdapter(getActivity(), musicStrings);
                         FirebaseUser user2 = FirebaseAuth.getInstance().getCurrentUser();
                         mStorageRef = FirebaseStorage.getInstance().getReference().child("deletemusic").child(user2.getUid());
 
                         mStorageRef.listAll()
-                                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                                    @Override
-                                    public void onSuccess(ListResult listResult) {
-                                        musicStrings.clear();
-                                        for (StorageReference itemRef : listResult.getItems()) {
-                                            itemRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    String uriString1 = uri.toString();
-                                                    musicStrings.add(uriString1);
-                                                    binMusicAdapter.notifyItemInserted(musicStrings.size() - 1);
-                                                }
-                                            });
-                                        }
+                                .addOnSuccessListener(listResult -> {
+                                    musicStrings.clear();
+                                    for (StorageReference prefixRef : listResult.getPrefixes()) {
+                                        // Lấy tên folder chứa bài hát
+                                        String folderName = prefixRef.getName();
+                                        StorageReference folderRef = mStorageRef.child(folderName);
+
+                                        // Lấy danh sách file trong folder
+                                        folderRef.listAll()
+                                                .addOnSuccessListener(folderListResult -> {
+                                                    for (StorageReference itemRef : folderListResult.getItems()) {
+                                                        // Kiểm tra phần mở rộng của tệp và chỉ thêm vào danh sách nếu là file mp3
+                                                        itemRef.getMetadata().addOnSuccessListener(metadata -> {
+                                                            String fileName = metadata.getName();
+                                                            if (fileName.toLowerCase().endsWith(".mp3")) {
+                                                                itemRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                                                    String uriString = uri.toString();
+                                                                    musicStrings.add(uriString);
+                                                                    binMusicAdapter.notifyItemInserted(musicStrings.size() - 1);
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
                                     }
                                 })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
+                                .addOnFailureListener(e -> Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show());
                         mRecyclerView.setAdapter(binMusicAdapter);
                         return true;
                     default:

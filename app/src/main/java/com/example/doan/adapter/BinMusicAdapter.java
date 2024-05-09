@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -12,35 +14,35 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.doan.activity.FullscreenMusicActivity;
 import com.example.doan.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMusicViewHolder> {
     private List<String> mMusicUrls;
     private Context mContext;
-    private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     private ActionMode actionMode;
     public BinMusicAdapter(Context context, List<String> musicUrls) {
         mMusicUrls = musicUrls;
         mContext = context;
-        mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
     }
     public ActionMode.Callback getCallback() {
@@ -56,42 +58,15 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
     @Override
     public void onBindViewHolder(@NonNull BinMusicAdapter.BinMusicViewHolder holder, int position) {
         String musicUrl = mMusicUrls.get(position);
+        String thumbnailUrl = getThumbnailUrl(musicUrl);
 
-        // Phần xử lý lấy title
-        handleMusicTitle(holder, musicUrl);
+        holder.musicName.setText(getNameSong(musicUrl));
 
-        // Phần xử lý Picasso
-        mPicasso.load(musicUrl)
-                .placeholder(R.drawable.placeholder_music)
-                .into(holder.myMusicView);
+        // Tải ảnh thumbnail
+        loadThumbnail(getThumbnailUrl(musicUrl), holder.myMusicView);
 
-        // Phần xử lý trạng thái ảnh và sự kiện click
-        handleMusicStateAndClick(holder, musicUrl, position);
-    }
-
-    private void handleMusicTitle(BinMusicAdapter.BinMusicViewHolder holder, String musicUrl) {
-        getMusicTitleFromFirebaseStorage(musicUrl)
-                .addOnSuccessListener(musicTitle -> {
-                    holder.musicName.setText(musicTitle);
-                })
-                .addOnFailureListener(exception -> {
-                    // Xử lý khi không thể lấy tên nhạc
-                });
-    }
-
-    private void handleMusicStateAndClick(BinMusicAdapter.BinMusicViewHolder holder, String musicUrl, int position) {
+        // Xác định trạng thái của ảnh
         boolean isSelected = mSelectedItems.get(position);
-
-        // Xử lý trạng thái của music
-        handleMusicState(holder, isSelected);
-
-        // Xử lý sự kiện click
-        handleMusicClick(holder, musicUrl);
-        // Xử lý sự kiện long click
-        handleMusicLongClick(holder, position);
-    }
-
-    private void handleMusicState(BinMusicAdapter.BinMusicViewHolder holder, boolean isSelected) {
         if (isSelected) {
             holder.checkView.setVisibility(View.VISIBLE);
             holder.myMusicView.setTag("selected");
@@ -99,39 +74,189 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             holder.checkView.setVisibility(View.GONE);
             holder.myMusicView.setTag(null);
         }
-    }
 
-    private void handleMusicClick(BinMusicAdapter.BinMusicViewHolder holder, String musicUrl) {
-        holder.myMusicView.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, FullscreenMusicActivity.class);
-            intent.putExtra("musicUrl", musicUrl);
-            mContext.startActivity(intent);
+        // Bắt sự kiện click vào VideoView
+        holder.myMusicView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Chuyển sang một Activity khác và truyền đường dẫn của video được click qua Intent
+                Intent intent = new Intent(mContext, FullscreenMusicActivity.class);
+                intent.putExtra("musicUrl", musicUrl);
+                intent.putExtra("thumbnailUrl", thumbnailUrl);
+                intent.putExtra("musicName", getNameSong(musicUrl)); // Sử dụng biến thành viên
+                intent.putStringArrayListExtra("musicUrlList", (ArrayList<String>) mMusicUrls);
+                mContext.startActivity(intent);
+            }
         });
-    }
 
-    private void handleMusicLongClick(BinMusicAdapter.BinMusicViewHolder holder, int position) {
-        holder.myMusicView.setOnLongClickListener(view -> {
-            boolean isSelected = mSelectedItems.get(position);
-            if (isSelected) {
-                holder.checkView.setVisibility(View.GONE);
-                mSelectedItems.delete(position);
-            } else {
-                isSelected = true;
-                mSelectedItems.put(position, isSelected);
-                holder.checkView.setVisibility(View.VISIBLE);
-                holder.myMusicView.setTag("selected");
-                if (actionMode == null && mSelectedItems.size() == 1) {
-                    actionMode = view.startActionMode(callback);
+        // Bắt sự kiện long click vào VideoView
+        holder.myMusicView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                // Kiểm tra xem video được nhấn có được chọn hay không
+                boolean isSelected = mSelectedItems.get(position);
+                if (isSelected) {
+                    // Nếu đã được chọn lần trước đó, ẩn checkView và xóa khỏi danh sách các item đã chọn
+                    holder.checkView.setVisibility(View.GONE);
+                    mSelectedItems.delete(position);
+                } else {
+                    // Nếu chưa được chọn, đánh dấu là đã chọn và hiển thị checkView
+                    isSelected = true;
+                    mSelectedItems.put(position, isSelected);
+                    holder.checkView.setVisibility(View.VISIBLE);
+                    holder.myMusicView.setTag("selected");
+                    // Kích hoạt Contextual action bar nếu chưa có và chưa có item nào được chọn
+                    if (actionMode == null && mSelectedItems.size() == 1) {
+                        actionMode = view.startActionMode(callback);
+                    }
                 }
-            }
 
-            if (mSelectedItems.size() == 0) {
-                actionMode.finish();
-                actionMode = null;
+                // Kiểm tra xem có còn item nào được chọn hay không
+                if (mSelectedItems.size() == 0) {
+                    // Nếu không còn, kết thúc Contextual action bar
+                    actionMode.finish();
+                    actionMode = null;
+                }
+
+                return true;
             }
-            return true;
+        });
+        holder.musicName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle(R.string.rename1);
+
+                // Create an EditText view to get the new music name
+                final EditText input = new EditText(mContext);
+                builder.setView(input);
+
+                // Set positive button for OK action
+                builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newMusicName = input.getText().toString();
+                        if (!newMusicName.isEmpty()) {
+                            // Update the music name in the RecyclerView
+                            holder.musicName.setText(newMusicName + ".mp3");
+
+                            // Get the current file path or URL
+
+                            // Get the FirebaseStorage reference to the current file
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+
+                            // Lấy tên tệp mới với phần mở rộng
+                            String newFileName = newMusicName + ".mp3";
+
+                            // Tạo một tham chiếu mới với tên tệp mới
+                            final StorageReference newRef = storageRef.getParent().child(newFileName);
+
+                            // Copy nội dung của tệp hiện tại vào tệp mới
+                            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    newRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                            // Xóa tệp hiện tại
+                                            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    // Cập nhật dữ liệu trong danh sách và cập nhật giao diện người dùng
+
+                                                    notifyDataSetChanged();
+                                                    Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    // Xử lý khi xóa tệp hiện tại thất bại
+                                                    Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Xử lý khi tạo tệp mới thất bại
+                                            Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Xử lý khi sao chép nội dung tệp thất bại
+                                    Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // Thiết lập nút Không cho hành động từ chối
+                builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Không làm gì, đóng hộp thoại
+                        dialog.dismiss();
+                    }
+                });
+
+                // Hiển thị AlertDialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         });
     }
+
+    private void loadThumbnail(String musicUrl, ImageView imageView) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+        storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Load ảnh từ URL có thể truy cập từ Internet bằng Glide
+                Glide.with(mContext)
+                        .load(uri)
+                        .placeholder(R.drawable.placeholder_music)
+                        .into(imageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Xử lý khi không thể tải URL
+                Log.e("Glide", "Load failed", e);
+            }
+        });
+    }
+
+    private String getNameSong (String newMusicUrl){
+        // Lấy tên file từ URL
+        String fileName = newMusicUrl.substring(newMusicUrl.lastIndexOf("%2F") + 3, newMusicUrl.lastIndexOf(".mp3"));
+        String songName = "";
+        // Giải mã tên file
+        try {
+            String decodedFileName = URLDecoder.decode(fileName, "UTF-8");
+            songName = decodedFileName;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return songName;
+    }
+
+    private String getThumbnailUrl(String musicUrl) {
+        // Tạo một StorageReference từ URL của file mp3
+        StorageReference musicRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
+
+        // Tạo một tham chiếu đến thư mục chứa file mp3 và file ảnh thumbnail
+        StorageReference folderRef = musicRef.getParent();
+
+        // Tạo URL cho file metadata ảnh
+        return folderRef.child("thumbnail.jpg").toString();
+    }
+
+
     private ActionMode.Callback callback = new ActionMode.Callback() {
 
         @Override
@@ -314,29 +439,6 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             notifyDataSetChanged();
         }
     };
-
-
-    private Task<String> getMusicTitleFromFirebaseStorage(String musicUrl) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl(musicUrl);
-
-        return storageRef.getMetadata().continueWith(task -> {
-            if (task.isSuccessful()) {
-                StorageMetadata storageMetadata = task.getResult();
-                if (storageMetadata != null) {
-                    return storageMetadata.getName();
-                } else {
-                    // Xử lý khi không có thông tin metadata
-                    return null;
-                }
-            } else {
-                // Xử lý khi không thể lấy thông tin metadata
-                Exception exception = task.getException();
-                // ...
-                return null;
-            }
-        });
-    }
 
     @Override
     public int getItemCount() {
