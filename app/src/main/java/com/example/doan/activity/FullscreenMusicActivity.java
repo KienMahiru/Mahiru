@@ -424,7 +424,9 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         // Kiểm tra nếu bài hát hiện tại là bài hát đã được lưu
         if (musicUrls.get(currentIndex).equals(musicURL)) {
             // Tăng chỉ số currentIndex thêm một lần nữa để chuyển sang bài hát khác
-            skipToNextOrPreviousSong(musicUrls, true);
+            if(musicUrls.size() >= 2){
+                skipToNextOrPreviousSong(musicUrls, true);
+            }
             return;
         }
 

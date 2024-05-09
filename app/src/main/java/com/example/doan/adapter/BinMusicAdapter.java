@@ -292,11 +292,11 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.delete_1:
-                    showDeleteConfirmationDialog();
+                    showDeleteConfirmationDialog(mode);
                     return true;
 
                 case R.id.khoi_phuc_anh:
-                    showRestoreConfirmationDialog();
+                    showRestoreConfirmationDialog(mode);
                     return true;
 
                 default:
@@ -304,13 +304,14 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             }
         }
 
-        private void showDeleteConfirmationDialog() {
+        private void showDeleteConfirmationDialog(ActionMode mode) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setMessage(R.string.quest_delmusic);
             builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     deleteSelectedMusic();
+                    mode.finish();
                 }
             });
             builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
@@ -388,7 +389,7 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             });
         }
 
-        private void showRestoreConfirmationDialog() {
+        private void showRestoreConfirmationDialog(ActionMode mode) {
             ProgressDialog progressDialog = new ProgressDialog(mContext);
             progressDialog.setCancelable(false);
             progressDialog.setMessage(mContext.getString(R.string.loading_undo1));
@@ -398,6 +399,7 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
                 int position = mSelectedItems.keyAt(i);
                 if (mSelectedItems.get(position)) {
                     restoreMusicTask(position, progressDialog);
+                    mode.finish();
                 }
             }
         }
@@ -443,47 +445,6 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
                     progressDialog.dismiss();
                 }
             });
-        }
-
-        private void uploadRestoredMusic(byte[] bytes, StorageReference storageRef, final int position, final ProgressDialog progressDialog) {
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            StorageReference restoreRef = FirebaseStorage.getInstance().getReference().child("music/" + user.getUid() + "/" + storageRef.getName());
-
-            restoreRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    handleRestoreSuccess(storageRef, position, progressDialog);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    handleRestoreFailure(position, progressDialog);
-                }
-            });
-        }
-
-        private void handleRestoreSuccess(StorageReference storageRef, final int position, ProgressDialog progressDialog) {
-            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    if (position < mMusicUrls.size()) {
-                        mMusicUrls.remove(position);
-                        mSelectedItems.delete(position);
-                        notifyDataSetChanged();
-                        progressDialog.dismiss();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    handleRestoreFailure(position, progressDialog);
-                }
-            });
-        }
-
-        private void handleRestoreFailure(int position, ProgressDialog progressDialog) {
-            Toast.makeText(mContext, R.string.error_undomu, Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
         }
 
         @Override
