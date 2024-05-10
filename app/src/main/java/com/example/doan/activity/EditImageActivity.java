@@ -112,8 +112,13 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Uri croppedUri = bitmapToUriConverter(croppedBitmap);
-                uploadFiles(croppedUri, "image");
+                try {
+                    Uri croppedUri = bitmapToUriConverter(croppedBitmap);
+                    uploadFiles(croppedUri, "image");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(EditImageActivity.this, "Bitmap quá lớn", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -408,9 +413,10 @@ public class EditImageActivity extends AppCompatActivity implements View.OnClick
         UploadTask uploadTask = fileRef.putFile(croppedUri);
         setUploadTaskListeners(uploadTask, progressDialog,1, () -> {
             Toast.makeText(this, R.string.succes_saveimg, Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            finish();
         });
-        Intent intent = new Intent(EditImageActivity.this, Option.class);
-        startActivity(intent);
+
     }
 
     // Hiển thị UI tác vụ upload

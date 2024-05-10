@@ -200,7 +200,7 @@
             android:id="@+id/draw_photo"
             android:layout_width="303dp"
             android:layout_height="513dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.481"
