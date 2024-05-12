@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -31,6 +32,8 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -181,6 +184,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             sendNotification(musicName, uri.toString());
         }).addOnFailureListener(e -> {
             // Handle failure
+            Toast.makeText(instance, "không gửi được", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -275,9 +279,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                 } else if (playbackState == ExoPlayer.STATE_ENDED) {
                     if (repeatMode == 3) {
                         // Chọn ngẫu nhiên một bài hát từ danh sách
-                        Random random = new Random();
-                        int randomIndex = random.nextInt(musicUrls.size());
-                        String randomMusicUrl = musicUrls.get(randomIndex);
+                        String randomMusicUrl = getRandomMusicUrl(musicUrls, musicURL);
 
                         musicURL = randomMusicUrl;
 
@@ -384,6 +386,17 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
     }
 
+    private String getRandomMusicUrl(ArrayList<String> musicUrls, String currentMusicUrl) {
+        Random random = new Random();
+        int randomIndex = 0;
+        if(musicUrls.size() > 1){
+            do {
+                randomIndex = random.nextInt(musicUrls.size());
+            } while (musicUrls.get(randomIndex).equals(currentMusicUrl));
+        }
+        return musicUrls.get(randomIndex);
+    }
+
     public void playOrPausePlayer() {
         if(player.isPlaying()){
             player.pause();
@@ -463,6 +476,12 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         // Bắt đầu phát nhạc
         player.play();
         artworkView.startAnimation(loadRotation());
+        convertURLNSend(songNameView.getText().toString(), thumbnailURL);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
         convertURLNSend(songNameView.getText().toString(), thumbnailURL);
     }
 
@@ -620,6 +639,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
         unregisterReceiver(networkChangeListener);
         super.onStop();
         cancelNotification(getApplicationContext(), notificationId);
+
     }
 
     public static void cancelNotification(Context ctx, int notifyId) {
@@ -657,6 +677,8 @@ public class FullscreenMusicActivity extends AppCompatActivity {
             playPauseIcon = R.drawable.ic_play;
         }
 
+        Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.silence);
+
         // Load thumbnail using Glide and convert it to Bitmap
         Glide.with(this)
                 .asBitmap()
@@ -673,6 +695,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                 .setSmallIcon(R.drawable.ic_stat_player)
                                 .setLargeIcon(largeIcon) // Set large icon here
+                                .setSound(sound)
                                 // Add media control buttons that invoke intents in your media service
                                 .addAction(R.drawable.ic_skip_previous, "Previous", previousPendingIntent) // #0
                                 .addAction(playPauseIcon, playbackState == ExoPlayer.STATE_READY || playbackState == ExoPlayer.STATE_BUFFERING ? "Pause" : "Play", playPausePendingIntent) // #1
@@ -682,6 +705,7 @@ public class FullscreenMusicActivity extends AppCompatActivity {
                                         .setShowActionsInCompactView(0, 1, 2 /* #1: pause button */)
                                         .setMediaSession(mediaSessionCompat.getSessionToken()))
                                 .setContentTitle(musicName)
+                                .setOngoing(true)
                                 .setContentText("Music")
                                 .build();
 
@@ -694,7 +718,6 @@ public class FullscreenMusicActivity extends AppCompatActivity {
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // In case of load failure
                     }
                 });
     }
