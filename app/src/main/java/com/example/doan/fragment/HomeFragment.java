@@ -41,6 +41,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -398,7 +399,20 @@ public class HomeFragment extends Fragment {
                                                         Collections.sort(imageList, new Comparator<Pair<String, String>>() {
                                                             @Override
                                                             public int compare(Pair<String, String> o1, Pair<String, String> o2) {
-                                                                return o2.second.compareTo(o1.second);
+                                                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss-dd/MM/yyyy", Locale.getDefault());
+                                                                try {
+                                                                    // Chuyển đổi chuỗi thời gian thành đối tượng Date để so sánh
+                                                                    Date date1 = dateFormat.parse(o1.second);
+                                                                    Date date2 = dateFormat.parse(o2.second);
+
+                                                                    // So sánh hai đối tượng Date
+                                                                    // Đảo ngược để sắp xếp từ mới đến cũ (nếu cần)
+                                                                    return date2.compareTo(date1); // So sánh từ mới nhất đến cũ nhất
+                                                                } catch (ParseException e) {
+                                                                    e.printStackTrace();
+                                                                    // Xử lý nếu không thể chuyển đổi thành Date
+                                                                    return 0; // Hoặc trả về giá trị phù hợp để xử lý tình huống không mong muốn
+                                                                }
                                                             }
                                                         });
 

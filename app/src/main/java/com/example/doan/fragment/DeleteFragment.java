@@ -253,7 +253,7 @@ public class DeleteFragment extends Fragment {
             return true;
         }
         //Sắp xếp ảnh
-        if (id == R.id.grid_mode){
+        if (id == R.id.grid_mode && bottomNavigationView.getSelectedItemId() == R.id.nav_anh ){
             if (layoutManager instanceof StaggeredGridLayoutManager) {
                 layoutManager = new GridLayoutManager(getActivity(),2);
             } else {

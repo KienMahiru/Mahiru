@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,7 +33,8 @@ import java.util.ArrayList;
 
 public class FullscreenImage_bin extends AppCompatActivity {
     private PhotoView mImageView;
-    private Button back,back_left,back_right;
+    private Button back_left,back_right;
+    private ImageButton back;
     private int position;
     private ArrayList<String> imageUrls;
     private String imageUrl;
@@ -45,7 +47,7 @@ public class FullscreenImage_bin extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen_image_bin);
         option = new Option();
         ArrayList<String> imageUrls = getIntent().getStringArrayListExtra("imageUrls");
-        back = (Button) findViewById(R.id.back);
+        back = (ImageButton) findViewById(R.id.back);
         back_left = (Button) findViewById(R.id.back_left);
         back_right = (Button) findViewById(R.id.back_right);
         back.setOnClickListener(new View.OnClickListener() {
