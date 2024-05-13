@@ -121,7 +121,7 @@ public class Dangky extends AppCompatActivity {
             public void onTick(long millisUntilFinished) {
                 long secondsLeft = millisUntilFinished / 1000;
                 String timeLeftFormatted = String.format("%02d:%02d", secondsLeft / 60, secondsLeft % 60);
-                progressDialog.setMessage(R.string.load_verifi + timeLeftFormatted); // Cập nhật thông báo tiến trình
+                progressDialog.setMessage(getString(R.string.load_verifi) + timeLeftFormatted); // Cập nhật thông báo tiến trình
             }
 
             public void onFinish() {
