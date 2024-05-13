@@ -30,6 +30,7 @@ public class MyNotification extends Application {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             channel.setSound(sound, audioAttributes);
+            channel.setImportance(NotificationManager.IMPORTANCE_LOW);
 
             // Register the channel with the system. You can't change the importance
             // or other notification behaviors after this.
