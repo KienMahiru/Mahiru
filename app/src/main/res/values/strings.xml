@@ -4,7 +4,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign In</string>
+    <string name="action_sign_in_short">Login</string>
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
@@ -23,33 +23,35 @@
     <string name="content_description_share">Share content</string>
     <string name="content_description_delete">Delete content</string>
     <string name="content_description_more">More options</string>
-    <string name="title_login">Login</string>
-    <string name="maintain_login">Keep me logged in</string>
+    <string name="title_login">Welcome to Mahiru Box</string>
+    <string name="maintain_login">Remember me</string>
     <string name="forgot_password">Forgot password</string>
-    <string name="title_pleaseregister">Please register here!</string>
+    <string name="title_pleaseregister"><u>Sign up</u></string>
+    <string name="sign_up_text">Don\'t have account?</string>
     <string name="save_image">Save to device</string>
-    <string name="title_signup">Sign Up</string>
-    <string name="signup">Sign Up</string>
+    <string name="title_signup">Register</string>
+    <string name="signup">Sign up</string>
+    <string name="sign_up_title">Create your new account</string>
     <string name="cancel">Cancel</string>
     <string name="save_edit">Save</string>
     <string name="TV_sp">1dp</string>
-    <string name="reset_pass">Reset password</string>
+    <string name="reset_pass">Reset your password</string>
     <string name="reset_bt">Reset</string>
     <string name="old_pass">Enter old password</string>
     <string name="new_pass">Enter new password</string>
     <string name="confirm_newpass">Confirm new password</string>
     <string name="update_pass">Update</string>
     <string name="title_report">Select the following methods to\nprovide feedback to the developer</string>
-    <string name="Intro_title">Introduction to Mahiru</string>
-    <string name="Intro_conten">Mahiru is a photo storage app, created to store unlimited photos\nand completely free of charge. For more information, contact via email: meomeo123@gmail.com</string>
-    <string name="input_name">Enter name</string>
-    <string name="update_infor">Update information</string>
-    <string name="dark_mode">Dark mode</string>
-    <string name="lang_switch">Language</string>
+    <string name="Intro_title">Introduce about Mahiru Box</string>
+    <string name="Intro_conten">Mahiru is a media storage app, created to store photos, videos, musics and completely free of charge. For more information, contact via email: meomeo123@gmail.com</string>
+    <string name="input_name">Full name</string>
+    <string name="update_infor">Save</string>
+    <string name="dark_mode">1. Dark mode</string>
+    <string name="lang_switch">2. Language</string>
     <string name="quest_language">Choose language:</string>
     <string name="lang1">Vietnamese</string>
     <string name="lang2">English</string>
-    <string name="dele_cache">Clear cache</string>
+    <string name="dele_cache">3. Clear cache</string>
     <string name="con_quest1">How to upload photos/videos/music?</string>
     <string name="anwser_ques1">To upload photos/videos/music, tap the upload button or long-press the upload button to select the file you want to upload</string>
     <string name="con_quest2">How to download photos/videos/music to your phone?</string>
@@ -106,6 +108,8 @@
     <string name="error_verifi">Account not verified. Please check your email and try again later.</string>
     <string name="del_acc">Your account has been deleted!!!</string>
     <string name="error_creatacc">Failed to create account. Please check the information and try again later.</string>
+    <string name="sign_up_policy">By signing up, you agree to our term of use\n and privacy notice</string>
+
 
     --Login--
     <string name="auto_login">Logging in automatically...</string>
@@ -128,10 +132,12 @@
     <string name="succes_saveimg">Image saved successfully!</string>
 
     --Restore--
+    <string name="restore_music_success">Restore music successfully</string>
     <string name="invalid_email">Invalid email!</string>
     <string name="exist_acc">Account does not exist!</string>
     <string name="error_checkacc">Error checking account!</string>
     <string name="check_email">Please check your email to enter a new password!</string>
+    <string name="recover_title">Enter your email address and we will send you\n instructions to reset your password</string>
 
     --BinMusic and MusicAdapter--
     <string name="quest_delmusic">Are you sure you want to permanently delete the selected music?</string>
@@ -205,6 +211,7 @@
     <string name="one_upper">Password must contain at least one uppercase letter</string>
     <string name="one_lower">Password must contain at least one lowercase letter</string>
     <string name="one_number">Password must contain at least one number</string>
+    <string name="change_pass_title">Change password</string>
 
     --Home--
     <string name="succes_upimg1">Image uploaded successfully</string>
@@ -212,6 +219,7 @@
     <string name="succes_upvid">Video uploaded successfully</string>
 
     --MyProfile--
+    <string name="update_title">Edit my profile</string>
     <string name="update_user">Please enter a username</string>
     <string name="loading_up">Updating...</string>
     <string name="succes_upuser">Username updated successfully!</string>
@@ -224,5 +232,15 @@
 
     --Setting--
     <string name="succes_delset">Deleted successfully</string>
+    <string name="setting_title">Settings</string>
+    <string name="setting_intro">Tap to enable</string>
+
+
+    --Contact--
+    <string name="contact_title">Contact us</string>
+    <string name="contact_email">Email us</string>
+    <string name="contact_email_body">Send us an email and we\'ll get back to you.</string>
+    <string name="contact_phone">Call us</string>
+    <string name="contact_phone_body">Available weekdays: 9:00AM - 4:30PM</string>
 
 </resources>

@@ -9,10 +9,12 @@
 
     <ImageView
         android:id="@+id/img"
-        android:layout_width="141dp"
+        android:layout_width="140dp"
         android:layout_height="140dp"
         android:src="@drawable/ic_baseline_wifi_off_24" />
     <TextView
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/abeezee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/op"
@@ -21,6 +23,8 @@
         android:id="@+id/op"
         android:textStyle="bold"/>
     <TextView
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/abeezee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/internet_drop"
@@ -28,6 +32,8 @@
         android:textColor="@color/black"
         android:id="@+id/inter"/>
     <TextView
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/abeezee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/check_net"
@@ -36,6 +42,7 @@
         android:id="@+id/check"/>
 
     <ImageView
+        android:layout_marginTop="5dp"
         android:id="@+id/imageView3"
         android:layout_width="197dp"
         android:layout_height="172dp"

@@ -13,8 +13,8 @@ android {
         applicationId "com.example.doan"
         minSdk 23
         targetSdk 33
-        versionCode 11
-        versionName "11.0.1"
+        versionCode 12
+        versionName "12.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

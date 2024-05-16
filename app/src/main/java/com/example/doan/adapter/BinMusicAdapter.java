@@ -121,93 +121,6 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
                 return true;
             }
         });
-        holder.musicName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle(R.string.rename1);
-
-                // Create an EditText view to get the new music name
-                final EditText input = new EditText(mContext);
-                builder.setView(input);
-
-                // Set positive button for OK action
-                builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String newMusicName = input.getText().toString();
-                        if (!newMusicName.isEmpty()) {
-                            // Update the music name in the RecyclerView
-                            holder.musicName.setText(newMusicName + ".mp3");
-
-                            // Get the current file path or URL
-
-                            // Get the FirebaseStorage reference to the current file
-                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(musicUrl);
-
-                            // Lấy tên tệp mới với phần mở rộng
-                            String newFileName = newMusicName + ".mp3";
-
-                            // Tạo một tham chiếu mới với tên tệp mới
-                            final StorageReference newRef = storageRef.getParent().child(newFileName);
-
-                            // Copy nội dung của tệp hiện tại vào tệp mới
-                            storageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    newRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                            // Xóa tệp hiện tại
-                                            storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    // Cập nhật dữ liệu trong danh sách và cập nhật giao diện người dùng
-
-                                                    notifyDataSetChanged();
-                                                    Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    // Xử lý khi xóa tệp hiện tại thất bại
-                                                    Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            // Xử lý khi tạo tệp mới thất bại
-                                            Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    // Xử lý khi sao chép nội dung tệp thất bại
-                                    Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                });
-
-                // Thiết lập nút Không cho hành động từ chối
-                builder.setNegativeButton(R.string.no1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Không làm gì, đóng hộp thoại
-                        dialog.dismiss();
-                    }
-                });
-
-                // Hiển thị AlertDialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        });
     }
 
     private void loadThumbnail(String musicUrl, ImageView imageView) {
@@ -423,7 +336,7 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             // Cập nhật lại giao diện người dùng
             notifyDataSetChanged();
             progressDialog.dismiss();
-            Toast.makeText(mContext, R.string.succes_downmu, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.restore_music_success, Toast.LENGTH_SHORT).show();
         }
 
         private void uploadFileToStorage(StorageReference sourceRef, StorageReference destinationRef, String fileName, ProgressDialog progressDialog) {

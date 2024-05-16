@@ -34,15 +34,17 @@
     <string name="channel_name">Channel 1</string>
     <string name="channel_description">Mieu ta cho channel 1</string>
     --layout--
-    <string name="title_login">Đăng nhập tài khoản</string>
+    <string name="title_login">Chào mừng tới Mahiru Box</string>
     <string name="maintain_login">Duy trì đăng nhập</string>
     <string name="forgot_password">Quên mật khẩu</string>
-    <string name="title_pleaseregister">Nếu chưa có tài khoản. Hãy đăng ký tại đây!</string>
+    <string name="title_pleaseregister"><u>Đăng ký tại đây</u></string>
     <string name="save_image">Tải về máy</string>
     <string name="title_signup">Đăng kí tài khoản</string>
     <string name="signup">Đăng kí</string>
+    <string name="sign_up_text">Chưa có tài khoản?</string>
     <string name="cancel">Huỷ</string>
     <string name="save_edit">Lưu</string>
+    <string name="sign_up_title">Tạo tài khoản mới của bạn</string>
     <string name="TV_sp">1dp</string>
     <string name="reset_pass">Khôi phục mật khẩu</string>
     <string name="reset_bt">Khôi phục</string>
@@ -52,17 +54,17 @@
     <string name="new_pass">Nhập mật khẩu mới</string>
     <string name="confirm_newpass">Xác nhận mật khẩu mới</string>
     <string name="update_pass">Cập nhật</string>
-    <string name="title_report">Chọn các phương thức sau để\\nphản hồi lại với nhà phát triển</string>
-    <string name="Intro_title">Giới thiệu về Mahiru</string>
-    <string name="Intro_conten">Mahiru là một kho lưu trữ ảnh, được tạo ra để lưu trữ ảnh không giới hạn dung lượng\n và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com</string>
-    <string name="input_name">Nhập tên</string>
-    <string name="update_infor">Cập nhật thông tin</string>
-    <string name="dark_mode">Chế độ Tối</string>
-    <string name="lang_switch">Ngôn ngữ</string>
+    <string name="title_report">Chọn các phương thức sau để\nphản hồi lại với nhà phát triển</string>
+    <string name="Intro_title">Giới thiệu về Mahiru Box</string>
+    <string name="Intro_conten">Mahiru là một kho lưu trữ media, được tạo ra để lưu trữ ảnh, video, âm nhạc và hoàn toàn miễn phí. Thông tin chi tiết liên hệ qua email: meomeo123@gmail.com</string>
+    <string name="input_name">Tên đầy đủ</string>
+    <string name="update_infor">Lưu lại</string>
+    <string name="dark_mode">1. Chế độ tối</string>
+    <string name="lang_switch">2. Ngôn ngữ</string>
     <string name="quest_language">Chọn ngôn ngữ:</string>
     <string name="lang1">Tiếng Việt</string>
     <string name="lang2">Tiếng Anh</string>
-    <string name="dele_cache">Xóa bộ nhớ đệm</string>
+    <string name="dele_cache">3. Xóa bộ nhớ đệm</string>
     <string name="con_quest1">Tải ảnh/video/nhạc lên như thế nào?</string>
     <string name="anwser_ques1">Tải ảnh/video/nhạc lên bằng cách nhấn nút upload hoặc nhấn giữ nút upload để chọn tệp cần tải</string>
     <string name="con_quest2">Tải ảnh/video/nhạc về điện thoại như thế nào?</string>
@@ -80,7 +82,7 @@
     <string name="recovery_image">Khôi phục</string>
     <string name="sign_out">Đăng xuất</string>
     <string name="Feedback">Phản hồi</string>
-    <string name="infor_app">Thông tin App</string>
+    <string name="infor_app">Thông tin app</string>
     <string name="support">Trợ giúp</string>
     <string name="title_app">Ứng dụng</string>
 
@@ -108,6 +110,7 @@
     <string name="error_verifi">Tài khoản chưa được xác minh. Vui lòng kiểm tra email của bạn và thử lại sau.</string>
     <string name="del_acc">Đã xóa tài khoản của bạn!!!</string>
     <string name="error_creatacc">Tạo tài khoản thất bại. Vui lòng kiểm tra lại thông tin và thử lại sau.</string>
+    <string name="sign_up_policy">Bằng việc đăng ký, bạn đã đồng ý\n với điều khoản sử dụng và quyền\n riêng tư của chúng tôi</string>
 
     --Dang Nhap--
     <string name="auto_login">Đang đăng nhập tự động...</string>
@@ -130,10 +133,12 @@
     <string name="succes_saveimg">Lưu ảnh thành công!</string>
 
     --Khoiphuc--
+    <string name="restore_music_success">Hoàn tác âm nhạc thành công</string>
     <string name="invalid_email">Email không hợp lệ!</string>
     <string name="exist_acc">Tài khoản không tồn tại!</string>
     <string name="error_checkacc">Lỗi xảy ra khi kiểm tra tài khoản!</string>
     <string name="check_email">Hãy kiểm tra email để nhập mật khẩu mới!</string>
+    <string name="recover_title">Nhập email của bạn và chúng tôi sẽ gửi hướng dẫn để cập nhật lại mật khẩu của bạn</string>
 
 
     --BinMusic and MusicAdapter--
@@ -208,6 +213,7 @@
     <string name="one_upper">Mật khẩu phải chứa ít nhất một ký tự viết hoa</string>
     <string name="one_lower">Mật khẩu phải chứa ít nhất một chữ cái thường</string>
     <string name="one_number">Mật khẩu phải chứa ít nhất một số</string>
+    <string name="change_pass_title">Đổi mật khẩu</string>
 
     --Home--
     <string name="succes_upimg1">Tải ảnh lên thành công</string>
@@ -215,6 +221,7 @@
     <string name="succes_upvid">Tải video lên thành công</string>
 
     --MyProfile--
+    <string name="update_title">Chỉnh sửa thông tin của tôi</string>
     <string name="update_user">Vui lòng nhập tên người dùng</string>
     <string name="loading_up">Đang cập nhật...</string>
     <string name="succes_upuser">Cập nhật tên người dùng thành công!</string>
@@ -226,5 +233,13 @@
     <string name="error_saveimg">"Lưu thông tin ảnh đại diện thất bại: "</string>
     --Setting--
     <string name="succes_delset">Xóa thành công</string>
+    <string name="setting_title">Cài đặt</string>
+    <string name="setting_intro">Chạm để bật </string>
 
+    --Contact--
+    <string name="contact_title">Liên hệ với chúng tôi</string>
+    <string name="contact_email">Gửi email cho chúng tôi</string>
+    <string name="contact_email_body">Gửi email cho chúng tôi, chúng tôi sẽ phản hồi bạn</string>
+    <string name="contact_phone">Gọi cho chúng tôi</string>
+    <string name="contact_phone_body">Luôn hoạt động từ: 9:00AM - 4:30PM</string>
 </resources>

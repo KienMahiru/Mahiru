@@ -35,7 +35,7 @@ public class Khoiphuc extends AppCompatActivity {
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
         String emailAddress = email.getText().toString().trim();
-        if (TextUtils.isEmpty(emailAddress) || Dangky.isGmailAddress(emailAddress)) {
+        if (TextUtils.isEmpty(emailAddress) || !Dangky.isGmailAddress(emailAddress)) {
             email.setError(getString(R.string.invalid_email));
             return;
         }

@@ -6,6 +6,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:background="@drawable/edit_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -29,10 +30,10 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/ic_baseline_question_mark_24"
+                            android:src="@drawable/ic_question_mark_blue"
                             android:layout_marginLeft="10dp"/>
                         <TextView
-
+                            android:fontFamily="@font/abeezee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
@@ -41,6 +42,7 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:layout_marginTop="10dp"
                         android:id="@+id/tra_loi_1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -49,10 +51,10 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/ic_baseline_question_answer_24"
+                            android:src="@drawable/ic_question_answer_blue"
                             android:layout_marginLeft="10dp"/>
                         <TextView
-
+                            android:fontFamily="@font/abeezee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
@@ -61,17 +63,19 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:layout_marginTop="20dp"
                         android:id="@+id/cau_hoi_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center">
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/ic_baseline_question_mark_24"
+                            android:src="@drawable/ic_question_mark_blue"
                             android:layout_marginLeft="10dp"/>
                         <TextView
-
+                            android:fontFamily="@font/abeezee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
@@ -80,6 +84,7 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:layout_marginTop="10dp"
                         android:id="@+id/tra_loi_2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -88,16 +93,15 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/ic_baseline_question_answer_24"
+                            android:src="@drawable/ic_question_answer_blue"
                             android:layout_marginLeft="10dp"/>
                         <TextView
-
+                            android:fontFamily="@font/abeezee"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
                             android:layout_marginLeft="10dp"
                             android:text="@string/anwser_ques2"/>
-
                     </LinearLayout>
                 </LinearLayout>
 
