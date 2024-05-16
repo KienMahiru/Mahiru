@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_my_profile"
+        android:drawableTint="#00cba9"
         android:drawablePadding="10dp"
         android:hint="@string/input_name"
         android:minHeight="48dp"
