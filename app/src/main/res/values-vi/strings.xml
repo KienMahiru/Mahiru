@@ -221,7 +221,7 @@
     <string name="succes_upvid">Tải video lên thành công</string>
 
     --MyProfile--
-    <string name="update_title">Chỉnh sửa thông tin của tôi</string>
+    <string name="update_title">Chỉnh sửa hồ sơ của tôi</string>
     <string name="update_user">Vui lòng nhập tên người dùng</string>
     <string name="loading_up">Đang cập nhật...</string>
     <string name="succes_upuser">Cập nhật tên người dùng thành công!</string>

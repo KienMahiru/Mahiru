@@ -38,7 +38,8 @@
         android:drawablePadding="10dp"
         android:hint="@string/input_name"
         android:minHeight="48dp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:textColor="#3949AB"/>
 
     <EditText
         android:fontFamily="@font/abeezee"
