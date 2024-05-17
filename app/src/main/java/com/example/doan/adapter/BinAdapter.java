@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,13 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
     private List<String> mImageUrls;
+    private List<String> mTextData;
     private Context mContext;
     private Picasso mPicasso;
     public SparseBooleanArray mSelectedItems;
     private ActionMode actionMode;
-    public BinAdapter(Context context, List<String> imageUrls) {
+    public BinAdapter(Context context, List<String> imageUrls, List<String> textData) {
         mImageUrls = imageUrls;
         mContext = context;
+        mTextData = textData;
         mPicasso = Picasso.get();
         mSelectedItems = new SparseBooleanArray();
     }
@@ -50,9 +53,22 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull BinViewHolder holder, int position) {
         String imageUrl = mImageUrls.get(position);
+        String textData = "";
+
+        // Kiểm tra mTextData có null không
+        if (mTextData != null && position < mTextData.size()) {
+            textData = mTextData.get(position);
+        }
         mPicasso.load(imageUrl)
                 .placeholder(R.drawable.placeholder_image)
                 .into(holder.myImageView);
+
+        if (!textData.isEmpty()) {
+            holder.myTextView.setText(textData);
+            holder.myTextView.setVisibility(View.VISIBLE); // Hiển thị TextView nếu có dữ liệu
+        } else {
+            holder.myTextView.setVisibility(View.GONE); // Ẩn TextView nếu không có dữ liệu
+        }
 
         // Xác định trạng thái của ảnh
         boolean isSelected = mSelectedItems.get(position);
@@ -262,11 +278,13 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
     public static class BinViewHolder extends RecyclerView.ViewHolder {
         ImageView myImageView;
         ImageView checkView;
+        TextView myTextView;
 
         public BinViewHolder(View itemView) {
             super(itemView);
             myImageView = itemView.findViewById(R.id.my_image_view);
             checkView = itemView.findViewById(R.id.check_view);
+            myTextView = itemView.findViewById(R.id.my_text_view);
         }
     }
 }
