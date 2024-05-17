@@ -59,6 +59,7 @@ public class FullscreenVideoActivity extends AppCompatActivity {
         }
 
         player.setMediaSource(concatenatingMediaSource);
+        player.seekTo(position,0);
         player.prepare();
         player.setPlayWhenReady(true);
 
