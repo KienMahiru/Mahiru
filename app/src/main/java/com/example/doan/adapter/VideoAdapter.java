@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.doan.activity.FullscreenImageActivity;
 import com.example.doan.activity.FullscreenVideoActivity;
 import com.example.doan.R;
 import com.google.android.gms.tasks.Continuation;
@@ -134,9 +135,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
         holder.myVideoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Chuyển sang một Activity khác và truyền đường dẫn của video được click qua Intent
+                // Chuyển sang một Activity khác và truyền đường dẫn của ảnh được click qua Intent
                 Intent intent = new Intent(mContext, FullscreenVideoActivity.class);
-                intent.putExtra("videoUrl", videoUrl);
+                intent.putStringArrayListExtra("videoUrls",new ArrayList<>(mVideoUrls));
+                intent.putExtra("position_video",position);
                 mContext.startActivity(intent);
             }
         });

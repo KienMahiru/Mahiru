@@ -34,6 +34,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVideoViewHolder> {
@@ -123,13 +124,14 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
             holder.myVideoView.setTag(null);
         }
 
-        // Bắt sự kiện click vào ImageView
+        // Bắt sự kiện click vào VideoView
         holder.myVideoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Chuyển sang một Activity khác và truyền đường dẫn của ảnh được click qua Intent
                 Intent intent = new Intent(mContext, FullscreenVideoActivity.class);
-                intent.putExtra("videoUrl", videoUrl);
+                intent.putStringArrayListExtra("videoUrls",new ArrayList<>(mVideoUrls));
+                intent.putExtra("position_video",position);
                 mContext.startActivity(intent);
             }
         });
