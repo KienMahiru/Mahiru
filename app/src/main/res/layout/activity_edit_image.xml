@@ -63,40 +63,43 @@
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="300dp"
         android:id="@+id/thanhboloc"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/photo_edit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/boloc1"
                 android:src="@drawable/boloc1" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/boloc2"
                 android:src="@drawable/boloc2" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/boloc3"
                 android:src="@drawable/boloc3" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/boloc4"
                 android:src="@drawable/boloc4" />
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_margin="5dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:id="@+id/boloc5"
                 android:src="@drawable/boloc5" />
 
@@ -137,8 +140,7 @@
             android:layout_height="match_parent"
             android:background="@color/black"
             android:src="@drawable/ic_baseline_done_24"
-            android:visibility="gone
-"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
