@@ -133,17 +133,11 @@ public class FullscreenImage_bin extends AppCompatActivity {
         StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl);
         storageRef.delete()
                 .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, R.string.succes_del, Toast.LENGTH_SHORT).show();
                     //Xóa ảnh đang hiển thị
-                    imageUrls.remove(imageUrl);
-                    //Hiển thị ảnh mới
-                    if(position>=0 && position< imageUrls.size()){
-                        position--;
-                        Picasso.get().load(imageUrls.get(position)).into(mImageView);
-                    }
-                    else{
-                        finish();
-                    }
-
+                    Intent intent = new Intent(FullscreenImage_bin.this, Option.class);
+                    intent.putExtra("Image_DeleteFragment",FRAGMENT_DELETE);
+                    startActivity(intent);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(FullscreenImage_bin.this, R.string.error_delimg, Toast.LENGTH_SHORT).show();
@@ -171,16 +165,11 @@ public class FullscreenImage_bin extends AppCompatActivity {
                                 storageRef.delete()
                                         .addOnSuccessListener(aVoid -> {
                                             //Xóa ảnh đang hiển thị
-                                            imageUrls.remove(imageUrl);
-                                            //Hiển thị ảnh mới
-                                            if(position>=0 && position< imageUrls.size()){
-                                                position--;
-                                                Picasso.get().load(imageUrls.get(position)).into(mImageView);
-                                            }
-                                            else{
-                                                finish();
-                                            }
                                             Toast.makeText(FullscreenImage_bin.this, R.string.succes_undoimg, Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(FullscreenImage_bin.this, Option.class);
+                                            intent.putExtra("Image_DeleteFragment",FRAGMENT_DELETE);
+                                            startActivity(intent);
+
                                         })
                                         .addOnFailureListener(e -> {
                                             Toast.makeText(FullscreenImage_bin.this, R.string.error_delimg, Toast.LENGTH_SHORT).show();

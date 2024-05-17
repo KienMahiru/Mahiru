@@ -237,14 +237,11 @@ public class FullscreenImageActivity extends AppCompatActivity {
                                         // Xóa URL của ảnh khỏi danh sách imageUrls
                                         imageUrls.remove(imageUrl);
 
-                                        // Hiển thị ảnh mới
-                                        if (position >= 0 && position < imageUrls.size()) {
-                                            position--;
-                                            Picasso.get().load(imageUrls.get(position)).into(mImageView);
-                                        } else {
+
                                             // Không còn ảnh trong danh sách, kết thúc FullscreenImageActivity
-                                            finish();
-                                        }
+                                        Intent intent = new Intent(FullscreenImageActivity.this, Option.class);
+                                        startActivity(intent);
+
                                         // Ẩn progressDialog
                                         progressDialog.dismiss();
 
