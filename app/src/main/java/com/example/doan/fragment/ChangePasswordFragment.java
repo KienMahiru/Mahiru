@@ -1,9 +1,12 @@
 package com.example.doan.fragment;
+
 import com.example.doan.activity.Dangky;
 import com.example.doan.activity.Dangnhap;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +14,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,28 +24,34 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+
 import com.example.doan.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class ChangePasswordFragment extends Fragment {
     private View view;
-    private EditText oldpass,newpass,confirmpass;
+    private EditText oldpass, newpass, confirmpass;
     private Button update;
     private boolean mPasswordVisible = false;
+
+    private int passwordAttempts = 0;
+    private long retryTime = 0;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_change_password,container,false);
+        view = inflater.inflate(R.layout.fragment_change_password, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        oldpass= view.findViewById(R.id.oldpassword);
+        oldpass = view.findViewById(R.id.oldpassword);
         newpass = view.findViewById(R.id.newpassword);
-        confirmpass= view.findViewById(R.id.xacnhan_newpassword);
+        confirmpass = view.findViewById(R.id.xacnhan_newpassword);
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
         feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_change_password));
@@ -103,9 +111,7 @@ public class ChangePasswordFragment extends Fragment {
         snackbar.show();
     }
 
-
-
-    private void togglePasswordVisibility(EditText[] passwordFields,ImageButton showPasswordButton) {
+    private void togglePasswordVisibility(EditText[] passwordFields, ImageButton showPasswordButton) {
         mPasswordVisible = !mPasswordVisible;
 
         for (EditText passwordField : passwordFields) {
@@ -117,6 +123,12 @@ public class ChangePasswordFragment extends Fragment {
     }
 
     private void updateUserPassword() {
+        if (System.currentTimeMillis() < retryTime) {
+            long remainingTime = (retryTime - System.currentTimeMillis()) / 1000;
+            Toast.makeText(getActivity(), getString(R.string.wait_retry, remainingTime), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String oldPassword = oldpass.getText().toString().trim();
         String newPassword = newpass.getText().toString().trim();
         String confirmPassword = confirmpass.getText().toString().trim();
@@ -127,6 +139,7 @@ public class ChangePasswordFragment extends Fragment {
 
             user.reauthenticate(credential).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    passwordAttempts = 0; // Reset attempts on successful reauthentication
                     user.updatePassword(newPassword).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             Toast.makeText(getActivity(), R.string.succes_changepass, Toast.LENGTH_SHORT).show();
@@ -142,7 +155,14 @@ public class ChangePasswordFragment extends Fragment {
                         }
                     });
                 } else {
-                    showCustomSnackbar(getString(R.string.incorrect_oldpass));
+                    passwordAttempts++;
+                    if (passwordAttempts > 5) {
+                        retryTime = System.currentTimeMillis() + 30000; // 30 seconds cooldown
+                        passwordAttempts = 0;
+                        showRetryDialog();
+                    } else {
+                        showCustomSnackbar(getString(R.string.incorrect_oldpass));
+                    }
                 }
             });
         } else {
@@ -150,7 +170,16 @@ public class ChangePasswordFragment extends Fragment {
         }
     }
 
-    private boolean Kiemtra(String oldpassword,String newpassword, String confirmpassword){
+    private void showRetryDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.retry_title)
+                .setMessage(R.string.retry_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok_button, (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private boolean Kiemtra(String oldpassword, String newpassword, String confirmpassword) {
         // Kiểm tra thông tin nhập vào có hợp lệ hay không
         if (oldpassword.isEmpty()) {
             showCustomSnackbar(getString(R.string.input_oldpass));
@@ -168,18 +197,16 @@ public class ChangePasswordFragment extends Fragment {
             confirmpass.setError(getString(R.string.re_inputpass));
             return false;
         }
-        if(newpassword.length()<6){
+        if (newpassword.length() < 6) {
             newpass.setError(getString(R.string.least_6char));
             return false;
-        }
-        else if (!Dangky.containsUpperCaseLetter(newpassword)) {
+        } else if (!Dangky.containsUpperCaseLetter(newpassword)) {
             newpass.setError(getString(R.string.one_upper));
             return false;
         } else if (!Dangky.containsLowerCaseLetter(newpassword)) {
             newpass.setError(getString(R.string.one_lower));
             return false;
-        }
-        else if (!Dangky.containsNumber(newpassword)) {
+        } else if (!Dangky.containsNumber(newpassword)) {
             newpass.setError(getString(R.string.one_number));
             return false;
         }

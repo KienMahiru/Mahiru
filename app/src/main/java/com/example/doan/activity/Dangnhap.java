@@ -1,27 +1,31 @@
 package com.example.doan.activity;
+
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.widget.ImageButton;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.net.ConnectivityManager;
-import android.content.IntentFilter;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
 import com.google.android.material.snackbar.Snackbar;
@@ -41,6 +45,8 @@ public class Dangnhap extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     private ImageButton showPasswordButton;
+    private int loginAttempts = 0;
+    private long retryTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +79,14 @@ public class Dangnhap extends AppCompatActivity {
         // Kiểm tra xem người dùng đã đăng nhập tự động hay chưa
         checkAutoLogin();
 
-        mLoginButton.setOnClickListener(v -> loginUser());
+        mLoginButton.setOnClickListener(v -> {
+            if (System.currentTimeMillis() < retryTime) {
+                long remainingTime = (retryTime - System.currentTimeMillis()) / 1000;
+                Toast.makeText(Dangnhap.this, getString(R.string.wait_retry, remainingTime), Toast.LENGTH_SHORT).show();
+            } else {
+                loginUser();
+            }
+        });
     }
 
     private void checkAutoLogin() {
@@ -134,6 +147,14 @@ public class Dangnhap extends AppCompatActivity {
         String email = mEmail.getText().toString();
         String password = mPasswordEditText.getText().toString();
         if (isValidUser(email, password)) {
+            loginAttempts++;
+            if (loginAttempts > 5) {
+                retryTime = System.currentTimeMillis() + 30000; // 30 seconds
+                loginAttempts = 0;
+                showRetryDialog();
+                return;
+            }
+
             SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
             if (mRememberCheckBox.isChecked()) {
                 editor.putString("email", email);
@@ -238,6 +259,20 @@ public class Dangnhap extends AppCompatActivity {
 
         // Hiển thị Snackbar
         snackbar.show();
+    }
+
+    private void showRetryDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.retry_title)
+                .setMessage(R.string.retry_message)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     @Override

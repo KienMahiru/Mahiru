@@ -113,6 +113,10 @@
     <string name="sign_up_policy">Bằng việc đăng ký, bạn đã đồng ý\n với điều khoản sử dụng và quyền\n riêng tư của chúng tôi</string>
 
     --Dang Nhap--
+    <string name="retry_title">Thử đăng nhập lại</string>
+    <string name="retry_message">Bạn đã vượt quá số lần đăng nhập tối đa. Vui lòng đợi 30 giây trước khi thử lại.</string>
+    <string name="wait_retry">Vui lòng đợi %1$d giây trước khi thử lại</string>
+    <string name="ok_button">OK</string> <!-- Added this line -->
     <string name="auto_login">Đang đăng nhập tự động...</string>
     <string name="failed_login1">Đăng nhập tự động thất bại! Tài khoản đã lưu không tồn tại</string>
     <string name="failed_login2">Đăng nhập tự động thất bại! Hãy kiểm tra lại tài khoản hoặc mạng của bạn.</string>
@@ -203,6 +207,10 @@
     <string name="share_vid">Chia sẻ video</string>
 
     --ChangePassword--
+    <string name="retry_title_change">Hãy thử lại thay đổi mật khẩu</string>
+    <string name="retry_message_change">Bạn đã vượt quá số lần thử tối đa. Vui lòng đợi 30 giây trước khi thử lại.</string>
+    <string name="wait_retry_change"> Vui lòng đợi %1$d giây trước khi thử lại</string>
+    <string name="ok_button_change">OK</string>
     <string name="succes_changepass">Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại!</string>
     <string name="error_uppass">Cập nhật mật khẩu thất bại!</string>
     <string name="incorrect_oldpass">Mật khẩu cũ không đúng! Vui lòng nhập lại mật khẩu!</string>
