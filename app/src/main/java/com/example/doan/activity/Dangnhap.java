@@ -45,7 +45,7 @@ public class Dangnhap extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dangnhap);z
+        setContentView(R.layout.activity_dangnhap);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         progressDialog = new ProgressDialog(this);
         mEmail = findViewById(R.id.tv_email);
