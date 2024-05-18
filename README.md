@@ -1,9 +1,9 @@
-# Đồ án Tốt nghiệp FE6072
+# Đồ án Tốt nghiệp FE6076
 #Tên đề tài: Thiết kế phần mềm di động lưu trữ dữ liệu media
 #Thành viên trong nhóm:
        #1. Trịnh Bảo Kiên         MSV:2020604877  
        #2. Hoàng Quang Vinh       MSV:2020604215
-       #3. Nguyễn Quang Trường    MSV:2020
+       #3. Nguyễn Quang Trường    MSV:2020604846
 
 
 # Đồ án chuyên ngành FE6071
