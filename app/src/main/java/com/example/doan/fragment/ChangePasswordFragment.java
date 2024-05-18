@@ -1,25 +1,31 @@
 package com.example.doan.fragment;
 import com.example.doan.activity.Dangky;
 import com.example.doan.activity.Dangnhap;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import com.example.doan.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +57,53 @@ public class ChangePasswordFragment extends Fragment {
         update.setOnClickListener(v -> updateUserPassword());
         return view;
     }
+
+    private void showCustomSnackbar(String message) {
+        // Find the root CoordinatorLayout to display the Snackbar
+        CoordinatorLayout coordinatorLayout = view.findViewById(R.id.coordinator_layout1);
+
+        // Create a Snackbar
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
+
+        // Get the layout of the Snackbar to customize it
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackbarLayout.setPadding(0, 0, 0, 0); // Remove default padding
+        snackbarLayout.setBackgroundColor(Color.TRANSPARENT); // Set transparent background to remove black border
+
+        // Inflate custom view for the Snackbar
+        View customView = LayoutInflater.from(getContext()).inflate(R.layout.custom_snackbar, null);
+
+        // Set message and icon for the custom view
+        TextView textView = customView.findViewById(R.id.snackbar_text);
+        textView.setText(message);
+
+        ImageView iconView = customView.findViewById(R.id.snackbar_icon);
+        iconView.setImageResource(R.drawable.baseline_error_outline_24); // Set your icon here
+
+        Button dismissButton = customView.findViewById(R.id.snackbar_dismiss_button);
+        dismissButton.setOnClickListener(v -> snackbar.dismiss());
+
+        // Ensure custom view takes full width
+        customView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+
+        // Remove default views and add custom view
+        snackbarLayout.removeAllViews();
+        snackbarLayout.addView(customView);
+
+        // Set LayoutParams for Snackbar to position it at the top
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackbarLayout.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT; // Ensure Snackbar width is full screen
+        params.gravity = Gravity.TOP;
+        snackbarLayout.setLayoutParams(params);
+
+        // Show Snackbar
+        snackbar.show();
+    }
+
+
 
     private void togglePasswordVisibility(EditText[] passwordFields,ImageButton showPasswordButton) {
         mPasswordVisible = !mPasswordVisible;
@@ -89,7 +142,7 @@ public class ChangePasswordFragment extends Fragment {
                         }
                     });
                 } else {
-                    oldpass.setError(getString(R.string.incorrect_oldpass));
+                    showCustomSnackbar(getString(R.string.incorrect_oldpass));
                 }
             });
         } else {
@@ -100,7 +153,7 @@ public class ChangePasswordFragment extends Fragment {
     private boolean Kiemtra(String oldpassword,String newpassword, String confirmpassword){
         // Kiểm tra thông tin nhập vào có hợp lệ hay không
         if (oldpassword.isEmpty()) {
-            oldpass.setError(getString(R.string.input_oldpass));
+            showCustomSnackbar(getString(R.string.input_oldpass));
             return false;
         }
         if (newpassword.isEmpty()) {

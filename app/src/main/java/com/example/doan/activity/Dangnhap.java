@@ -1,26 +1,33 @@
 package com.example.doan.activity;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.ConnectivityManager;
 import android.content.IntentFilter;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+
 import java.util.List;
 
 public class Dangnhap extends AppCompatActivity {
@@ -33,10 +40,12 @@ public class Dangnhap extends AppCompatActivity {
     private boolean mPasswordVisible = false;
     private ProgressDialog progressDialog;
 
+    private ImageButton showPasswordButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dangnhap);
+        setContentView(R.layout.activity_dangnhap);z
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         progressDialog = new ProgressDialog(this);
         mEmail = findViewById(R.id.tv_email);
@@ -45,7 +54,7 @@ public class Dangnhap extends AppCompatActivity {
         mLoginButton = findViewById(R.id.login_button);
         mRegisterView = findViewById(R.id.register_button);
 
-        ImageButton showPasswordButton = findViewById(R.id.show_password_button);
+        showPasswordButton = findViewById(R.id.show_password_button);
         showPasswordButton.setOnClickListener(view -> {
             mPasswordVisible = !mPasswordVisible;
             int visibility = mPasswordVisible ? View.VISIBLE : View.GONE;
@@ -56,7 +65,7 @@ public class Dangnhap extends AppCompatActivity {
         mRegisterView.setOnClickListener(v -> {
             startActivity(new Intent(Dangnhap.this, Dangky.class));
         });
-        TextView t1= findViewById(R.id.khoiphucmk);
+        TextView t1 = findViewById(R.id.khoiphucmk);
         t1.setOnClickListener(v -> {
             startActivity(new Intent(Dangnhap.this, Khoiphuc.class));
         });
@@ -83,7 +92,7 @@ public class Dangnhap extends AppCompatActivity {
                                 SignInMethodQueryResult result = task.getResult();
                                 List<String> providers = result.getSignInMethods();
                                 if (providers != null && providers.size() > 0) {
-                                    if(isValidUser(email, password))
+                                    if (isValidUser(email, password))
                                         loginUserAutomatically(auth, email, password);
                                 } else {
                                     handleAutoLoginFailure(getString(R.string.failed_login1));
@@ -95,12 +104,12 @@ public class Dangnhap extends AppCompatActivity {
                         });
             } else {
                 handleAutoLoginFailure(getString(R.string.failed_login3));
-
             }
         } else {
             Toast.makeText(this, R.string.welcome_login, Toast.LENGTH_SHORT).show();
         }
     }
+
     private void loginUserAutomatically(FirebaseAuth auth, String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(loginTask -> {
@@ -114,6 +123,7 @@ public class Dangnhap extends AppCompatActivity {
                     }
                 });
     }
+
     private void handleAutoLoginFailure(String text) {
         Toast.makeText(Dangnhap.this, text, Toast.LENGTH_SHORT).show();
         clearSharedPreferences();
@@ -121,8 +131,8 @@ public class Dangnhap extends AppCompatActivity {
     }
 
     private void loginUser() {
-        String email = mEmail.getText().toString().trim();
-        String password = mPasswordEditText.getText().toString().trim();
+        String email = mEmail.getText().toString();
+        String password = mPasswordEditText.getText().toString();
         if (isValidUser(email, password)) {
             SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
             if (mRememberCheckBox.isChecked()) {
@@ -160,8 +170,8 @@ public class Dangnhap extends AppCompatActivity {
                         Toast.makeText(Dangnhap.this, R.string.succes_login2, Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(Dangnhap.this, Option.class));
                     } else {
-                        mPasswordEditText.setError(getString(R.string.incorrect_pass));
-                        handleManualLoginFailure("");
+                        showCustomSnackbar(getString(R.string.incorrect_pass));
+                        handleManualLoginFailure(getString(R.string.login_failed));
                     }
                 });
     }
@@ -180,17 +190,56 @@ public class Dangnhap extends AppCompatActivity {
 
     private boolean isValidUser(String email, String password) {
         if (TextUtils.isEmpty(email) || !Dangky.isGmailAddress(email)) {
-            mEmail.setError(getString(R.string.email_blank));
+            showCustomSnackbar(getString(R.string.email_blank));
             return false;
         }
 
         if (TextUtils.isEmpty(password) || password.length() < 6 || !Dangky.containsUpperCaseLetter(password) || !Dangky.containsLowerCaseLetter(password) ||
                 !Dangky.containsNumber(password)) {
-            mPasswordEditText.setError(getString(R.string.change_pass));
+            showCustomSnackbar(getString(R.string.change_pass));
             return false;
         }
         return true;
     }
+
+    private void showCustomSnackbar(String message) {
+        // Tìm CoordinatorLayout gốc để hiển thị Snackbar
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
+
+        // Tạo một Snackbar
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
+
+        // Lấy layout của Snackbar để tùy chỉnh
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackbarLayout.setPadding(0, 0, 0, 0); // Loại bỏ padding mặc định
+        snackbarLayout.setBackgroundColor(Color.TRANSPARENT); // Đặt nền trong suốt để loại bỏ viền đen
+
+        // Tạo view tùy chỉnh cho Snackbar
+        View customView = LayoutInflater.from(this).inflate(R.layout.custom_snackbar, null);
+
+        // Đặt message và icon cho view tùy chỉnh
+        TextView textView = customView.findViewById(R.id.snackbar_text);
+        textView.setText(message);
+
+        ImageView iconView = customView.findViewById(R.id.snackbar_icon);
+        iconView.setImageResource(R.drawable.baseline_error_outline_24); // Đặt icon của bạn tại đây
+
+        Button dismissButton = customView.findViewById(R.id.snackbar_dismiss_button);
+        dismissButton.setOnClickListener(v -> snackbar.dismiss());
+
+        // Xóa các view mặc định của Snackbar và thêm view tùy chỉnh
+        snackbarLayout.removeAllViews();
+        snackbarLayout.addView(customView);
+
+        // Tạo LayoutParams cho Snackbar để định vị nó ở phía trên
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackbarLayout.getLayoutParams();
+        params.gravity = Gravity.TOP;
+        snackbarLayout.setLayoutParams(params);
+
+        // Hiển thị Snackbar
+        snackbar.show();
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -214,6 +263,7 @@ public class Dangnhap extends AppCompatActivity {
         unregisterReceiver(networkChangeListener);
         super.onStop();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
