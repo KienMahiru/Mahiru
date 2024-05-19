@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/coordinator_layout">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,67 +44,67 @@
 
     <EditText
         android:fontFamily="@font/abeezee"
-            android:layout_margin="20dp"
-            android:background="@drawable/custom_edt"
-            android:id="@+id/username_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/email_icon"
-            android:drawablePadding="10dp"
-            android:hint="@string/prompt_email"
-            android:inputType="textEmailAddress"
-            android:maxLength="30"
-            android:minHeight="48dp"
-            android:singleLine="true"
-            android:textColor="#3949AB" />
+        android:layout_margin="20dp"
+        android:background="@drawable/custom_edt"
+        android:id="@+id/username_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/email_icon"
+        android:drawablePadding="10dp"
+        android:hint="@string/prompt_email"
+        android:inputType="textEmailAddress"
+        android:maxLength="30"
+        android:minHeight="48dp"
+        android:singleLine="true"
+        android:textColor="#3949AB" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:fontFamily="@font/abeezee"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/custom_edt"
-                android:id="@+id/password_edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:drawableStart="@drawable/password_icon"
-                android:drawablePadding="10dp"
-                android:hint="@string/prompt_password"
-                android:inputType="textPassword"
-                android:maxLength="30" />
-
-            <ImageButton
-                android:layout_centerInParent="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="25dp"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/show_password_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:minWidth="50dp"
-                android:minHeight="50dp"
-                android:src="@drawable/ic_visibility_off"
-                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
-        </RelativeLayout>
-
-        <Button
-            android:layout_gravity="center"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
             android:fontFamily="@font/abeezee"
-            android:layout_marginTop="20dp"
-            android:textColor="#fff"
-            android:padding="12dp"
-            android:id="@+id/register_button"
-            android:layout_width="200dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/custom_edt"
+            android:id="@+id/password_edittext"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_button"
-            android:text="@string/signup"
-            android:textAllCaps="false"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:drawableStart="@drawable/password_icon"
+            android:drawablePadding="10dp"
+            android:hint="@string/prompt_password"
+            android:inputType="textPassword"
+            android:maxLength="30" />
+
+        <ImageButton
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/show_password_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:minWidth="50dp"
+            android:minHeight="50dp"
+            android:src="@drawable/ic_visibility_off"
+            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+    </RelativeLayout>
+
+    <Button
+        android:layout_gravity="center"
+        android:fontFamily="@font/abeezee"
+        android:layout_marginTop="20dp"
+        android:textColor="#fff"
+        android:padding="12dp"
+        android:id="@+id/register_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_button"
+        android:text="@string/signup"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:textAlignment="center"
@@ -114,3 +119,4 @@
         android:textSize="15sp"
         android:textStyle="bold" />
 </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,14 +1,21 @@
 package com.example.doan.activity;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.text.method.PasswordTransformationMethod;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.content.Intent;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.text.TextUtils;
 import android.net.ConnectivityManager;
@@ -17,6 +24,7 @@ import android.os.Handler;
 import android.os.CountDownTimer;
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.SignInMethodQueryResult;
@@ -54,7 +62,7 @@ public class Dangky extends AppCompatActivity {
         });
         //Lắng nghe sự kiện nút đăng ký
         mRegisterButton.setOnClickListener(v -> {
-            String email = mEmail.getText().toString().trim();
+            String email = mEmail.getText().toString();
             String password = mPasswordEditText.getText().toString().trim();
             if (isInputValid(email, password)) {
                 registerAndVerifyUser(email, password);
@@ -70,7 +78,7 @@ public class Dangky extends AppCompatActivity {
 
         if (TextUtils.isEmpty(password) || password.length() < 6 || !containsUpperCaseLetter(password) || !containsLowerCaseLetter(password) ||
                 !containsNumber(password)) {
-            mPasswordEditText.setError(getString(R.string.change_pass));
+            showCustomSnackbar(getString(R.string.change_pass));
             return false;
         }
         return true;
@@ -214,5 +222,43 @@ public class Dangky extends AppCompatActivity {
 
     public static boolean containsLowerCaseLetter(String password) {
         return password.matches(".*[a-z].*");
+    }
+
+    private void showCustomSnackbar(String message) {
+        // Tìm CoordinatorLayout gốc để hiển thị Snackbar
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
+
+        // Tạo một Snackbar
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, "", Snackbar.LENGTH_INDEFINITE);
+
+        // Lấy layout của Snackbar để tùy chỉnh
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+        snackbarLayout.setPadding(0, 0, 0, 0); // Loại bỏ padding mặc định
+        snackbarLayout.setBackgroundColor(Color.TRANSPARENT); // Đặt nền trong suốt để loại bỏ viền đen
+
+        // Tạo view tùy chỉnh cho Snackbar
+        View customView = LayoutInflater.from(this).inflate(R.layout.custom_snackbar, null);
+
+        // Đặt message và icon cho view tùy chỉnh
+        TextView textView = customView.findViewById(R.id.snackbar_text);
+        textView.setText(message);
+
+        ImageView iconView = customView.findViewById(R.id.snackbar_icon);
+        iconView.setImageResource(R.drawable.baseline_error_outline_24); // Đặt icon của bạn tại đây
+
+        Button dismissButton = customView.findViewById(R.id.snackbar_dismiss_button);
+        dismissButton.setOnClickListener(v -> snackbar.dismiss());
+
+        // Xóa các view mặc định của Snackbar và thêm view tùy chỉnh
+        snackbarLayout.removeAllViews();
+        snackbarLayout.addView(customView);
+
+        // Tạo LayoutParams cho Snackbar để định vị nó ở phía trên
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) snackbarLayout.getLayoutParams();
+        params.gravity = Gravity.TOP;
+        snackbarLayout.setLayoutParams(params);
+
+        // Hiển thị Snackbar
+        snackbar.show();
     }
 }

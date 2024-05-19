@@ -31,12 +31,13 @@
         app:layout_constraintWidth_percent="0.7" />
 
     <Button
+        android:padding="5dp"
         android:backgroundTint="#49DCCD"
         android:id="@+id/snackbar_dismiss_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
         android:text="Dismiss"
-        android:textSize="12sp"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

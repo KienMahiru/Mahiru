@@ -114,7 +114,7 @@
 
     --Dang Nhap--
     <string name="retry_title">Thử đăng nhập lại</string>
-    <string name="retry_message">Bạn đã vượt quá số lần đăng nhập tối đa. Vui lòng đợi 30 giây trước khi thử lại.</string>
+    <string name="retry_message">Bạn đã vượt quá số lần đăng nhập tối đa. Vui lòng thử lại sau:</string>
     <string name="wait_retry">Vui lòng đợi %1$d giây trước khi thử lại</string>
     <string name="ok_button">OK</string> <!-- Added this line -->
     <string name="auto_login">Đang đăng nhập tự động...</string>
@@ -129,6 +129,7 @@
     <string name="incorrect_data">Tên đăng nhập hoặc mật khẩu không đúng.</string>
     <string name="succes_login2">Đăng nhập thành công!</string>
     <string name="incorrect_pass">Mật khẩu của bạn không đúng! Vui lòng nhập lại mật khẩu.</string>
+    <string name="closing_app">Bạn đã nhập sai quá nhiều lần, app sẽ tự đóng sau 5 giây</string>
 
     --EditImageActivity and EditImageProActivity--
     <string name="error_img">Lỗi ảnh!</string>
@@ -250,4 +251,7 @@
     <string name="contact_email_body">Gửi email cho chúng tôi, chúng tôi sẽ phản hồi bạn</string>
     <string name="contact_phone">Gọi cho chúng tôi</string>
     <string name="contact_phone_body">Luôn hoạt động từ: 9:00AM - 4:30PM</string>
+
+    --Other--
+    <string name="second">giây</string>
 </resources>

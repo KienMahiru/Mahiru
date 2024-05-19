@@ -12,6 +12,7 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 
 import com.example.doan.NetworkChangeListener;
 import com.example.doan.R;
@@ -82,7 +84,10 @@ public class Dangnhap extends AppCompatActivity {
         mLoginButton.setOnClickListener(v -> {
             if (System.currentTimeMillis() < retryTime) {
                 long remainingTime = (retryTime - System.currentTimeMillis()) / 1000;
-                Toast.makeText(Dangnhap.this, getString(R.string.wait_retry, remainingTime), Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), getString(R.string.wait_retry, remainingTime), Snackbar.LENGTH_LONG)
+                        .setBackgroundTint(ContextCompat.getColor(this, R.color.teal_700))
+                        .show();
+
             } else {
                 loginUser();
             }
@@ -146,15 +151,27 @@ public class Dangnhap extends AppCompatActivity {
     private void loginUser() {
         String email = mEmail.getText().toString();
         String password = mPasswordEditText.getText().toString();
-        if (isValidUser(email, password)) {
-            loginAttempts++;
-            if (loginAttempts > 5) {
-                retryTime = System.currentTimeMillis() + 30000; // 30 seconds
-                loginAttempts = 0;
-                showRetryDialog();
-                return;
-            }
 
+        loginAttempts++;
+        switch (loginAttempts) {
+            case 6:
+                retryTime = System.currentTimeMillis() + 30000; // 30 giây
+                showRetryDialog(30);
+                return;
+            case 8:
+                retryTime = System.currentTimeMillis() + 60000; // 1 phút
+                showRetryDialog(60);
+                return;
+            case 10:
+                retryTime = System.currentTimeMillis() + 180000; // 3 phút
+                showRetryDialog(180);
+                return;
+            case 11:
+                showProgressDialogAndCloseApp();
+                return;
+        }
+
+        if (isValidUser(email, password)) {
             SharedPreferences.Editor editor = getSharedPreferences("login", MODE_PRIVATE).edit();
             if (mRememberCheckBox.isChecked()) {
                 editor.putString("email", email);
@@ -164,6 +181,7 @@ public class Dangnhap extends AppCompatActivity {
                 editor.clear();
             }
             editor.apply();
+
             FirebaseAuth auth = FirebaseAuth.getInstance();
             auth.fetchSignInMethodsForEmail(email)
                     .addOnCompleteListener(task -> {
@@ -183,6 +201,18 @@ public class Dangnhap extends AppCompatActivity {
             handleManualLoginFailure(getString(R.string.incorrect_data));
         }
     }
+
+    private void showProgressDialogAndCloseApp() {
+        progressDialog.setMessage(getString(R.string.closing_app));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        new android.os.Handler().postDelayed(() -> {
+            progressDialog.dismiss();
+            finishAffinity(); // Đóng ứng dụng
+        }, 5000); // 5 giây
+    }
+
 
     private void loginUserManually(FirebaseAuth auth, String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
@@ -261,10 +291,12 @@ public class Dangnhap extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void showRetryDialog() {
+    private void showRetryDialog(int time) {
+        String message = getString(R.string.retry_message) + " " + time + " " + getString(R.string.second) + ".";
         new AlertDialog.Builder(this)
+                .setIcon(R.drawable.warning_icon)
                 .setTitle(R.string.retry_title)
-                .setMessage(R.string.retry_message)
+                .setMessage(message)
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok_button, new DialogInterface.OnClickListener() {
                     @Override

@@ -113,7 +113,7 @@
 
     --Login--
     <string name="retry_title">Retry Login</string>
-    <string name="retry_message">You have exceeded the maximum number of login attempts. Please wait 30 seconds before trying again.</string>
+    <string name="retry_message">You have exceeded the maximum number of login attempts. Please try again after:</string>
     <string name="wait_retry">Please wait %1$d seconds before trying again.</string>
     <string name="ok_button">OK</string> <!-- Added this line -->
     <string name="auto_login">Logging in automatically...</string>
@@ -128,6 +128,7 @@
     <string name="incorrect_data">Incorrect username or password.</string>
     <string name="succes_login2">Login successful!</string>
     <string name="incorrect_pass">Incorrect password! Please re-enter your password.</string>
+    <string name="closing_app">You have entered incorrectly too many times, the app will close automatically after 5 seconds</string>
 
     --EditImageActivity and EditImageProActivity--
     <string name="error_img">Image error!</string>
@@ -251,4 +252,6 @@
     <string name="contact_phone">Call us</string>
     <string name="contact_phone_body">Available weekdays: 9:00AM - 4:30PM</string>
 
+    --Other--
+    <string name="second">seconds</string>
 </resources>
