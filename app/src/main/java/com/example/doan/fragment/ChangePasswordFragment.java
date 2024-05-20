@@ -1,5 +1,6 @@
 package com.example.doan.fragment;
 
+import com.example.doan.AppSettings;
 import com.example.doan.activity.Dangky;
 import com.example.doan.activity.Dangnhap;
 import com.google.android.material.snackbar.Snackbar;
@@ -40,10 +41,15 @@ public class ChangePasswordFragment extends Fragment {
     private EditText oldpass, newpass, confirmpass;
     private Button update;
     private boolean mPasswordVisible = false;
-
+    private boolean mIsDarkMode;
     private int passwordAttempts = 0;
     private long retryTime = 0;
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mIsDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -52,7 +58,8 @@ public class ChangePasswordFragment extends Fragment {
         oldpass = view.findViewById(R.id.oldpassword);
         newpass = view.findViewById(R.id.newpassword);
         confirmpass = view.findViewById(R.id.xacnhan_newpassword);
-
+        // Thêm kiểm tra màu nền tối/ sáng
+        view.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
         FeedbackFragment feedbackFragment = new FeedbackFragment();
         feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.nav_change_password));
 

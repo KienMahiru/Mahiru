@@ -12,16 +12,27 @@ import android.view.LayoutInflater;
 import android.widget.Button;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.doan.AppSettings;
 import com.example.doan.R;
 
 public class FeedbackFragment extends Fragment {
     private View mView;
     private Button sendButton,sendphone;
+    private boolean mIsDarkMode;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mIsDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_feed, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        // Thêm kiểm tra màu nền tối/ sáng
+        mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
 
         setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.Feedback));
         setupViews();

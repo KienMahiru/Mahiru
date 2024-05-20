@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.example.doan.AppSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import static com.example.doan.activity.Option.MY_REQUEST_CODE;
@@ -39,7 +41,13 @@ public class MyProfileFragment extends Fragment {
     private Uri uri;
     private Option mOption;
     private ProgressDialog progressDialog;
-
+    private boolean mIsDarkMode;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mIsDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

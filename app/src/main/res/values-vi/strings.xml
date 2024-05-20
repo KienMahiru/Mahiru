@@ -206,6 +206,7 @@
     <string name="succes_downvid">Tải video về thành công!</string>
     <string name="error_downvid">Tải video về thất bại</string>
     <string name="share_vid">Chia sẻ video</string>
+    <string name="change_name_item">Vui lòng nhập tên tệp mới</string>
 
     --ChangePassword--
     <string name="retry_title_change">Hãy thử lại thay đổi mật khẩu</string>

@@ -8,19 +8,33 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.Switch;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.doan.AppSettings;
 import com.example.doan.R;
 
 public class InforFragment extends Fragment {
     private View mView;
+    private boolean mIsDarkMode;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        mIsDarkMode = AppSettings.getInstance(requireContext()).isDarkMode();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_infor, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         FeedbackFragment feedbackFragment = new FeedbackFragment();
         feedbackFragment.setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(),getString(R.string.infor_app));
@@ -47,4 +61,5 @@ public class InforFragment extends Fragment {
             return false;
         });
     }
+
 }

@@ -29,7 +29,7 @@ import java.io.File;
 public class SettingsFragment extends Fragment {
     private ProgressBar progressBar;
     private View mView;
-    private Switch aSwitch;
+    public Switch aSwitch;
     private Button xoa_cache, langSwitch;
     private ImageView btn_vn, btn_eng;
     private LanguageManager languageManager;
@@ -135,7 +135,7 @@ public class SettingsFragment extends Fragment {
         updateFragmentBackgroundColors();
     }
 
-    private void updateFragmentBackgroundColors() {
+    public void updateFragmentBackgroundColors() {
         FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
         for (Fragment fragment : fragmentManager.getFragments()) {
             if (fragment instanceof SettingsFragment) {
@@ -148,7 +148,7 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void changeBackgroundColor(int color) {
+    public void changeBackgroundColor(int color) {
         Window window = requireActivity().getWindow();
         if (window != null) {
             window.getDecorView().setBackgroundColor(color);
