@@ -31,8 +31,6 @@ public class FeedbackFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_feed, container, false);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        // Thêm kiểm tra màu nền tối/ sáng
-        mView.setBackgroundColor(requireContext().getColor(mIsDarkMode ? R.color.black : R.color.white));
 
         setupActionBar(((AppCompatActivity) getActivity()).getSupportActionBar(), getString(R.string.Feedback));
         setupViews();
