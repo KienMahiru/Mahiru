@@ -13,28 +13,32 @@
     </group>
     <item android:title="@string/nav_account">
         <menu>
-            <item android:id="@+id/my_profile"
-                android:icon="@drawable/ic_my_profile"
-                android:title="@string/nav_my_profile"/>
-            <item android:id="@+id/change_password"
-                android:title="@string/nav_change_password"
-                android:icon="@drawable/ic_change_password"/>
-            <item android:id="@+id/sign_out"
-                android:title="@string/sign_out"
-                android:icon="@drawable/ic_logout"/>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/my_profile"
+                    android:icon="@drawable/ic_my_profile"
+                    android:title="@string/nav_my_profile"/>
+                <item android:id="@+id/change_password"
+                    android:title="@string/nav_change_password"
+                    android:icon="@drawable/ic_change_password"/>
+                <item android:id="@+id/sign_out"
+                    android:title="@string/sign_out"
+                    android:icon="@drawable/ic_logout"/>
+            </group>
         </menu>
     </item>
     <item android:title="@string/title_app">
         <menu>
-            <item android:id="@+id/phan_hoi"
-                android:icon="@drawable/ic_baseline_feedback_24"
-                android:title="@string/Feedback"/>
-            <item android:id="@+id/thong_tin_app"
-                android:title="@string/infor_app"
-                android:icon="@drawable/ic_baseline_info_24"/>
-            <item android:id="@+id/tro_giup"
-                android:title="@string/support"
-                android:icon="@drawable/ic_baseline_question_mark_24"/>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/phan_hoi"
+                    android:icon="@drawable/ic_baseline_feedback_24"
+                    android:title="@string/Feedback"/>
+                <item android:id="@+id/thong_tin_app"
+                    android:title="@string/infor_app"
+                    android:icon="@drawable/ic_baseline_info_24"/>
+                <item android:id="@+id/tro_giup"
+                    android:title="@string/support"
+                    android:icon="@drawable/ic_baseline_question_mark_24"/>
+            </group>
         </menu>
     </item>
 </menu>
