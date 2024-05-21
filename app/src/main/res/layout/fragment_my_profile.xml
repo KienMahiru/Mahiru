@@ -27,6 +27,8 @@
         android:textStyle="bold" />
 
     <EditText
+        android:textColorHint="#609097"
+        android:textColor="#3949AB"
         android:fontFamily="@font/abeezee"
         android:layout_margin="20dp"
         android:background="@drawable/custom_edt"
@@ -38,10 +40,10 @@
         android:drawablePadding="10dp"
         android:hint="@string/input_name"
         android:minHeight="48dp"
-        android:singleLine="true"
-        android:textColor="#3949AB"/>
+        android:singleLine="true" />
 
     <EditText
+        android:textColorHint="#609097"
         android:fontFamily="@font/abeezee"
         android:layout_margin="20dp"
         android:background="@drawable/custom_edt"

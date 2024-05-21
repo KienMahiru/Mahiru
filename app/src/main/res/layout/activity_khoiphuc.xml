@@ -40,6 +40,8 @@
         android:textStyle="bold" />
 
     <EditText
+        android:textColorHint="#609097"
+        android:textColor="#3949AB"
         android:fontFamily="@font/abeezee"
         android:layout_margin="20dp"
         android:background="@drawable/custom_edt"
@@ -52,8 +54,7 @@
         android:inputType="textEmailAddress"
         android:maxLength="30"
         android:minHeight="48dp"
-        android:singleLine="true"
-        android:textColor="#3949AB" />
+        android:singleLine="true" />
 
     <Button
         android:layout_gravity="center"

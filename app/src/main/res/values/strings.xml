@@ -208,7 +208,7 @@
 
     --ChangePassword--
     <string name="retry_title_change">Retry Password Change</string>
-    <string name="retry_message_change">You have exceeded the maximum number of attempts. Please wait 30 seconds before trying again.</string>
+    <string name="retry_message_change">You have exceeded the maximum number of attempts. Please wait %1$d seconds before trying again.</string>
     <string name="wait_retry_change">Please wait %1$d seconds before trying again.</string>
     <string name="ok_button_change">OK</string>
     <string name="succes_changepass">Password updated successfully! Please log in again!</string>
@@ -255,4 +255,5 @@
 
     --Other--
     <string name="second">seconds</string>
+    <string name="logout_message">You have entered incorrectly too many times, your account will be logged out automatically after 5 seconds</string>
 </resources>

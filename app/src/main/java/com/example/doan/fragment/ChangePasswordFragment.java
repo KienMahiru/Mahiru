@@ -8,12 +8,14 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.method.PasswordTransformationMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.doan.R;
@@ -132,13 +136,35 @@ public class ChangePasswordFragment extends Fragment {
     private void updateUserPassword() {
         if (System.currentTimeMillis() < retryTime) {
             long remainingTime = (retryTime - System.currentTimeMillis()) / 1000;
-            Toast.makeText(getActivity(), getString(R.string.wait_retry, remainingTime), Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar.make(requireActivity().getWindow().getDecorView().getRootView(), getString(R.string.wait_retry, remainingTime), Snackbar.LENGTH_LONG)
+                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_700));
+            snackbar.show();
             return;
+        }
+
+        passwordAttempts++;
+        switch (passwordAttempts) {
+            case 6:
+                retryTime = System.currentTimeMillis() + 30000; // 30 seconds cooldown
+                showRetryDialog(30);
+                return;
+            case 8:
+                retryTime = System.currentTimeMillis() + 60000; // 60 seconds cooldown
+                showRetryDialog(60);
+                return;
+            case 10:
+                retryTime = System.currentTimeMillis() + 180000; // 180 seconds cooldown
+                showRetryDialog(180);
+                return;
+            case 11:
+                showLogoutProgressDialog();
+                return;
         }
 
         String oldPassword = oldpass.getText().toString().trim();
         String newPassword = newpass.getText().toString().trim();
         String confirmPassword = confirmpass.getText().toString().trim();
+
 
         if (Kiemtra(oldPassword, newPassword, confirmPassword)) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -162,14 +188,7 @@ public class ChangePasswordFragment extends Fragment {
                         }
                     });
                 } else {
-                    passwordAttempts++;
-                    if (passwordAttempts > 5) {
-                        retryTime = System.currentTimeMillis() + 30000; // 30 seconds cooldown
-                        passwordAttempts = 0;
-                        showRetryDialog();
-                    } else {
-                        showCustomSnackbar(getString(R.string.incorrect_oldpass));
-                    }
+                    showCustomSnackbar(getString(R.string.incorrect_oldpass));
                 }
             });
         } else {
@@ -177,10 +196,31 @@ public class ChangePasswordFragment extends Fragment {
         }
     }
 
-    private void showRetryDialog() {
+    private void showLogoutProgressDialog() {
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage(getString(R.string.logout_message));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        
+
+        // Use a Handler to delay the logout by 5 seconds
+        new Handler().postDelayed(() -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getActivity(), Dangnhap.class);
+            startActivity(intent);
+
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE).edit();
+            editor.clear();
+            editor.apply();
+
+            progressDialog.dismiss();
+        }, 5000); // 5000 milliseconds = 5 seconds
+    }
+
+    private void showRetryDialog(int retryTime) {
         new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.retry_title)
-                .setMessage(R.string.retry_message)
+                .setTitle(R.string.retry_title_change)
+                .setMessage(getString(R.string.retry_message_change, retryTime))
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok_button, (dialog, which) -> dialog.dismiss())
                 .show();
