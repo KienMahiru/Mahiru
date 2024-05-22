@@ -43,6 +43,7 @@
         android:textStyle="bold" />
 
     <EditText
+        android:textColorHint="#609097"
         android:fontFamily="@font/abeezee"
         android:layout_margin="20dp"
         android:background="@drawable/custom_edt"
@@ -63,6 +64,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <EditText
+            android:textColorHint="#609097"
+            android:textColor="#3949AB"
             android:fontFamily="@font/abeezee"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"

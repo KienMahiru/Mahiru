@@ -210,7 +210,7 @@
 
     --ChangePassword--
     <string name="retry_title_change">Hãy thử lại thay đổi mật khẩu</string>
-    <string name="retry_message_change">Bạn đã vượt quá số lần thử tối đa. Vui lòng đợi 30 giây trước khi thử lại.</string>
+    <string name="retry_message_change">Bạn đã vượt quá số lần thử tối đa. Vui lòng đợi %1$d giây trước khi thử lại.</string>
     <string name="wait_retry_change"> Vui lòng đợi %1$d giây trước khi thử lại</string>
     <string name="ok_button_change">OK</string>
     <string name="succes_changepass">Cập nhật mật khẩu thành công! Vui lòng đăng nhập lại!</string>
@@ -255,4 +255,5 @@
 
     --Other--
     <string name="second">giây</string>
+    <string name="logout_message">Bạn đã nhập sai quá nhiều lần, tài khoản của bạn sẽ tự động đăng xuất sau 5 giây</string>
 </resources>

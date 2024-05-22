@@ -48,6 +48,7 @@
             android:maxLength="30"
             android:minHeight="48dp"
             android:singleLine="true"
+            android:textColorHint="#609097"
             android:textColor="#3949AB" />
 
         <RelativeLayout
@@ -56,6 +57,8 @@
             android:orientation="horizontal"
             android:layout_marginTop="8dp">
             <EditText
+                android:textColorHint="#609097"
+                android:textColor="#3949AB"
                 android:fontFamily="@font/abeezee"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
