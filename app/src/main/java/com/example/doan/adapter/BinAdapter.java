@@ -269,7 +269,13 @@ public class BinAdapter extends RecyclerView.Adapter<BinAdapter.BinViewHolder> {
             notifyDataSetChanged();
         }
     };
-
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
     @Override
     public int getItemCount() {
         return mImageUrls.size();

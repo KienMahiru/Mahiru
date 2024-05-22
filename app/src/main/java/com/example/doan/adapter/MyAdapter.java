@@ -342,7 +342,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         mContext.startActivity(Intent.createChooser(shareIntent, mContext.getString(R.string.share_img)));
     }
 
-
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
     @Override
     public int getItemCount() {
         return mImageUrls.size();

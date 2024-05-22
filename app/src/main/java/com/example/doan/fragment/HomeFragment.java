@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
     private Button button_video;
     private Button button_image;
     private Button button_music;
-    private BottomNavigationView bottomNavigationView;
+    public BottomNavigationView bottomNavigationView;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -449,6 +449,7 @@ public class HomeFragment extends Fragment {
         if(id == R.id.chontatca){
             if(bottomNavigationView.getSelectedItemId() == R.id.nav_video){
                 // Chọn tất cả video
+
                 for (int i = 0; i < adapter.getItemCount(); i++) {
                     adapter.mSelectedItems.put(i, true);
                 }

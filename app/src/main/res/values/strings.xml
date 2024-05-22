@@ -204,7 +204,7 @@
     <string name="succes_downvid">Video downloaded successfully!</string>
     <string name="error_downvid">Failed to download video</string>
     <string name="share_vid">Share video</string>
-    <string name="change_name_item">Please enter new name item!</string>
+    <string name="rename">Processing rename...</string>
 
     --ChangePassword--
     <string name="retry_title_change">Retry Password Change</string>

@@ -189,6 +189,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                 builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ProgressDialog progressDialog = new ProgressDialog(mContext);
+                        progressDialog.setCancelable(false);
+                        progressDialog.setMessage(mContext.getString(R.string.rename));
+                        progressDialog.show();
                         String newVideoName = input.getText().toString();
                         if (!newVideoName.isEmpty()) {
                             // Update the music name in the RecyclerView
@@ -220,12 +224,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
 
                                                     notifyDataSetChanged();
                                                     Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý khi xóa tệp hiện tại thất bại
                                                     Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
                                                 }
                                             });
                                         }
@@ -234,6 +240,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý khi tạo tệp mới thất bại
                                             Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                         }
                                     });
                                 }
@@ -242,6 +249,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý khi sao chép nội dung tệp thất bại
                                     Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
                                 }
                             });
                         }
@@ -487,6 +495,13 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoViewHol
                 }
             }
         });
+    }
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
     }
     @Override
     public int getItemCount() {

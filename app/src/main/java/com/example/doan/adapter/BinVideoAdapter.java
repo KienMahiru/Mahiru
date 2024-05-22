@@ -340,7 +340,13 @@ public class BinVideoAdapter extends RecyclerView.Adapter<BinVideoAdapter.BinVid
             notifyDataSetChanged();
         }
     };
-
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
     private Task<String> getVideoTitleFromFirebaseStorage(String videoUrl) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl(videoUrl);

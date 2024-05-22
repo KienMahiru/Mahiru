@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.doan.activity.FullscreenMusicActivity;
 import com.example.doan.R;
+import com.example.doan.fragment.HomeFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -124,6 +125,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                     actionMode = null;
                 }
 
+
                 return true;
             }
         });
@@ -141,6 +143,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                 builder.setPositiveButton(R.string.yes1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        ProgressDialog progressDialog = new ProgressDialog(mContext);
+                        progressDialog.setCancelable(false);
+                        progressDialog.setMessage(mContext.getString(R.string.rename));
+                        progressDialog.show();
                         String newMusicName = input.getText().toString();
                         if (!newMusicName.isEmpty()) {
                             // Update the music name in the RecyclerView
@@ -172,12 +178,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
                                                     notifyDataSetChanged();
                                                     Toast.makeText(mContext, R.string.succes_rename1, Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     // Xử lý khi xóa tệp hiện tại thất bại
                                                     Toast.makeText(mContext, R.string.error_delfile, Toast.LENGTH_SHORT).show();
+                                                    progressDialog.dismiss();
                                                 }
                                             });
                                         }
@@ -186,6 +194,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                         public void onFailure(@NonNull Exception e) {
                                             // Xử lý khi tạo tệp mới thất bại
                                             Toast.makeText(mContext, R.string.error_crefile, Toast.LENGTH_SHORT).show();
+                                            progressDialog.dismiss();
                                         }
                                     });
                                 }
@@ -194,6 +203,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
                                 public void onFailure(@NonNull Exception e) {
                                     // Xử lý khi sao chép nội dung tệp thất bại
                                     Toast.makeText(mContext, R.string.error_copyfile, Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
                                 }
                             });
                         }
@@ -419,7 +429,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
             notifyDataSetChanged();
         }
     };
-
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
     private void uploadFileToStorage(StorageReference sourceRef, StorageReference destinationRef, String fileName, ProgressDialog progressDialog) {
         sourceRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override

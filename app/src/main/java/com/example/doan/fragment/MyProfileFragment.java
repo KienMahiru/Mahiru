@@ -59,7 +59,7 @@ public class MyProfileFragment extends Fragment {
         mOption= (Option)getActivity();
         email = view.findViewById(R.id.email);
         update = view.findViewById(R.id.update);
-
+        email.setEnabled(false);
         setUser();
         imageAva.setOnClickListener(v -> onClickRequestPermission());
 

@@ -16,6 +16,7 @@ import com.google.firebase.storage.UploadTask;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class EditImageProActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityEditImageProBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Lấy Url ảnh
         String imageUrl = getIntent().getStringExtra("image_url");
         //Chuyển đổi sang uri

@@ -368,7 +368,13 @@ public class BinMusicAdapter extends RecyclerView.Adapter<BinMusicAdapter.BinMus
             notifyDataSetChanged();
         }
     };
-
+    // Hủy Contextual Action Mode khi sử dụng Adapter khác
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
     @Override
     public int getItemCount() {
         return mMusicUrls.size();
