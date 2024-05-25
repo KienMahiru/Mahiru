@@ -1,11 +1,13 @@
 package com.example.doan.fragment;
 import static com.example.doan.activity.Option.MY_REQUEST_CODE;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -41,6 +43,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.ClipData;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -608,9 +612,45 @@ public class HomeFragment extends Fragment {
 
     // Sử dụng các phương thức uploadFiles cho từng loại tệp tin
     private void uploadImages(List<Uri> imageUris) {
-        uploadFiles(imageUris, "image", getString(R.string.succes_upimg1));
+        for (Uri imageUri : imageUris) {
+            // Kiểm tra kích thước của tệp
+            if (isFileSizeWithinLimit(imageUri, 10)) { // Giả sử 10 là kích thước giới hạn 10MB
+                // Nếu kích thước hợp lệ, tiếp tục tải lên
+                uploadFiles(imageUris, "image", getString(R.string.succes_upimg1));
+            } else {
+                // Nếu kích thước vượt quá giới hạn, hiển thị cảnh báo
+                showFileSizeExceedDialog();
+                return;
+            }
+        }
     }
 
+    // Phương thức kiểm tra kích thước của tệp
+    private boolean isFileSizeWithinLimit(Uri fileUri, int maxSizeInMB) {
+        try {
+            Context context = requireContext(); // hoặc getContext() tùy thuộc vào trường hợp sử dụng
+            ContentResolver contentResolver = context.getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(fileUri);
+            int size = inputStream.available(); // Lấy kích thước tệp
+            inputStream.close();
+            int maxSize = maxSizeInMB * 1024 * 1024; // Chuyển đổi MB thành byte
+            return size <= maxSize;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Phương thức hiển thị cảnh báo khi kích thước ảnh vượt quá giới hạn
+    private void showFileSizeExceedDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle(R.string.error_maxsizetitle);
+        builder.setMessage(R.string.error_maxsize);
+        builder.setPositiveButton(R.string.yes1, (dialog, which) -> {
+            // Do nothing or handle as needed
+        });
+        builder.show();
+    }
     private void uploadMusics(List<Uri> musicUris) {
         for (Uri musicUri : musicUris) {
             String musicFileName = getFileNameFromUri(musicUri);

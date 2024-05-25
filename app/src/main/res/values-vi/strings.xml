@@ -229,6 +229,8 @@
     <string name="succes_upimg1">Tải ảnh lên thành công</string>
     <string name="succes_upimg2">Upload thành công</string>
     <string name="succes_upvid">Tải video lên thành công</string>
+    <string name="error_maxsizetitle">Kích thước ảnh vượt quá giới hạn</string>
+    <string name="error_maxsize">Kích thước của hình ảnh vượt quá giới hạn 10MB. Vui lòng chọn một hình ảnh nhỏ hơn.</string>
 
     --MyProfile--
     <string name="update_title">Chỉnh sửa hồ sơ của tôi</string>
@@ -256,4 +258,4 @@
     --Other--
     <string name="second">giây</string>
     <string name="logout_message">Bạn đã nhập sai quá nhiều lần, tài khoản của bạn sẽ tự động đăng xuất sau 5 giây</string>
-</resources>
+    </resources>

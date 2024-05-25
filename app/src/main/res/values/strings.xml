@@ -227,6 +227,8 @@
     <string name="succes_upimg1">Image uploaded successfully</string>
     <string name="succes_upimg2">Upload successful</string>
     <string name="succes_upvid">Video uploaded successfully</string>
+    <string name="error_maxsizetitle">File Size Exceeds Limit</string>
+    <string name="error_maxsize">The size of the image exceeds the 10MB limit. Please choose a smaller image.</string>
 
     --MyProfile--
     <string name="update_title">Edit my profile</string>
